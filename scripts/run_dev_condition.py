@@ -34,6 +34,7 @@ def main():
     p.add_argument('--conversion-report',type=Path)
     p.add_argument('--native',type=Path)
     p.add_argument('--cache',type=Path)
+    p.add_argument('--reuse-completed-from',type=Path,help='reaudit every complete contiguous task prefix; preserve completed inference, never reroll it')
     p.add_argument('--plan-only',action='store_true')
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();root=Path(__file__).resolve().parents[1]
@@ -114,6 +115,31 @@ def main():
         'src/gemma_particle/adapters.py','src/gemma_particle/lora_serving.py',
         'submission/prompts/system.md','submission/configs/sampling.yaml']
     sources={name:sha256_file(root/name) for name in source_files}
+    reuse={};reuse_receipt=None
+    if args.reuse_completed_from:
+        previous=args.reuse_completed_from;previous_plan=previous/'plan.json'
+        original=json.loads(previous_plan.read_text())
+        audit_changes={'scripts/run_dev_condition.py','src/gemma_particle/dev_evidence.py'}
+        if (original['condition']!=condition or original.get('packet')!=packet
+                or original['selection_plan_sha256']!=sha256_file(args.selection_plan)
+                or set(original['sources'])!=set(sources)
+                or any(original['sources'][k]!=v for k,v in sources.items() if k not in audit_changes)):
+            raise ValueError('reuse requires unchanged actual generation/verification implementations and declared condition')
+        gap=False
+        for name,panel in panels.items():
+            for task in panel['tasks']:
+                task_id=task['instance_id'];cohort=previous/name/(task_id+'-agent');verification=previous/name/(task_id+'-verification')
+                if not cohort.exists() and not verification.exists():gap=True;continue
+                if gap or not (cohort/task_id/'trajectory.json').is_file() or not (verification/'outcomes.jsonl').is_file():
+                    raise ValueError('reuse requires the entire complete contiguous prefix; partial tasks require reconciliation')
+                row,contract=audit_verified_task(cohort,verification,task_id,expected_arm=condition['arm'],
+                    expected_alias='particle_lora' if packet else BASE_ALIAS)
+                validate_matching_contract(contract,plan)
+                reuse[(name,task_id)]=(cohort,verification)
+        if not reuse:raise ValueError('no complete actual prefix available for evidence reuse')
+        reuse_receipt={'prior_condition':str(previous.resolve()),'prior_plan_sha256':sha256_file(previous_plan),
+            'task_ids':[task_id for _,task_id in reuse],'audit_only_source_changes':sorted(audit_changes),
+            'generation_and_verification_sources':'unchanged','policy':'all complete contiguous evidence retained regardless of outcome; no repeated model inference'}
     if not args.plan_only:
         subprocess.run(['git','diff','--quiet','HEAD'],check=True)
         server=json.loads(args.server_identity.read_text())
@@ -128,7 +154,7 @@ def main():
     args.out.mkdir(parents=True);(args.out/'logs').mkdir()
     declaration={'schema':'gemma4-dev-condition-plan-v1','created_at':datetime.now(timezone.utc).isoformat(),
         'condition':condition,'selection_plan_sha256':sha256_file(args.selection_plan),'sources':sources,
-        'packet':packet,'task_ids':{n:[t['instance_id'] for t in p['tasks']] for n,p in panels.items()},
+        'packet':packet,'reused_evidence':reuse_receipt,'task_ids':{n:[t['instance_id'] for t in p['tasks']] for n,p in panels.items()},
         'server_identity':str(args.server_identity.resolve()),'endpoint':args.endpoint,'model_inference':False,
         'status':'prepared' if args.plan_only else 'starting','scope':'full42+13 DEV condition; no selection or holdout access'}
     write(args.out/'plan.json',declaration)
@@ -154,10 +180,13 @@ def main():
             extra=[]
             if panel_name=='primary':extra=['--external-dev-manifest',plan['primary']['manifest'],
                 '--external-dev-qualification',plan['primary']['qualification']]
-            execute(command+extra,args.out/'logs'/(task_id+'-agent.log'))
-            execute(['scripts/verify_trajectories.py','--cohort',str(cohort),'--tasks',str(panel['raw']),
-                '--inputs',str(panel['inputs']),'--wheels',str(panel['wheels']),'--image',panel['image'],
-                '--endpoint',args.endpoint,'--out',str(verification)]+extra,args.out/'logs'/(task_id+'-verify.log'))
+            if (panel_name,task_id) in reuse:
+                cohort,verification=reuse[(panel_name,task_id)]
+            else:
+                execute(command+extra,args.out/'logs'/(task_id+'-agent.log'))
+                execute(['scripts/verify_trajectories.py','--cohort',str(cohort),'--tasks',str(panel['raw']),
+                    '--inputs',str(panel['inputs']),'--wheels',str(panel['wheels']),'--image',panel['image'],
+                    '--endpoint',args.endpoint,'--out',str(verification)]+extra,args.out/'logs'/(task_id+'-verify.log'))
             row,contract=audit_verified_task(cohort,verification,task_id,expected_arm=condition['arm'],expected_alias=expected_alias)
             validate_matching_contract(contract,plan)
             fingerprint=digest(contract)
@@ -166,7 +195,8 @@ def main():
             record={'instance_id':task_id,'panel':panel_name,'cohort':str(cohort),'verification':str(verification),
                 'outcomes_sha256':sha256_file(verification/'outcomes.jsonl'),'resolved':row['resolved'],
                 'agent_error':row['agent_error'],'capture_complete':row['capture_complete'],
-                'model_journal_sha256':journal_digest(cohort,task_id)}
+                'model_journal_sha256':journal_digest(cohort,task_id),
+                'reused_from':str(args.reuse_completed_from.resolve()) if (panel_name,task_id) in reuse else None}
             records.append(record);finished.append(record)
             write(args.out/'progress.json',{'state':'running','condition':args.condition,'finished':finished,
                 'planned':55,'model_inference':True})
@@ -182,7 +212,7 @@ def main():
         metrics[panel_name]=summarize_verified_panel(panel['tasks'],outcomes(),calibrated_ids=calibrated)
     result={'schema':'gemma4-dev-condition-result-v1','status':'complete','condition':condition,
         'selection_plan_sha256':declaration['selection_plan_sha256'],'canonical_contracts':canonical,
-        'sources':sources,'server_identity_sha256':digest(server),'packet':packet,'finished':finished,
+        'sources':sources,'server_identity_sha256':digest(server),'packet':packet,'reused_evidence':reuse_receipt,'finished':finished,
         **metrics,'scope':'one complete DEV condition only; no locked confirmation or official SOTA claim'}
     write(args.out/'result.json',result);print(json.dumps({'condition':args.condition,'status':'complete',
         'primary_resolved':metrics['primary']['resolved'],'secondary_resolved':metrics['secondary']['resolved']}),flush=True)

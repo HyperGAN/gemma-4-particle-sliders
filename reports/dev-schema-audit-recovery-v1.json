@@ -1,0 +1,41 @@
+{
+  "schema": "gemma4-dev-schema-audit-recovery-v1",
+  "as_of": "2026-11-17T10:58:46.210047+00:00",
+  "cause": "copied-field equality incorrectly required identical schema names across capture and verification stages",
+  "only_mismatch": [
+    "gemma4-captured-trajectory-v1",
+    "gemma4-verified-trajectory-v4"
+  ],
+  "fix": "validate both stage schemas; compare all other captured fields exactly",
+  "original_generated_executor": "479168dba212cc06fa92053929c53847a4fba259",
+  "corrected_audit_source_sha256": "af502d7df563e369520c77994798996c377622262da7ea739528ea58e0df2b44",
+  "actual_retained_result": {
+    "instance_id": "loguru_1508",
+    "resolved": false,
+    "capture_complete": true,
+    "agent_error": null,
+    "tool_calls": 16,
+    "elapsed_seconds": 252.39088167110458
+  },
+  "outcomes_sha256": "27a39be3a443ef92068d9a0e2e5a57710035ee1060131718656ba393971bf189",
+  "model_journal_sha256": "af97339e1ce24bd0f5ad730b4be6775d3c9c1f1adb63825c42aa882bd7559f89",
+  "canonical_contract_sha256": "0e5f59e2242508e3d7f7c414d519d175301f53c212ca519b7176d951e4806440",
+  "reused_evidence": {
+    "prior_condition": "/ml2/kaggle-hackathon-gemma-4/runs/full-dev-controls-v1/off",
+    "prior_plan_sha256": "816f901932782c2534af86eace9bd0b90e24b9ce48b6843a0ade0081dbaccf0c",
+    "task_ids": [
+      "loguru_1508"
+    ],
+    "audit_only_source_changes": [
+      "scripts/run_dev_condition.py",
+      "src/gemma_particle/dev_evidence.py"
+    ],
+    "generation_and_verification_sources": "unchanged",
+    "policy": "all complete contiguous evidence retained regardless of outcome; no repeated model inference"
+  },
+  "additional_model_calls_for_reaudit": 0,
+  "selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "generation_and_fresh_verification_implementations": "unchanged; exact prior source map checked",
+  "source_bound_tests": "117 CPU tests and official compiler pass; reports/dev-recovery-final-preflight-v2.json",
+  "scope": "audit/orchestration repair preserving the original unresolved case; incomplete full55-task OFF condition, no aggregate or official score"
+}

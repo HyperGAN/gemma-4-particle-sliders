@@ -76,7 +76,9 @@ def audit_verified_task(cohort,verification,task_id,*,expected_arm,expected_alia
             or not learned and row.get('candidate_adapters')):
         raise ValueError('DEV active adapter identity differs from its declared treatment')
     captured=json.loads((folder/'trajectory.json').read_text())
-    if (manifest['runs']!=[captured] or any(row.get(k)!=v for k,v in captured.items())
+    if (captured.get('schema')!='gemma4-captured-trajectory-v1'
+            or row.get('schema') not in ('gemma4-verified-trajectory-v3','gemma4-verified-trajectory-v4')
+            or manifest['runs']!=[captured] or any(row.get(k)!=v for k,v in captured.items() if k!='schema')
             or row['verification']!=json.loads((verification/task_id/'verification.json').read_text())
             or row['patch_sha256']!=sha256_file(folder/'agent.patch')
             or row['verification']['test_output_sha256']!=sha256_file(verification/task_id/'test-output.txt')):

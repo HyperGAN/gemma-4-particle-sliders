@@ -23,6 +23,7 @@ def main():
     p.add_argument('--endpoint',required=True)
     p.add_argument('--server-identity',type=Path,required=True)
     p.add_argument('--stop-server-pid',type=int)
+    p.add_argument('--reuse-completed-from',type=Path,help='prior stopped control root; preserve every complete condition prefix')
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();plan=load_selection_plan(args.selection_plan)
     if args.out.exists():raise FileExistsError('DEV controls are immutable; incomplete runs need reconciliation')
@@ -43,6 +44,7 @@ def main():
         'condition_ids':[c['id'] for c in controls],'tasks_per_condition':55,
         'selection_plan_sha256':sha256_file(args.selection_plan),'source_sha256':sha256_file(Path(__file__)),
         'server_identity':str(args.server_identity.resolve()),'server_pid':args.stop_server_pid,'server_birth_ticks':birth,
+        'reuse_completed_from':str(args.reuse_completed_from.resolve()) if args.reuse_completed_from else None,
         'scope':'complete unadapted OFF/prompt controls only; not a learned result or SOTA claim'}
     write(args.out/'plan.json',declaration);finished=[]
     try:
@@ -51,6 +53,8 @@ def main():
             command=[sys.executable,'scripts/run_dev_condition.py','--selection-plan',str(args.selection_plan),
                 '--condition',condition['id'],'--endpoint',args.endpoint,'--server-identity',str(args.server_identity),
                 '--out',str(destination)]
+            if args.reuse_completed_from and (args.reuse_completed_from/condition['id']).exists():
+                command.extend(['--reuse-completed-from',str(args.reuse_completed_from/condition['id'])])
             with (args.out/'logs'/(condition['id']+'.log')).open('x') as stream:
                 result=subprocess.run(command,stdout=stream,stderr=subprocess.STDOUT)
             if result.returncode:raise RuntimeError(f"DEV control failed; preserve {destination}")

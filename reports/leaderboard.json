@@ -1,10 +1,10 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T10:49:23.214949+00:00",
+  "as_of": "2026-11-17T10:58:46.210047+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
-    "cpu_preflight": "115 CPU tests and the official compiler pass for the final DEV executor sources; reports/dev-executor-final-preflight-v1.json",
+    "cpu_preflight": "117 CPU tests and the official compiler pass for the corrected DEV receipt audit and evidence-preserving recovery; reports/dev-recovery-final-preflight-v2.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
     "real_task_verifier_controls": "60 distinct original TRAIN tasks qualify across recorded images:58 original v2 plus2 isolated JSON dependency repairs. Seven original tasks remain unqualified; all outcomes retained.",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
@@ -24,7 +24,7 @@
     "actual_lora_loading": "Eight real31B vLLM transport requests pass:exact zero-adapter parity and nonzero synthetic effect. Synthetic weights are ineligible as learned candidates; reports/vllm-lora-effect-control-v1.json",
     "behavior_targets": "One genuine initial TRAIN context independently re-curated offline; Jev verify .99>OFF .40 and fresh teacher tests pass. One-pass paid judging; reports/first-real-behavior-admission-v1.json",
     "pretrained_optimization": "Zero pretrained optimizer updates. First EMPF engineering update waits for2 distinct admitted initial targets and observed shared GPU/host headroom.",
-    "dev_selection": "First actual DEV inference observed onloguru_1508:bound base alias returned, matching prompt/budget/sampling/history checked. Four full42+13 controls running from frozen479168d; no terminal task score or aggregate yet; reports/dev-controls-actual-launch-v1.json",
+    "dev_selection": "Actual first OFF DEV taskloguru_1508 unresolved/clean/full capture,16 proposals,252.39s. Post-verification schema audit defect fixed and independently re-audited with0new model calls. Full22-condition/full42+13 protocol unchanged; evidence-preserving continuation prepared; reports/dev-schema-audit-recovery-v1.json",
     "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json",
     "full_recipe_continuation": "Passive exact continuation armed from frozen bcd2255: wait for verified actual EMPF step1, resume through256/512/1024, then explicit GPU-native-polar RHBI on the same cache.0 pretrained updates currently; reports/full-training-continuation-preparation-v1.json"
   },
