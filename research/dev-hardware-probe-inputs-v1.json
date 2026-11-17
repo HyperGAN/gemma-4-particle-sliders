@@ -1,0 +1,48 @@
+{
+  "schema": "gemma4-hardware-probe-inputs-v1",
+  "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "model_revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+  "proposal_sha256": "00e7eac1cbe74d1f08cb973868e1987e35b4c7b374d0779fe4aa81f08fcb3286",
+  "synthetic_prompt": "Repository repair protocol control.\nReturn the word ready.\nAnswer:",
+  "seed_token_ids": [
+    12670,
+    11790,
+    16433,
+    2256,
+    236761,
+    107,
+    13293,
+    506,
+    3658,
+    5508,
+    236761,
+    107,
+    7925,
+    236787
+  ],
+  "expansion": "cyclic repetition of the complete fixed seed token IDs; prefix to exact requested length",
+  "lengths": [
+    32,
+    4096,
+    28672
+  ],
+  "aliases": [
+    "gemma-4-31b-it-qat-w4a16-ct",
+    "particle_lora"
+  ],
+  "generation": {
+    "temperature": 0,
+    "seed": 0,
+    "max_tokens": 1,
+    "logprobs": 20,
+    "ignore_eos": true,
+    "return_tokens_as_token_ids": true
+  },
+  "seed_provenance": {
+    "source": "actual earlier synthetic LoRA transport control, identical base/zero/probe tokenization",
+    "source_receipt_sha256": "79f63d7a0fea7b778820a2e4754df41ece6ec70cea2a2d6649c287eb5286bb27",
+    "public_summary": "reports/vllm-lora-effect-control-v1.json"
+  },
+  "forbidden_content": "no TRAIN task, DEV task, holdout task, gold patch or generated task answer",
+  "scope": "fixed prospective numerical hardware inputs; not a parity result or activated resource protocol"
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "gemma4-hardware-parity-preparation-v1",
+  "as_of": "2026-11-17T13:39:30.569923+00:00",
+  "status": "cpu_preparation_passed_resource_proposal_inactive",
+  "new_gpu_model_work": false,
+  "actual_numerical_probe_completions": 0,
+  "resource_supplement_activated": false,
+  "model_task_inference": false,
+  "servers_mutated": false,
+  "source_base_commit": "d820a039f397b2e50d3b6cfe7cae42648bc5559f",
+  "sources_sha256": {
+    "scripts/qualify_hardware_pair.py": "aa953f862aac1ee0ec2a42a2d15634c7257cb573266b247bd42329c8c0d5496a",
+    "src/gemma_particle/hardware_parity.py": "b7322302ceb562a72128b71ecd53cb7f7fca160f6d3995fb3e257ca17b6789ca",
+    "tests/test_hardware_parity.py": "4619bcdf4fc2240b782ed2f224572ecab55d7baa4e1af3fc63cb5d36c814819a",
+    "research/dev-hardware-probe-inputs-v1.json": "7cd38d47b9e5bebeae34fbbdbf12cdbe5b782a8f2d5513d4fa4b62a848f7abca"
+  },
+  "original_proposal_sha256": "00e7eac1cbe74d1f08cb973868e1987e35b4c7b374d0779fe4aa81f08fcb3286",
+  "frozen_serving_executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "checks": {
+    "focused_passed": 32,
+    "focused_log_sha256": "c662745ae0a906dc03a2172e028046395734aa6662475c76d45022068757443f",
+    "full_public_source_passed": 181,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "b56ee0b6c176d8c0774e1b078d50c7cce3b6e051a9c409258a14f1679673d622",
+    "public_python_files_compared": 131,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "fixture_scope": [
+      "fixed exact-length request payloads and source/protocol tampering",
+      "same serving contract without activating ordinary DEV device normalization",
+      "hardware UUID/owned-process/descriptor mismatches",
+      "exact generated/top token-ID sets and finite20-logprob1e-5 comparison",
+      "actual owned CPU dispatcher process discovery"
+    ]
+  },
+  "actual_waiter_negative_control": {
+    "receipt_sha256": "b4617ab6b2ce9cf0dcba21139896a340b0282df191c087c9f66bd577fcb08834",
+    "http_or_driver_calls": 0,
+    "servers_mutated": false,
+    "observed_waiter_pid": 4019359,
+    "observed_waiter_birth_ticks": "107824325"
+  },
+  "actual_metadata_only_control": {
+    "receipt_sha256": "3c5c4f3854ae9d88a8ff5a3125e8fcfdf6589da6129fd808c80931d66f14547d",
+    "http_or_model_requests": 0,
+    "hardware_descriptors_and_owned_descendant_gpu_mapping": "passed on two existing servers, not a same-adapter numerical control"
+  },
+  "actual_plan_only": {
+    "plan_sha256": "6ff2f82774cccf2f3b3b36ae361a8cd48bb43ee69edfb5f67ef070e41a419bd9",
+    "log_sha256": "48d65d02306afc683cbdb3703687765cc2a4a2edaab48d1cf83117b74ead5686",
+    "http_driver_model_or_cuda_access": false
+  },
+  "fixed_future_probes": {
+    "lengths": [
+      32,
+      4096,
+      28672
+    ],
+    "aliases": 2,
+    "paired_cases": 6,
+    "model_completions": 12,
+    "adapter": "empf.step256.strength1",
+    "tolerance": 1e-05,
+    "task_content": false
+  },
+  "remaining": "actual completed producers and release, stopped owned waiter, healthy same-adapter servers on both slots, actual numerical measurement, explicit versioned resource supplement and comparison-audit support",
+  "scope": "CPU numerical-checker preparation plus read-only metadata observations; no actual GPU numerical parity, learned quality, holdout result or official learned score"
+}
