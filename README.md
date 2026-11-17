@@ -10,6 +10,8 @@ The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/je
 
 A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its [first real quartet](reports/first-real-behavior-admission-v1.json) supplies one initial target: all four arms pass fresh tests, and Jev selects `verify` at .99 over OFF at .40. Independent offline curation reproduces the selection. A second distinct question is required before the first pretrained update.
 
+The [prospective DEV comparison](docs/dev-selection.md) fixes 22 conditions and complete 42+13-task panels before model DEV inference. All 42 supplementary environments qualify; five original Requests environments qualify and all 13 remain reported. Controls and learned candidates use matched LoRA-enabled engine settings, actual returned model aliases, and fresh patch verification. The confirmation set remains locked.
+
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.

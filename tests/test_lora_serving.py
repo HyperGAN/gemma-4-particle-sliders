@@ -85,3 +85,17 @@ def test_inert_or_nonzero_zero_adapter_is_never_promoted_as_a_passing_effect_con
     assert not compare_alias_effects(changed_zero)['passed']
     nonfinite=deepcopy(rows);nonfinite['particle_probe']['choices'][0]['logprobs']['top_logprobs'][0]['token_id:7']=float('nan')
     with pytest.raises(ValueError,match='finite'):compare_alias_effects(nonfinite)
+
+
+def test_true_base_control_has_no_synthetic_weights_and_preserves_lora_engine_shape(tmp_path):
+    config={'model':BASE_REPO,'model_revision':BASE_REVISION}
+    spec=prepare_lora(config,base_only=True)
+    assert spec['kind']=='gemma4' and spec['base_only'] and not spec['qualification_only']
+    assert spec['directories']=={} and spec['adapters']=={}
+    launch=lora_launch(config,spec,port=8029,memory_fraction=.60)
+    assert '--enable-lora' in launch and '--lora-modules' not in launch
+    assert launch[launch.index('--max-loras')+1]=='1'
+    assert launch[launch.index('--max-cpu-loras')+1]=='1'
+    assert launch[launch.index('--max-lora-rank')+1]=='8'
+    with pytest.raises(ValueError,match='exactly one'):
+        prepare_lora(config,base_only=True,fixtures=fixture_packet(tmp_path))

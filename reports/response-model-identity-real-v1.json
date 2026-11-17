@@ -1,0 +1,18 @@
+{
+  "schema": "gemma4-response-model-identity-control-v1",
+  "status": "passed",
+  "synthetic_prompt": true,
+  "requested_model": "openai/gemma-4-31b-it-qat-w4a16-ct",
+  "returned_model": "gemma-4-31b-it-qat-w4a16-ct",
+  "response_packet_sha256": "439b113dee82370885f043f781466c06278651bcf7bcd0ba9cd28ea967534bbd",
+  "server_identity_sha256": "7605bd1c1b555db997da3de0bbd99e792694be9cbdf1c9b96c0a4291879a7f96",
+  "model_inference_calls": 1,
+  "training_updates": 0,
+  "scope": "one-token real SDK/HTTP/journal model-identity control; no task quality, learned alias or fitting target",
+  "raw_result_sha256": "97d885745a865c3e0051d511032aca4c0c15efefe4ff18a3c147f5aff4151ed5",
+  "sources": {
+    "src/gemma_particle/capture.py": "582e408a61516950bfa0782c0ff7707bc6e4a1cd1b12c0a1af742fed9ee75102",
+    "src/gemma_particle/adk_capture.py": "459f484bc4bc4232841d5e656966b6b2e21fa97267fbcf0540f72db1392815c7",
+    "tests/test_capture.py": "7d17e300c3136a4b2b6d4264d6657612f6e5ce7d2da37646820c1364e0d3b271"
+  }
+}

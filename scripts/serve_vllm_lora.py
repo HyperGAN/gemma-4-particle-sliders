@@ -17,6 +17,7 @@ def main():
     group=p.add_mutually_exclusive_group(required=True)
     group.add_argument('--adapter',type=Path)
     group.add_argument('--synthetic-fixtures',type=Path)
+    group.add_argument('--base-only',action='store_true',help='unadapted base; same LoRA-enabled engine settings, no adapter weights')
     p.add_argument('--conversion-report',type=Path)
     p.add_argument('--device',required=True,choices=['cuda:0','cuda:1'])
     p.add_argument('--memory-fraction',type=float,default=.60)
@@ -26,12 +27,12 @@ def main():
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('LoRA serving run/plan is immutable')
     config=json.loads(args.config.read_text())
-    spec=prepare_lora(config,adapter=args.adapter,fixtures=args.synthetic_fixtures,conversion_report=args.conversion_report)
+    spec=prepare_lora(config,adapter=args.adapter,fixtures=args.synthetic_fixtures,conversion_report=args.conversion_report,base_only=args.base_only)
     launch=lora_launch(config,spec,port=args.port,memory_fraction=args.memory_fraction)
     sources={str(path):sha(path) for path in [Path(__file__),Path('scripts/serve_vllm.py'),args.config,
         Path('src/gemma_particle/lora_serving.py'),Path('src/gemma_particle/adapters.py'),Path('src/gemma_particle/vllm_identity.py')]}
     if args.synthetic_fixtures:sources[str(args.synthetic_fixtures)]=sha(args.synthetic_fixtures)
-    else:sources[spec['provenance']['conversion_report']]=sha(spec['provenance']['conversion_report'])
+    elif args.adapter:sources[spec['provenance']['conversion_report']]=sha(spec['provenance']['conversion_report'])
     if args.plan_only:
         args.out.mkdir(parents=True,mode=0o700)
         plan={'schema':'gemma4-lora-serving-plan-v1','status':'prepared','gpu_used':False,
@@ -57,6 +58,7 @@ def main():
         'memory_budget_kind':'vLLM engine target; not a CUDA allocator cap','strength':0,'native_checkpoint':None,
         'max_context':32768,'tensor_parallel_size':1,'max_num_seqs':1,'adapters':spec['adapters'],
         'adapter_provenance':spec['provenance'],'qualification_only':spec['qualification_only'],
+        'base_only':spec['base_only'],
         'adapter_dtype':'vLLM auto; BF16 base dtype','runtime_adapter_updates':False,
         'official_sources':checked,'sources':sources,'launch':launch,
         'packages':{n:importlib.metadata.version(n) for n in ['torch','vllm','transformers','compressed-tensors']},

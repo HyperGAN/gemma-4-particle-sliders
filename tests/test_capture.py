@@ -44,3 +44,19 @@ def test_cloned_counter_cannot_overwrite_an_existing_request(tmp_path):
         cloned.begin(model='gemma',messages=[{'role':'user','content':'overwritten summary'}],tools=None,options={})
     assert before=={p.name:p.read_bytes() for p in (tmp_path/'capture').iterdir()}
     assert len(load_requests(tmp_path/'capture'))==1
+
+
+def test_returned_model_identity_is_preserved_and_hash_bound(tmp_path):
+    journal=RequestJournal(tmp_path/'capture',instance_id='task',arm='off')
+    packet=journal.begin(model='openai/particle_lora',messages=[],tools=None,options={})
+    journal.complete(packet,{'model':'particle_lora','choices':[],
+        'headers':{'Authorization':'PRIVATE'},'_hidden_params':{'api_key':'PRIVATE'}})
+    path=tmp_path/'capture/0000-response.json'
+    value=json.loads(path.read_text())
+    assert value['response']['model']=='particle_lora'
+    assert 'PRIVATE' not in path.read_text()
+    load_requests(tmp_path/'capture')
+    value['response']['model']='gemma-4-31b-it-qat-w4a16-ct'
+    path.write_text(json.dumps(value))
+    with pytest.raises(ValueError,match='completion journal identity'):
+        load_requests(tmp_path/'capture')

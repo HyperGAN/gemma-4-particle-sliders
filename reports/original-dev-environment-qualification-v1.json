@@ -1,0 +1,449 @@
+{
+  "schema": "gemma4-original-dev-environment-qualification-v1",
+  "state": "complete",
+  "as_of": "2026-11-17T10:01:38.283935+00:00",
+  "planned": 13,
+  "qualified": 5,
+  "controls": [
+    {
+      "instance_id": "requests_6589",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_6589/result.json",
+      "receipt_sha256": "c37b743640e3ced20b60101031ca20a6352a295e7fd59ef9e92397b66ed9991d",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 57.10482738702558
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 56.498742460040376
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_6592",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_6592/result.json",
+      "receipt_sha256": "f82c3bcb099ed0da9faef955f323322d5c1ada4d135338ba6c2a21d18078ad7f",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 56.848236307967454
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 56.421637947903946
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_6629",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_6629/result.json",
+      "receipt_sha256": "1c0a32f9574a6793c77c46399d6362d722a77c58460a2db6435575d0ac7d7de0",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 56.607395177008584
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 56.76807575812563
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_6644",
+      "returncode": 0,
+      "status": "passed",
+      "receipt": "runs/original-dev-environments-v1/requests_6644/result.json",
+      "receipt_sha256": "5f12ec1299b8561e7bcd1872c1a876e9ffcc15f1e7fb9b0ff506e0386dec0e9e",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 24.955829276004806
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 25.93433343595825
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_6757",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_6757/result.json",
+      "receipt_sha256": "2df16da54729da7c700d93dbd0f1afae1b04560b3248ba197862f62b5d76967f",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 25.31054606102407
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 59.78478016308509
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7205",
+      "returncode": 0,
+      "status": "passed",
+      "receipt": "runs/original-dev-environments-v1/requests_7205/result.json",
+      "receipt_sha256": "bda80266113f7d8af99a8f6b12bad9b2939463b4006ab30aa84fd75119c1306b",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 25.76718427799642
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 24.912872849032283
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7309",
+      "returncode": 0,
+      "status": "passed",
+      "receipt": "runs/original-dev-environments-v1/requests_7309/result.json",
+      "receipt_sha256": "0234a0fcfaebc22d26aa2787c9623fb04646016ec9ab12792ba3af15f574269e",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 25.36522545083426
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 25.110143542056903
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7315",
+      "returncode": 0,
+      "status": "passed",
+      "receipt": "runs/original-dev-environments-v1/requests_7315/result.json",
+      "receipt_sha256": "9f751f69c0f55f3ba840be649be49e2b1894342c391ffd00f15a694704c6a4a1",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 24.95498940604739
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 24.77210553106852
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7328",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_7328/result.json",
+      "receipt_sha256": "eb1fb052736039a43ac0d03f845064984159f525a3ea5000530327cc0a0c6f2a",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 64.1272505861707
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 64.00640250300057
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7427",
+      "returncode": 0,
+      "status": "passed",
+      "receipt": "runs/original-dev-environments-v1/requests_7427/result.json",
+      "receipt_sha256": "c36e851f3c14f0492ff2a3dd2773f9c3ff68fbf4a023b208de7c348cd2eccf6c",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 8.927738394821063
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 8.783788515953347
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7433",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_7433/result.json",
+      "receipt_sha256": "11bbd7d4b7a2fe025def36de899873b25c3a877987383a6a3ba0c70c7757412b",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 64.67048945394345
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 64.01965506607667
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7502",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_7502/result.json",
+      "receipt_sha256": "142fac76db639bdfe45fb69fa01e9c723316645eff34d0b24783e08994a24762",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 47.94730926817283
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 47.982902884949
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    },
+    {
+      "instance_id": "requests_7505",
+      "returncode": 2,
+      "status": "blocked: reference control did not pass",
+      "receipt": "runs/original-dev-environments-v1/requests_7505/result.json",
+      "receipt_sha256": "1e2c518e2826466eb44e5337b4f99f5c3d58b5d5d559d25aca6662f11cae7709",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 48.20053861197084
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 47.77342237206176
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ]
+    }
+  ],
+  "plan_sha256": "e8aa3b98c1499d7f0c60e442b02db1f97e2478c425a595515f575fb1c93c80cb",
+  "image_id": "sha256:ee75350a7aff28ead52f7574c30a4766b010fef23f8ac1e9c8b663255a602a63",
+  "wheels": "runs/original-dev-environments-v1/wheels",
+  "wheel_profile_sha256": "645eaf408535dd890c4c78f7df11073bfd70bda3e6de6fd3dabab1473cba74e3",
+  "visible_tasks_sha256": "7b09ff6d110417d7425cb5acc46f889d380d7db358f14c0f4c0ee62497223816",
+  "source_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+  "gpu_used": false,
+  "model_inference": false,
+  "scope": "all original13 DEV environment controls; no agent accuracy, target or holdout evaluation",
+  "raw_result_sha256": "2f570c98ed8a969b134cadbf57060a92845222e30bd85831eb2fe899bbca9550",
+  "image_selection_note": "Qualified immutable imageee75350... retained; mutable requests-deps-v1 tag currently points to a different image and was not used."
+}

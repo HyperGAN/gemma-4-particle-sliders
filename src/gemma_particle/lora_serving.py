@@ -11,13 +11,16 @@ BASE_REPO='google/gemma-4-31B-it-qat-w4a16-ct'
 BASE_REVISION='52f3f65bc7a02d555763bc923bd1d9094898219d'
 
 
-def prepare_lora(config,*,adapter=None,fixtures=None,conversion_report=None):
+def prepare_lora(config,*,adapter=None,fixtures=None,conversion_report=None,base_only=False):
     if config.get('model')!=BASE_REPO or config.get('model_revision')!=BASE_REVISION:
         raise ValueError('pinned official 31B CT base required')
-    if (adapter is None)==(fixtures is None):
-        raise ValueError('choose exactly one measured adapter or synthetic fixture manifest')
+    if sum([adapter is not None,fixtures is not None,bool(base_only)])!=1:
+        raise ValueError('choose exactly one measured adapter, synthetic fixture manifest or true base-only control')
     directories={};provenance={}
-    if fixtures is not None:
+    if base_only:
+        if conversion_report is not None:raise ValueError('base-only control has no conversion receipt')
+        kind='gemma4';provenance={'kind':'unadapted base with LoRA engine enabled','training_updates':0}
+    elif fixtures is not None:
         path=Path(fixtures);manifest=json.loads(path.read_text())
         if manifest.get('kind')!='synthetic_lora_transport' or manifest.get('model_identity')!={'repo':BASE_REPO,'revision':BASE_REVISION}:
             raise ValueError('synthetic fixture kind and pinned model must match')
@@ -53,13 +56,13 @@ def prepare_lora(config,*,adapter=None,fixtures=None,conversion_report=None):
     if any(row['base_model_name_or_path'].lower() not in allowed for row in identities.values()):
         raise ValueError('adapter base differs from the selected 31B model')
     return {'kind':kind,'directories':{k:str(v) for k,v in directories.items()},'adapters':identities,
-            'provenance':provenance,'qualification_only':fixtures is not None}
+            'provenance':provenance,'qualification_only':fixtures is not None,'base_only':bool(base_only)}
 
 
 def lora_launch(config,spec,*,port,memory_fraction):
     if not 0<memory_fraction<=.65 or not 1024<=port<=65535:
         raise ValueError('shared memory fraction <=.65 and an explicit user port required')
-    rank=max(row['rank'] for row in spec['adapters'].values())
+    rank=max((row['rank'] for row in spec['adapters'].values()),default=8)
     max_rank=next(r for r in (8,16,32,64,128) if r>=rank)
     launch=['vllm','serve',config['model'],'--revision',config['model_revision'],
         '--tokenizer-revision',config['model_revision'],'--served-model-name',BASE_ALIAS,
@@ -69,8 +72,9 @@ def lora_launch(config,spec,*,port,memory_fraction):
         '--no-scheduler-reserve-full-isl','--enable-auto-tool-choice','--tool-call-parser','gemma4',
         '--reasoning-parser','gemma4','--reasoning-config',json.dumps({'reasoning_start_str':'<|channel>','reasoning_end_str':'<channel|>'}),
         '--middleware','gemma_particle.vllm_identity.guard','--enable-lora','--lora-dtype','auto',
-        '--max-lora-rank',str(max_rank),'--max-loras',str(len(spec['adapters'])),
-        '--max-cpu-loras',str(len(spec['adapters'])),'--lora-modules']
+        '--max-lora-rank',str(max_rank),'--max-loras',str(max(1,len(spec['adapters']))),
+        '--max-cpu-loras',str(max(1,len(spec['adapters'])))]
+    if spec['directories']:launch.append('--lora-modules')
     launch.extend(json.dumps({'name':name,'path':path,'base_model_name':BASE_ALIAS})
                   for name,path in spec['directories'].items())
     return launch

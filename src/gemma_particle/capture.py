@@ -56,6 +56,8 @@ class RequestJournal:
                     'message':{k:deepcopy(v) for k,v in c['message'].items() if k in message_fields}}
                    for i,c in enumerate(response['choices'])]
         selected = {'choices':choices, 'usage':deepcopy(response.get('usage'))}
+        if isinstance(response.get('model'),str) and response['model']:
+            selected['model']=response['model']
         result = {'schema':'gemma4-model-response-v1', 'request_sha256':packet['request_sha256'],
                   'response':selected, 'response_sha256':digest(selected)}
         path = self.directory/f'{packet["decision"]:04d}-response.json'
