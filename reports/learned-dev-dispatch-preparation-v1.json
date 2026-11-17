@@ -1,0 +1,54 @@
+{
+  "schema": "gemma4-learned-dev-dispatch-preparation-v1",
+  "as_of": "2026-11-17T13:03:36.814308+00:00",
+  "status": "cpu_preparation_passed",
+  "gpu_used": false,
+  "actual_learned_dev_conditions": 0,
+  "holdout_accessed": false,
+  "official_submission_requests": 0,
+  "source_base_commit": "f599c741a2e88c641952bc69b59dd05c1d352a2e",
+  "sources_sha256": {
+    "scripts/run_learned_dev_grid.py": "32b219415f632ec93d391a896b3fb59fa7aaa8466dae09edcfc6479c3c4118cf",
+    "src/gemma_particle/dev_dispatch.py": "4c3dba36a6365e79c336a7b8e715a63203ede0739a790f0565e452307b0fac9a",
+    "tests/test_dev_dispatch.py": "bcccbcc8ac097af707c2efdcc9a8e84fb4d73a23b2a9cb1d5ac902dbf7152977"
+  },
+  "baseline_dev_executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "checks": {
+    "focused_passed": 24,
+    "focused_log_sha256": "055bda1616ac5611c71f5e31cb7ca448a679839eb99d83feaa901d62994ad036",
+    "full_public_source_passed": 138,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "bbbf916482804a6820697e3c250570720bfa80bee60c869313e85845dbfbab71",
+    "public_python_files_compared": 125,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "fixture_scope": [
+      "synthetic18-packet matrix, native/dose/order/alias/bytes tampering",
+      "all4 baseline results with fixed42+13 denominators",
+      "actual owned CPU child process command/output/PID/birth/release",
+      "mock HTTP identity/aliases/nonfinite response/observation timeout boundaries; no real model call"
+    ]
+  },
+  "actual_producer_plan_only": {
+    "plan_sha256": "faeaac89d4c1aece688194ac1e816d1359084bf5ecf25b719185018fd071c666",
+    "log_sha256": "62c097c32bd12a628c5b495933389dd5e0e88c306ed84093733d10ded34660c1",
+    "config_and_native_training_plan": "same exact declared producer hashes; no checkpoint or model loaded"
+  },
+  "execution_contract": {
+    "device": "cuda:0",
+    "memory_fraction": 0.6,
+    "observed_startup_headroom_GiB": 8,
+    "cpu_threads": 4,
+    "same_frozen_baseline_executor": true,
+    "automatic_rerolls": false,
+    "automatic_unqualified_inference": false,
+    "final_audit": "original complete-grid offline comparison; can select no candidate"
+  },
+  "resource_proposal": "inactive; no device normalization or hardware parity claim",
+  "scope": "CPU dispatch preparation only; no learned task quality, confirmation or official learned score established"
+}

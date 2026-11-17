@@ -20,6 +20,8 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 
 The [conversion handoff](docs/learned-conversion-handoff.md) waits for both actual full native trajectories, validates all six checkpoint receipts, and prepares the eighteen fixed learned packets with shared-resource limits. Its CPU preparation controls pass; no learned conversion has run yet.
 
+The [learned DEV dispatcher](docs/learned-dev-dispatch.md) then waits for all measured packets and baseline controls, runs the eighteen full conditions through the frozen baseline executor on GPU 0, and invokes the complete-grid offline selection. Its preparation does not establish a learned model result.
+
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.
 
 The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) preserves exact learned-bundle ZIP bytes beyond the small inline limit and binds native/cache/conversion provenance. Its CPU packaging and official compiler controls pass; no learned candidate has yet been uploaded or scored.

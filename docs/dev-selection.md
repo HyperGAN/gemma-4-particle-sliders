@@ -10,6 +10,8 @@ Selection requires the complete declared grid, or an actual model-preflight erro
 
 `run_dev_controls.py` runs the four complete unadapted conditions. `run_dev_condition.py` runs one full condition and binds its implementation, actual server, request journals, patches, and verification receipts. `compare_dev_conditions.py` reaudits the complete grid offline before writing an immutable learned choice. Internal consistency checks do not authenticate invented JSON as model execution.
 
+The [learned dispatcher](learned-dev-dispatch.md) waits for the actual complete baseline and measured conversions, then runs all eighteen learned conditions using that same frozen executor. Its strict GPU 0 contract preserves the current comparison while the separate resource proposal remains inactive.
+
 The first actual task exposed a [receipt-audit schema defect](../reports/dev-schema-audit-recovery-v1.json) after fresh verification. Its unresolved result is retained. The corrected audit validates each stage's distinct schema and requires every other copied field to match. Recovery accepts only the entire complete contiguous prefix, with the same condition, packet, plan, generation code, and fresh-verification code; it performs no repeated model inference. The declared comparison remains unchanged.
 
 The 49-task confirmation set stays locked until that choice. It supplies no targets, conversion activations, or selection feedback. The selected learned candidate and matched OFF are then evaluated once. Only an official learned submission exceeding a freshly verified public leader can satisfy the competition goal. There are currently no model DEV scores or pretrained optimizer updates.
