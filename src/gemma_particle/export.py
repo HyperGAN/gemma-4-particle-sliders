@@ -23,19 +23,30 @@ def peft_target(name):
 def collect_activations(native, rows, *, tokens_per_layer=256):
     if tokens_per_layer < 2:
         raise ValueError("at least two calibration tokens required")
+    rows=list(rows)
+    if not rows:raise ValueError('nonempty activation contexts required')
+    # Every row receives a fixed share. Select positions across each full
+    # history, avoiding a calibration set made only of the common system prefix.
+    if len(rows)>tokens_per_layer:
+        indices=torch.linspace(0,len(rows)-1,tokens_per_layer,dtype=torch.float64).round().long().tolist()
+        rows=[rows[i] for i in indices]
+    budgets=[tokens_per_layer//len(rows)+(i<tokens_per_layer%len(rows)) for i in range(len(rows))]
+    current_budget=0
     captured = {name: [] for name, _, _ in native.slider.hosts}
     counts = dict.fromkeys(captured, 0)
     handles = []
     try:
         for name, host, _ in native.slider.hosts:
             def capture(module, inputs, *, name=name):
-                left = tokens_per_layer - counts[name]
+                left = min(current_budget,tokens_per_layer - counts[name])
                 if left > 0:
-                    x = inputs[0].detach().reshape(-1, inputs[0].shape[-1])[:left].float().cpu().clone()
+                    flat=inputs[0].detach().reshape(-1,inputs[0].shape[-1])
+                    positions=torch.linspace(0,len(flat)-1,min(left,len(flat)),device=flat.device,dtype=torch.float64).round().long()
+                    x = flat.index_select(0,positions).float().cpu().clone()
                     captured[name].append(x)
                     counts[name] += len(x)
             handles.append(host.register_forward_pre_hook(capture))
-        for row in rows:
+        for row,current_budget in zip(rows,budgets):
             native.hidden(row.neutral_ids, strength=1)
             if all(count >= tokens_per_layer for count in counts.values()):
                 break

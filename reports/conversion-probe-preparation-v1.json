@@ -1,0 +1,50 @@
+{
+  "schema": "gemma4-conversion-probe-preparation-v1",
+  "as_of": "2026-11-17T05:36:28.066526+00:00",
+  "status": "passed",
+  "model_inference_executed": false,
+  "pretrained_updates": 0,
+  "purpose": "conversion diagnostic only; forbidden as a training target",
+  "probe_sha256": "534da9c164e066de541b312e32232d9db1f9c37a40c5de6ea609f473bfa8fd59",
+  "task_ids": [
+    "fastapi_13207",
+    "fastapi_13537"
+  ],
+  "token_counts": [
+    2884,
+    3199
+  ],
+  "request_sha256": [
+    "7dc83e4f551ee760a200327054452f03a9a567d88698d4a354b968c2e3fca10c",
+    "16f4021e519d6361c524ba7094aa3826a76d80c3167c2cdec0fcbb03dc897125"
+  ],
+  "source_outcomes_sha256": [
+    "b6dd3f672bfca3b13266e9c7f238b3ac9ada4178aa0cb1d3bf352bfd64d9ce0d",
+    "914aa47847e4da772a222b5e6d75957e235854983e77c44ed2ab193785d1c70e"
+  ],
+  "train_manifest_sha256": "0c0ff460b133e9666a77b43d1b605331dc6aa3aaaf416fa9ee2f8efc37ad8d2c",
+  "server_identity_sha256": "3d63c2a8b3b81667dfccb78a477fb0f94604b4b214387854004ffcf0e8532375",
+  "sampling": "evenly budgeted rows, evenly spaced positions across full history; conversion-only v2",
+  "cpu_checks": {
+    "non_train_and_fit_overlap_rejected": true,
+    "changed_token_or_request_binding_rejected": true,
+    "later_tool_history_rejected": true,
+    "late_issue_token_and_both_rows_enter_calibration": true,
+    "real_peft_cpu_fixture_loader": "passed",
+    "complete_test_count": 65,
+    "official_compiler": "passed; no inference"
+  },
+  "sources": {
+    "src/gemma_particle/conversion_probe.py": "d1d4a0c963959fa6c3a88a1bc1732f69ed98919190aecad379127a434fdbd510",
+    "src/gemma_particle/export.py": "647868e8a021e38aacbfd1f5dce1cb75df89ad3f09d7d5d5fbee165675fc769f",
+    "scripts/prepare_conversion_probe.py": "86f6436f90292867b9b6ce4472038d98578fdf9d593d02fa4c783f77b97ec585",
+    "scripts/convert_to_peft.py": "309381675fb29c227c422f9c483b34376af45e0e72283893e31f1703bc417c5c",
+    "tests/test_conversion_probe.py": "05c604d44a38ed6136ee38157ebf8e3fb969585cc2d37b6e71c738de2a3d65a6"
+  },
+  "cpu_preflight_sha256": "48ea5570bb9eb37b0bc321b672c8794c3de0def5808cdbaab4f4cae0795884db",
+  "log_sha256": "619af0ab79458f79e526e90ad54ecd5bc7df8a29df30c8ae7757256fbd62d24e",
+  "31b_conversion_error": "unmeasured",
+  "31b_vllm_lora_transport": "unmeasured",
+  "model_dev_score": "unmeasured",
+  "scope": "TRAIN initial issue prompts and software controls only; no training targets, model inference, learned quality or DEV score."
+}
