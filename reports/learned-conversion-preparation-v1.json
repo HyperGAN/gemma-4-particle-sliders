@@ -1,0 +1,51 @@
+{
+  "schema": "gemma4-learned-conversion-preparation-v1",
+  "as_of": "2026-11-17T12:50:54.436712+00:00",
+  "status": "cpu_preparation_passed",
+  "gpu_used": false,
+  "pretrained_updates": 0,
+  "actual_learned_conversions": 0,
+  "candidate_packets": 0,
+  "sources_sha256": {
+    "scripts/prepare_learned_sweep.py": "8787ab99f78515ec9046741538c9162527ff52da8a10985089bf76b350073192",
+    "src/gemma_particle/conversion_handoff.py": "4e11992a3729f750118a06650286cbee90e288570b86b1d7158b203528af9f21",
+    "tests/test_conversion_handoff.py": "9019f67dd1b5b88c42f37ae6166c488f17b99dbeddcd015ca59d97a54fa8af9e"
+  },
+  "native_executor_commit": "6c45b86319d5c68ffc7380190a622c8e964dcf38",
+  "checks": {
+    "targeted_passed": 10,
+    "targeted_log_sha256": "40d430006ad3c3f1c48bb9c9dfcd6617af189244b2dc38615f4dd866481e9f2b",
+    "full_public_source_passed": 125,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "2a83892ca6896393b0a8d8c5f4230e70d514272500da88ec11928790b2d811a0",
+    "public_python_files_compared": 122,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "software_dependency_links_only": [
+      ".deps",
+      ".train-venv",
+      ".harness-venv",
+      ".vllm-venv",
+      ".venv"
+    ],
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "actual_cpu_native_check": "random small Gemma Native host names and full public game signatures checked for both recipes",
+    "receipt_fixtures": "synthetic CPU fixtures only; damaged raw/cache/checkpoint/probe/objective/metric-prefix/conversion receipts rejected"
+  },
+  "plan_only": {
+    "plan_sha256": "b97a062ecd1177c3c2ee738f8ec90e7e94062373c33ab61cceb3b57510ac1188",
+    "log_sha256": "34063a19e312aeb7b4f13dcfa1fe3c37b40e01ca20bcbd2d68f514e3c624ccab",
+    "source_and_real_producer_declarations": "validated on CPU; no checkpoint or model loaded"
+  },
+  "expected_after_actual_training": {
+    "unit_conversions": 6,
+    "cpu_dose_derivations": 12,
+    "learned_packets": 18,
+    "tokens_per_host_per_fit_or_probe": 256
+  },
+  "scope": "CPU preparation only; no learned fidelity, serving effect, DEV/holdout quality or official score established"
+}
