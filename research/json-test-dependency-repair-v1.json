@@ -1,0 +1,53 @@
+{
+  "schema": "gemma4-json-test-dependency-repair-plan-v1",
+  "created_at": "2026-11-17T09:14:22.901836+00:00",
+  "status": "prospective; new controls not yet executed",
+  "task_ids": [
+    "fastapi_14962",
+    "fastapi_14964"
+  ],
+  "observed_failure": "reference test output reports missing declared ujson/orjson test dependencies",
+  "base_image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+  "new_image_tag": "gemma-particle-sandbox:fastapi-json-deps-v3",
+  "wheel_selection_sha256": "63b7557ba221046ddde3c39df1753a43961224512d2aadcbec2b530ce0053b3a",
+  "dockerfile_sha256": "f36a5d3056d60a3587bd07683075f496ab096c13af105b9c722069b7fbe456c7",
+  "packages": [
+    {
+      "requirement": "ujson>=5.8.0",
+      "filename": "ujson-6.1.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+      "version": "6.1.0",
+      "url": "https://files.pythonhosted.org/packages/58/32/ce259f0edc360b3b2d08921332b619847f16d45c18257843b134a4fd23b0/ujson-6.1.0-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "b6f56bd474e726627b25d245c6c7c77f74c0cc36de6c08a49036b641936735e9",
+      "bytes": 56412
+    },
+    {
+      "requirement": "orjson>=3.9.3",
+      "filename": "orjson-3.13.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "version": "3.13.0",
+      "url": "https://files.pythonhosted.org/packages/45/46/f8d83189ff5b7b2ff225a58c5908618cc4e86afe09e65d17a30ac68c9da4/orjson-3.13.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "cbed5f4c4b88d94bcc36115f4c3bb3aa25da1563a5c3328aa3acebce2b083040",
+      "bytes": 130370
+    }
+  ],
+  "old_qualification_sha256": "17a0d45e1fcb118add886a0e214376dd57e4e1afccb7b424f7b1c19c175aa542",
+  "prior_controls": [
+    {
+      "instance_id": "fastapi_14962",
+      "receipt": "runs/train-typing-repair-v1/fastapi_14962/result.json",
+      "receipt_sha256": "601e31834591adbe35da70afe61467709e65a4a0710d1e9fd86eed4c082e4ef9",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14962",
+      "status": "blocked: reference control did not pass"
+    },
+    {
+      "instance_id": "fastapi_14964",
+      "receipt": "runs/train-typing-repair-v1/fastapi_14964/result.json",
+      "receipt_sha256": "e075e0c39593a9f498737ca01f0cb1e896c6a920820e123bd196e52139cfe424",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14964",
+      "status": "blocked: reference control did not pass"
+    }
+  ],
+  "policy": "add only declared JSON test dependencies in a separate image; rerun empty/reference controls once; preserve original grades",
+  "source_tests_reference_patches": "unchanged",
+  "gpu_used": false,
+  "live_collection_policy": "existing wheel profiles/images/task order and collection sources stay unchanged; qualified additions require a new future plan"
+}
