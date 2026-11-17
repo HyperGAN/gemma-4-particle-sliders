@@ -1,0 +1,65 @@
+{
+  "schema": "gemma4-positional-040-backward-error-v1",
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "device": "cuda:1",
+  "memory_fraction": 0.4,
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "training_updates": 0,
+  "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+  "scope": "both full ON forwards equal OFF, backward incomplete; zero optimizer updates and no targets",
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "status": "error",
+  "phase": "backward",
+  "on_forwards_completed": 2,
+  "ct_sources": {
+    "version": "0.15.0.1",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "verified_python_files": 102
+  },
+  "execution_sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "99c85c23ef10b2a830530869cd0785c04ace643177900b7a4e92aba6b73d80ba",
+    "configs/31b-ct-shared-positional-pilot.json": "52418f9082db0935280c736841b89ec11ec2f3c1cd497a993beef582b4fcc40e",
+    "src/gemma_particle/model.py": "4fdb0b890a1e2fa5372b52ff8c261c49d9726208c993396bd762bd6cec04f41d",
+    "src/gemma_particle/runtime.py": "a4e0cadeb6ff50cd0010c2b666432e1ceb7d700b798a95d94bc2f9b5e31b6d84",
+    "src/gemma_particle/checkpoint_inputs.py": "3aadb7fda54c3111b9242cb5e23ea6ddd2d7ee6088099e14dc513575f6a5d94f",
+    "src/gemma_particle/activation_storage.py": "7c9dafd4ce10c1899102afee0bd22e43bce53d199fdfcb736f7458039a78fa5f",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98"
+  },
+  "load_seconds": 4.968390103895217,
+  "off_seconds": 111.59845805703662,
+  "activation_storage_forwards": [
+    {
+      "saves": 175,
+      "copies": 66,
+      "deduplicated_saves": 109,
+      "copied_bytes": 19936007168
+    },
+    {
+      "saves": 175,
+      "copies": 66,
+      "deduplicated_saves": 109,
+      "copied_bytes": 19936007168
+    }
+  ],
+  "initial_on_equals_off": true,
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 896.00 MiB. GPU 1 has a total capacity of 47.40 GiB of which 28.55 GiB is free. Including non-PyTorch memory, this process has 18.83 GiB memory in use. 18.96 GiB allowed; Of the allocated memory 18.37 GiB is allocated by PyTorch, and 147.48 MiB is reserved by PyTorch but unallocated.",
+  "peak_host_rss_bytes": 65346539520,
+  "peak_allocated_bytes": 20002432000,
+  "peak_reserved_bytes": 20189282304,
+  "allocator_backend": "native",
+  "as_of": "2026-11-17T07:14:54.747451+00:00",
+  "raw_result_sha256": "50bceeb66aa5d8458e35b78da70a511e05787e59a73e2596572d18b687c100e3",
+  "log_sha256": "469227d829190f9aa33eb3e6c7a845559953f42439d900688f6f8ba9d5d59456",
+  "next_delta": "same corrected profile and complete2x28672 inputs with explicit .50 shared cap"
+}

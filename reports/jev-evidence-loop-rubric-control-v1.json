@@ -1,0 +1,35 @@
+{
+  "schema": "gemma4-behavior-rubric-control-v1",
+  "status": "passed",
+  "created_at": "2026-11-17T07:37:52.503757+00:00",
+  "protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "model": "typesafe/jev-latest",
+  "rubric_question_sha256": "61f29eaed2f026d55c4e33f3edaf5479a19f4ab42da3a5cd9273f6ecd3b7b703",
+  "request_sha256": "ec05323384bb464f14177e2038a91d5890cc6abf1dd96822a0ea3ffeb7ae5da0",
+  "api_calls": 0,
+  "training_updates": 0,
+  "real_trajectories_graded": 0,
+  "scope": "synthetic fixed rubric calibration only; no target admission, learned quality or SOTA claim",
+  "normalized_scores": {
+    "no_attempt": 0.195,
+    "claim_only": 0.2975,
+    "observed_loop": 0.9925
+  },
+  "checks": {
+    "observed_meets_locked_threshold": true,
+    "no_attempt_is_low": true,
+    "observed_above_both_controls": true
+  },
+  "usage": {
+    "input_tokens": 1247,
+    "output_tokens": 48,
+    "estimated_cost": 0
+  },
+  "response_model": "~typesafe/jev-latest",
+  "response_sha256": "382ebb6a04454f9edda9209295e165d38b9c10d03085bb391bb5b48da399882a",
+  "seconds": 0.00018291990272700787,
+  "authenticated_api_calls": 1,
+  "authenticated_control_receipt_sha256": "c0db9cf5bd7a1cb8a217564e688770707f51fb79a4bdb0a3bae024a94f788eb3",
+  "metadata_note": "Final prospective cohort metadata fixes the budget profile label and specifies the article initial boundary. The actual API request/rubric is byte-identical; offline replay makes no new API call.",
+  "runtime_collection_and_curation": "not implemented; no real trajectory has been graded under this protocol"
+}

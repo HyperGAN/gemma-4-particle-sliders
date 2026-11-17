@@ -1,0 +1,44 @@
+{
+  "schema": "gemma4-lora-serving-cpu-preparation-v1",
+  "status": "prepared",
+  "cpu_checks": 96,
+  "targeted_serving_checks": 4,
+  "official_compiler": "passed",
+  "official_vllm_alias_parser": "actual installed parser passed with CUDA hidden",
+  "gpu_used": false,
+  "model_inference": false,
+  "fixtures": {
+    "schema": "gemma4-lora-transport-fixtures-check-v1",
+    "status": "passed",
+    "attention_matrices": 230,
+    "tensor_keys": 460,
+    "checks": {
+      "same_down_matrices": true,
+      "all_zero_up_matrices": true,
+      "all_probe_up_matrices_nonzero": true,
+      "matching_shapes": true
+    },
+    "manifest_sha256": "986f3baf91e82c28816dcbeedf1db826033ee55c3e365e6a9f1006001633f20e",
+    "gpu_used": false,
+    "training_updates": 0,
+    "scope": "synthetic valid-shape zero/nonzero data controls; no vLLM inference or learned quality"
+  },
+  "launch_plan_sha256": "6eef5f9bf6d58b207ff285612d8d3a8ae29179653334f83c9283e9fc82627885",
+  "preflight_sha256": "87c2e13f2da4d7986bfe3a184669ab7c283a6a7619a32e28908713f686cea91e",
+  "source_sha256": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/serve_vllm_lora.py": "133ec60c923ab40af6e48c25522290b48639c5df1ad4966bcf83583d9b697bf3",
+    "scripts/serve_vllm.py": "3e01f46718275708ef75110810344199556e16fe944959dc607ab685383ea1b4",
+    "configs/31b-ct-pilot.json": "916586bfd032ee1e21835f3867e3e4dfc1fe6ae4b37235fa4306e23036c0cf7c",
+    "src/gemma_particle/lora_serving.py": "841b145b49faea86d0449bdb5aa7a274869518d34d02ae625f826b53c919303a",
+    "src/gemma_particle/adapters.py": "d3776aaa7d9109c247fcedfa50e2a150b808ecad0aa1f23690ff1b003d1e28bc",
+    "src/gemma_particle/vllm_identity.py": "9c762df267351f4bf9a4f42ceb51f58ed9ba7753829b9303636e3cf88221659c",
+    "runs/lora-transport-fixtures-v1/fixtures.json": "986f3baf91e82c28816dcbeedf1db826033ee55c3e365e6a9f1006001633f20e"
+  },
+  "declared_aliases": [
+    "particle_zero",
+    "particle_probe"
+  ],
+  "window": 32768,
+  "adapter_effect": "unmeasured",
+  "scope": "CPU preparation and synthetic file/parser controls; actual vLLM loading and effects still required"
+}

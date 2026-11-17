@@ -8,11 +8,13 @@ The intended behavior is systematic repository repair: reproduce a failure, loca
 
 The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/jev-latest` and passes a real typed-API control with synthetic repair traces. It is available for behavior analysis; fresh repository tests still determine task success.
 
+A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its synthetic rubric control passes; runtime collection/curation is not yet implemented and no existing trajectory is relabeled.
+
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; actual 31B LoRA serving and effects remain unqualified.
 
-[Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Lossless CPU activation storage](docs/activation-storage.md) passes CPU gradient and continuation controls. Long-history block-checkpoint probes exceeded their shared GPU caps; a separate [CPU packed-weight/nested-checkpoint profile](docs/cpu-packed-weight-storage.md) passes CPU and tiny CUDA controls and is being tested at a 40% cap.
+[Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Checkpoint input binding](docs/checkpoint-input-binding.md), CPU packed weights and saved-input storage now pass a full two-sequence, 28,672-token gradient probe at a 50% shared GPU cap. All 4,141 gradient tensors are connected and finite, with about 21.7 GiB peak allocation. This probe performs zero optimizer updates and supplies no targets.
 
 | Component | Current evidence |
 |---|---|
