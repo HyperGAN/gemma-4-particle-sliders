@@ -1,0 +1,79 @@
+{
+  "schema": "gemma4-confirmation-environments-preparation-v1",
+  "as_of": "2026-11-17T14:33:05.940518+00:00",
+  "status": "cpu_preparation_passed_real_confirmation_still_locked",
+  "actual_confirmation_downloads": 0,
+  "actual_confirmation_reference_controls": 0,
+  "actual_model_inference": false,
+  "new_gpu_model_work": false,
+  "source_base_commit": "f44bb601d2e641cd4183ec88e3a8265f8ae15c7a",
+  "sources_sha256": {
+    "src/gemma_particle/confirmation.py": "c5676d6a85c2902a3f6e01caff931a7d44a82579aa35b2f5cefba50fc69e4a62",
+    "scripts/fetch_official_inputs.py": "94daf374e79c8ea094dd60f5bede1e6e614248a758214f9bf92fd303eb372036",
+    "tests/test_confirmation.py": "f1b66f3fc57fb58d28d6734dffc8d61ee4b0f4dbfc9b2ad187f449e866bfa4f8",
+    "src/gemma_particle/confirmation_environments.py": "f60bcdd2b96a3c49d9e7ddd42479fef7e2e76d524d31615daf874aa5e8671a95",
+    "scripts/verify_confirmation_environments.py": "5a6543742e63a430d1d9b0c3424f2e5f69dbd0f359ee9f67b0131a20ef58a8ea",
+    "tests/test_confirmation_environments.py": "6dded1cc3876b63c4260b1af235714f5b476480e11e0fe62666273d6ea28e007"
+  },
+  "frozen_verifier_executor_commit": "f44bb601d2e641cd4183ec88e3a8265f8ae15c7a",
+  "checks": {
+    "focused_passed": 45,
+    "focused_log_sha256": "76cc1676ea5e107f29c47a97c61f2ddbb8b68562ecdfcf079e13714ef589ec39",
+    "full_public_source_passed": 212,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "6d808f21b4ace7f2b3723339592668763a017cbc87152abde5a14dd0c2ef088b",
+    "public_python_files_compared": 136,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "fixture_scope": [
+      "49 synthetic snapshot/control records; failures retained in full ordered denominator",
+      "changed inputs,wheels,sources,logs,reference binding,counts and download provenance rejected",
+      "2 actual CLI boundaries reject incomplete access before asset/reference metadata",
+      "fake Kaggle service checks source first,budget before downloads,access-linked receipts and verified-file reuse; no real network"
+    ]
+  },
+  "actual_plan_only": {
+    "plan_sha256": "f2202810901e0526c778f252288e13137ea096e5f7ed86fc4a22dc3f3cb448cd",
+    "log_sha256": "234d34e72fad2340faadc6462e3aa69c74377eea4eab0747a019e84e5cff96ed",
+    "metadata_scope": "actual frozen source,original raw-source hash,immutable image,software/wheels and base setup; no confirmation task parsed"
+  },
+  "actual_missing_asset_observation": {
+    "receipt_sha256": "e48ef7beb8e1f6a1b3ccfb228e0e4c05876c65ac7df8f4b72da10c211dc79ae1",
+    "counts": [
+      {
+        "folder": "snapshots",
+        "files": 80,
+        "rich_named_assets": 0,
+        "httpx_named_assets": 0
+      },
+      {
+        "folder": "graphs",
+        "files": 79,
+        "rich_named_assets": 0,
+        "httpx_named_assets": 0
+      },
+      {
+        "folder": "embeddings",
+        "files": 79,
+        "rich_named_assets": 0,
+        "httpx_named_assets": 0
+      }
+    ],
+    "scope": "path/count metadata only; no task/reference contents or scores"
+  },
+  "execution_policy": {
+    "workers": 2,
+    "cuda_hidden": true,
+    "one_explicit_image_and_wheel_profile": true,
+    "required_post_access_official_download_provenance": true,
+    "failed_controls_retained": true,
+    "model_accuracy_claim": false
+  },
+  "remaining": "actual DEV choice/access;gated official asset fetch;all49 CPU controls;complete paired model driver/audit;official learned score above fresh SOTA",
+  "scope": "CPU gated-fetch/calibration preparation only; fake-service transfers and receipt fixtures cannot establish real inputs,reference qualification or model quality"
+}

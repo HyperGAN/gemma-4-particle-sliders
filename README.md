@@ -26,6 +26,8 @@ The [confirmation access gate](docs/confirmation-access.md) independently reaudi
 
 The [protected confirmation entry points](docs/confirmation-execution.md) require that access receipt, exact original execution profiles and exclusive pair/task claims. CPU guards cover all ninety-eight synthetic reservations and reject incomplete access before task/reference reads; actual confirmation remains unexecuted.
 
+The [confirmation asset and environment runner](docs/confirmation-environments.md) fetches the missing snapshot/graph/embedding files only after release, then binds all forty-nine CPU reference controls to explicit immutable inputs. Failures stay in the panel; no actual confirmation download or calibration has run.
+
 The inactive [two-GPU resource proposal and numerical checker](docs/hardware-parity.md) preserve the full study and require actual same-adapter parity before a versioned resource change. CPU preparation leaves the current GPU 0 DEV contract active.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.

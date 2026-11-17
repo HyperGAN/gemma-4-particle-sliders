@@ -23,11 +23,13 @@ def access_fixture(root):
     plan['conditions'] = controls + native_plan['conditions']
     manifest = root / 'synthetic-holdout.jsonl'
     rows = [{**{k: 'CPU synthetic fixture' for k in VISIBLE_FIELDS}, 'instance_id': f'fixture-holdout-{i}',
-        'repo': 'Textualize/rich' if i < 48 else 'encode/httpx', 'split': 'holdout'} for i in range(49)]
+        'repo': 'Textualize/rich' if i < 48 else 'encode/httpx', 'split': 'holdout',
+        'base_commit': 'b' * 40, 'created_at': '2026-01-01', 'hints_text': ''} for i in range(49)]
     write_jsonl(manifest, rows)
     plan['confirmation'] = {'count': 49, 'manifest_sha256': sha256_file(manifest)}
     qualification = Path(plan['secondary']['qualification']); q = json.loads(qualification.read_text())
-    q['source_sha256'] = 'f' * 64; put(qualification, q)
+    raw_fixture=root/'CPU-official-reference-fixture.jsonl';raw_fixture.write_text('CPU hash fixture only; not real task references\n')
+    q['source_sha256'] = sha256_file(raw_fixture); put(qualification, q)
     plan['secondary']['qualification_sha256'] = sha256_file(qualification)
     plan_path = root / 'selection-plan.json'; put(plan_path, plan); plan_sha = sha256_file(plan_path)
     matrix_path = matrix / 'candidate-packets.json'; m = json.loads(matrix_path.read_text())

@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import json
 import os
 from pathlib import Path
+import re
 
 from .conversion_handoff import read
 from .data import VISIBLE_FIELDS, read_jsonl, digest
@@ -116,6 +117,25 @@ class LockedConfirmation:
     plan: dict
     rows: list
     identity: dict
+
+
+def confirmation_asset_names(scope, task_ids=None):
+    if not isinstance(scope, LockedConfirmation):
+        raise ValueError('validated locked confirmation access required for asset planning')
+    selected = set(task_ids) if task_ids is not None else {r['instance_id'] for r in scope.rows}
+    if not selected or not selected <= {r['instance_id'] for r in scope.rows}:
+        raise ValueError('asset task IDs must belong to the complete locked confirmation panel')
+    names = set()
+    for row in scope.rows:
+        if row['instance_id'] not in selected: continue
+        if (row['repo'] not in {'Textualize/rich', 'encode/httpx'}
+                or re.fullmatch(r'[a-zA-Z0-9_.-]+', row['instance_id']) is None
+                or row['instance_id'] in {'.', '..'} or re.fullmatch(r'[0-9a-f]{40}', row['base_commit']) is None):
+            raise ValueError('original safe confirmation repository/task/commit names required')
+        repo = row['repo'].rsplit('/', 1)[-1]
+        names.update([f"snapshots/{row['instance_id']}.tgz", f"graphs/{repo}_{row['base_commit']}.json",
+            f"embeddings/{repo}_{row['base_commit']}.npz"])
+    return sorted(names)
 
 
 def load_confirmation_access(path):
