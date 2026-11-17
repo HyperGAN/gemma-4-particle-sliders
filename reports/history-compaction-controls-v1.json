@@ -1,0 +1,74 @@
+{
+  "schema": "gemma4-history-compaction-controls-v1",
+  "as_of": "2026-11-17T05:50:56.536280+00:00",
+  "status": "passed",
+  "gpu_used": false,
+  "pretrained_updates": 0,
+  "profile": "official-compaction-v1",
+  "authority": {
+    "starter_url": "https://www.kaggle.com/code/ryanholbrook/getting-started-gemma-4-developer-agent",
+    "starter_notebook_sha256": "8e7d84a326acae509fb596163ba085831961b588b86d51af31e037c5319b917c",
+    "authenticated_harness_readme_sha256": "445000219b803942c469391ec8b69791a31e9cec2f934738c767e34b5ca0aa1f"
+  },
+  "discrepancy": "Earlier local EvalConfig left events_compaction_config and context_cache_config unset; installed runner passes them only when provided. Prior results retain uncompacted scope.",
+  "settings": {
+    "compaction_interval": 15,
+    "overlap_size": 2,
+    "token_threshold": 14336,
+    "event_retention_size": 5,
+    "cache_min_tokens": 2048,
+    "cache_ttl_seconds": 1800,
+    "cache_intervals": 10
+  },
+  "real_adk_cpu_loop": {
+    "schema": "gemma4-history-cpu-fixture-v1",
+    "status": "passed",
+    "pretrained_inference": false,
+    "profile": "official-compaction-v1",
+    "assistant_decisions": 8,
+    "summary_calls": 11,
+    "all_calls_journaled": 19,
+    "summary_seen_in_subsequent_assistant_history": true,
+    "purpose_scope_restored": true,
+    "generation": "scripted transport with declared synthetic usage metadata",
+    "scope": "actual ADK Runner and public token-threshold compaction APIs; forbidden as training targets or task-quality evidence"
+  },
+  "curation_controls": {
+    "all_summary_calls_journaled": true,
+    "summary_calls_excluded_from_targets": true,
+    "ordinary_tool_decision_cannot_be_hidden_by_tag": true,
+    "mixed_history_profiles_rejected": true,
+    "observed_compacted_history_matched_between_teacher_and_student": true
+  },
+  "cpu_test_count": 67,
+  "official_compiler": "passed; no inference",
+  "preflight": {
+    "path": "reports/history-compaction-preflight-v1.json",
+    "sha256": "dd11c4fe7e1919e75aa2aa00a2c625537e5f206baae9a02a3856de1ad15d3565"
+  },
+  "sources": {
+    "src/gemma_particle/history.py": "03eb9a4782bfb7a730695d44c4569d2b7ca34b7c4d98f7d459e3da696b33184b",
+    "src/gemma_particle/adk_capture.py": "710ed41c369600dbc11464054e9512163ee8a664fd16c48273ad0ace7882a03b",
+    "src/gemma_particle/capture.py": "d6155fd1ee225af88329c01fac990597b0392d864556b96d0fc9be38ed706882",
+    "src/gemma_particle/curation.py": "d24479d650cced00a8b844c3967c8920f2e1e90bd719087a9bf4d31bbe4e2397",
+    "scripts/run_trajectories.py": "da70b70ec6d224b74950651462999d31fa0d01b0c7a9465e12195d9792c29e44",
+    "scripts/verify_trajectories.py": "d8d22ab0c9facc63ce3fab651a78606812ebec50f6124c484fb3042cff0660ff",
+    "scripts/collect_arms.py": "a6854cc90513f054b1af49605684150a4c2704aaae0c8867c5bec5ec9ef4a53c",
+    "scripts/qualify_history.py": "fa259c5d7b5837a54b3475852359f7e9a888adb279a3c3e483262185da97dfbe",
+    "scripts/queue_collector.py": "73bb92f255a0b7f374804ad04adf2c7f2547cefb638d7477ecaaa0627bc53d86",
+    "tests/test_history.py": "27941145ef518dae184f52db022c67c892be223e78e3dbd64722072b1a54675b"
+  },
+  "old_scheduler": {
+    "state": "scheduler_suspended_current_child_continues",
+    "at": "2026-11-17T05:41:10.836708+00:00",
+    "scheduler_pid": 1659759,
+    "current_collector_pid": 1813190,
+    "current_task": "fastapi_13786",
+    "reason": "verified official history-compaction configuration is absent from this frozen cohort; withdraw future unscheduled tasks prospectively",
+    "signal": "SIGSTOP to owned scheduler only",
+    "current_child_policy": "complete all declared arms and fresh verification unchanged",
+    "next_action": "after child completion terminate suspended scheduler; retain all outcomes and qualify a new source-bound compaction cohort"
+  },
+  "real_compacted_model_result": "unmeasured",
+  "scope": "CPU history/capture qualification only; no pretrained training, actual compacted model quality or full official-scoring parity claim"
+}

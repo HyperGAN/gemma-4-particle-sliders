@@ -19,7 +19,7 @@ class RequestJournal:
         self.directory.mkdir(parents=True,exist_ok=False,mode=0o700)
         self.instance_id, self.arm, self.next_index = instance_id, arm, 0
 
-    def begin(self, *, model, messages, tools, options):
+    def begin(self, *, model, messages, tools, options, purpose=None):
         if options.get('stream'):
             raise ValueError('this capture cohort requires non-streaming model calls')
         # Deliberately exclude api_key, headers, api_base and provider internals.
@@ -36,6 +36,9 @@ class RequestJournal:
         reject_credentials(request['generation'])
         packet = {'schema':'gemma4-model-request-v1', 'instance_id':self.instance_id,
                   'arm':self.arm, 'decision':self.next_index, 'request':request, 'request_sha256':digest(request)}
+        if purpose is not None:
+            if purpose!='history_summary':raise ValueError('unknown capture purpose')
+            packet['purpose']=purpose
         path = self.directory/f'{self.next_index:04d}-request.json'
         path.write_text(json.dumps(packet,ensure_ascii=False,indent=2)+'\n')
         path.chmod(0o600)

@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-official-off-baseline-submission-v1",
+  "as_of": "2026-11-17T05:47:20.010178+00:00",
+  "kind": "preregistered frozen OFF control; no learned adapter",
+  "competition": "gemma-4-developer-agent",
+  "submission_id": 58457991,
+  "notebook": "https://www.kaggle.com/code/mikkel255/gemma-4-particle-sliders-off-control-v1",
+  "notebook_version": 1,
+  "notebook_status": "COMPLETE",
+  "notebook_gpu_enabled": false,
+  "notebook_model_inference": false,
+  "archive_sha256": "05a2bee7bc26199e3b260c20548ecb6a545951d59bce85e77627ada46daa0a02",
+  "downloaded_output_matches_local_compiled_archive": true,
+  "model": "gemma-4-31b-it-qat-w4a16-ct",
+  "budget_profile": "official-default-60m-v1",
+  "official_compiler": "passed; no inference",
+  "creation_response": {
+    "ref": "58457991",
+    "message": "",
+    "at": "2026-11-17T05:44:36.067088+00:00"
+  },
+  "observed_status": {
+    "ref": "58457991",
+    "status": "SubmissionStatus.PENDING",
+    "public_score": "",
+    "private_score": "",
+    "error_description": "",
+    "file_name": "submission.zip",
+    "date": "2026-11-17 05:44:34.570000",
+    "observed_at": "2026-11-17T05:45:06.413323+00:00"
+  },
+  "public_score": null,
+  "leading_public_score_observed": 0.29,
+  "pretrained_optimizer_updates": 0,
+  "scope": "official evaluation queued; not a learned Particle Sliders result, accepted score, or SOTA claim"
+}

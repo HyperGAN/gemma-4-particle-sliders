@@ -1,10 +1,10 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T05:36:28.066526+00:00",
+  "as_of": "2026-11-17T05:50:56.536280+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
-    "cpu_preflight": "65 CPU checks pass under source-pinned ParticleGAN 0.10.1; reports/cpu-preflight.json",
+    "cpu_preflight": "67 CPU checks pass under ParticleGAN 0.10.1; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
     "real_task_verifier_controls": "initial TRAIN45/67; declared missing-dependency repair13/19. Per-task view qualifies58/67, retaining9failures and all original grades; reports/train-environment-qualification-v2.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
@@ -19,7 +19,8 @@
     "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
     "latest_upstream_review": "0.10.1 source cohort qualified in isolated environment: 57 CPU checks, bit-identical initial/one-update tensors and metrics for both explicit recipes; old full checkpoints rejected transactionally. Historical 0.10.0 evidence unchanged; reports/pg0101-source-qualification-v1.json",
     "long_context_activation_storage": "opt-in lossless CPU storage passes CPU gradient and exact recipe-continuation controls; full-length GPU memory and actual recipe-step cost unmeasured; reports/activation-storage-cpu-v1.json",
-    "conversion_probe_preparation": "TRAIN13207/13537 initial issue prompts fixed before pretrained updates; exact2884/3199 tokens captured with no inference; full-history conversion sampling and disjointness CPU checks pass. Actual31B conversion/LoRA effect unmeasured; reports/conversion-probe-preparation-v1.json"
+    "conversion_probe_preparation": "TRAIN13207/13537 initial issue prompts fixed before pretrained updates; exact2884/3199 tokens captured with no inference; full-history conversion sampling and disjointness CPU checks pass. Actual31B conversion/LoRA effect unmeasured; reports/conversion-probe-preparation-v1.json",
+    "history_management": "official starter compaction/caching now qualified prospectively through actual ADK CPU loop: 8 decisions + 11 summaries fully captured, summaries excluded from targets; 67 CPU checks pass. Historical local attempts remain uncompacted. New model cohort pending; reports/history-compaction-controls-v1.json"
   },
   "task_resolution": [
     {
@@ -49,8 +50,8 @@
     }
   ],
   "kaggle": {
-    "entry": "submission acceptance unverified",
-    "submission_id": null,
+    "entry": "code submission created and pending; evaluated acceptance/score unmeasured",
+    "submission_id": 58457991,
     "score": null,
     "current_sota": 0.29,
     "sota_beaten": false,
@@ -58,6 +59,9 @@
     "sota_kind": "leading public leaderboard score",
     "source": "https://www.kaggle.com/competitions/gemma-4-developer-agent/leaderboard",
     "evidence": "reports/official-access.json",
-    "current_sota_freshness": "last authenticated observed public leaderboard snapshot; reconfirm contemporaneously before claiming superiority"
+    "current_sota_freshness": "last authenticated observed public leaderboard snapshot; reconfirm contemporaneously before claiming superiority",
+    "submission_kind": "frozen OFF baseline, no learned adapter",
+    "submission_status": "PENDING",
+    "submission_receipt": "reports/official-off-baseline-submission-v1.json"
   }
 }

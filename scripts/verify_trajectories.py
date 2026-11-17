@@ -23,6 +23,7 @@ from gemma_particle.data import VISIBLE_FIELDS,REPO_SPLITS,digest,write_jsonl
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
 from gemma_particle.dev import load_external_dev,qualified_dev_identity,WORKSPACE_PACKAGES
 from gemma_particle.sandbox import isolate_sandbox_cache,SourceBoundManager
+from gemma_particle.history import NO_COMPACTION,history_contract,is_assistant_decision
 
 
 async def main():
@@ -40,6 +41,9 @@ async def main():
     if args.out.exists():raise FileExistsError('verification cohort is immutable')
     manifest=json.loads((args.cohort/'cohort.json').read_text())
     contract=manifest['contract']
+    history_profile=manifest.get('history_profile',NO_COMPACTION)
+    if history_profile!=NO_COMPACTION and contract.get('history')!=history_contract(history_profile):
+        raise ValueError('declared history management differs from evaluation contract')
     capture_protocol=manifest.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)
     if (capture_protocol not in (LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL)
             or contract.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)!=capture_protocol):
@@ -69,6 +73,8 @@ async def main():
     os.environ['KAGGLE_SANDBOX_DIR']=str((args.inputs/'sandbox').resolve())
     outcomes=[]
     for captured in manifest['runs']:
+        if captured.get('history_profile',NO_COMPACTION)!=history_profile:
+            raise ValueError('captured history profile differs')
         if (captured['evaluation_contract_sha256']!=manifest['evaluation_contract_sha256']
                 or captured['generator_kind']!=manifest['generator_kind'] or captured['arm']!=manifest['arm']
                 or captured['model_identity']!=manifest['server_identity'].get('model_identity')):
@@ -96,6 +102,7 @@ async def main():
         if sha256_file(snapshot)!=captured['snapshot_sha256'] or sha256_file(folder/'agent.patch')!=captured['patch_sha256']:
             raise ValueError('snapshot or agent patch changed')
         requests=load_requests(folder/'requests') if captured['capture_complete'] else []
+        for packet in requests:is_assistant_decision(packet,history_profile)
         if digest(requests)!=captured['requests_sha256']:
             raise ValueError('request capture changed')
         if any(r['instance_id']!=task_id or r['arm']!=captured['arm'] for r in requests):
@@ -130,6 +137,7 @@ async def main():
             'evaluation_contract_sha256':manifest['evaluation_contract_sha256'],
             'tasks_sha256':sha256_file(args.tasks),'test_output_sha256':sha256_file(destination/'test-output.txt')}
         receipt['verification_script_sha256']=sha256_file(Path(__file__))
+        if history_profile!=NO_COMPACTION:receipt['history_profile']=history_profile
         if capture_protocol==CONTEXT_CAPTURE_PROTOCOL:
             receipt.update(capture_protocol=capture_protocol,context_budget_proof_sha256=digest(context_proof))
             if context_proof is not None:

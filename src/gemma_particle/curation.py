@@ -2,6 +2,7 @@
 from copy import deepcopy
 from .data import digest
 from .capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
+from .history import NO_COMPACTION,OFFICIAL_COMPACTION,is_assistant_decision
 
 RUBRIC = "Resolve the repository issue with a focused patch, demonstrated by the issue validation tests, while using the available tools within budget."
 TARGET_INSTRUCTIONS = {
@@ -55,6 +56,11 @@ def select_contexts(tasks, outcomes):
                     or packet['decision']!=decision or packet['request_sha256']!=digest(packet['request'])):
                 raise ValueError('captured request task, arm, order or bytes changed')
         receipt = row["verification"]
+        history_profile=row.get('history_profile',NO_COMPACTION)
+        if history_profile not in (NO_COMPACTION,OFFICIAL_COMPACTION):raise ValueError('unknown history profile')
+        if receipt.get('history_profile',NO_COMPACTION)!=history_profile:
+            raise ValueError('verified history profile differs')
+        for packet in row['requests']:is_assistant_decision(packet,history_profile)
         capture_protocol=row.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)
         if capture_protocol==CONTEXT_CAPTURE_PROTOCOL:
             proof=row.get('context_budget_proof')
@@ -88,6 +94,8 @@ def select_contexts(tasks, outcomes):
         if len(protocols)!=1:raise ValueError('curation arms have unmatched instruction protocols')
         if len({r.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL) for r in arms.values()})!=1:
             raise ValueError('curation arms have unmatched capture protocols')
+        if len({r.get('history_profile',NO_COMPACTION) for r in arms.values()})!=1:
+            raise ValueError('curation arms have unmatched history profiles')
         protocol=next(iter(protocols));instructions=instruction_set(protocol)
         if set(arms) != {'off',*instructions}:
             raise ValueError('all four declared curation arms must finish before selection')
@@ -116,6 +124,7 @@ def select_contexts(tasks, outcomes):
         off_request=baseline['first_request']
         insertion='\n\n'+instructions[winner['arm']]
         for packet in winner["requests"]:
+            if not is_assistant_decision(packet,winner.get('history_profile',NO_COMPACTION)):continue
             request=packet['request']
             if any(request[k]!=off_request[k] for k in ('model','tools','generation')):
                 raise ValueError('teacher tools or generation differ from the OFF control')
@@ -140,4 +149,5 @@ def select_contexts(tasks, outcomes):
             if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
             if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
             if 'capture_protocol' in winner:selected[-1]['capture_protocol']=winner['capture_protocol']
+            if 'history_profile' in winner:selected[-1]['history_profile']=winner['history_profile']
     return selected

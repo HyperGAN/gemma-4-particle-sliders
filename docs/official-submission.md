@@ -1,0 +1,9 @@
+# Official OFF control
+
+The first official submission is a frozen 31B prompt-only OFF control. It uses the current 60-minute/100-tool/500-turn/300-second-command artifact. It contains no learned adapter and does not establish Particle Sliders quality.
+
+`scripts/prepare_kaggle_notebook.py` embeds the small validated ZIP into a private CPU-only, offline Kaggle notebook. The notebook performs no inference; it emits the exact archive for competition evaluation. Its local execution and downloaded Kaggle output both match the compiled archive byte for byte. The notebook completed as version 1, then `competition_submit_code` created submission **58457991**. Its first authenticated status is `PENDING`, with no score ([receipt](../reports/official-off-baseline-submission-v1.json)). Poll this exact submission handle; do not create another submission because an observation takes time.
+
+The notebook is [Gemma 4 Particle Sliders OFF Control V1](https://www.kaggle.com/code/mikkel255/gemma-4-particle-sliders-off-control-v1). Official competition evaluation supplies the model-serving/scoring environment separately. The local shared A6000 runs remain separate evidence. The archive SHA256 is `05a2bee7bc26199e3b260c20548ecb6a545951d59bce85e77627ada46daa0a02`.
+
+Future learned submissions require measured conversion, actual LoRA transport, DEV selection and untouched holdout confirmation. An official OFF score is a control, not completion of the learned-behavior objective.

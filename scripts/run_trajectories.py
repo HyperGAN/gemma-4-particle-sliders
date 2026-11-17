@@ -29,6 +29,7 @@ from gemma_particle.data import read_jsonl,digest
 from gemma_particle.sandbox import isolate_sandbox_cache
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
 from gemma_particle.dev import load_external_dev,validate_agent_tasks,qualified_dev_identity
+from gemma_particle.history import NO_COMPACTION,OFFICIAL_COMPACTION,HISTORY_PROFILES,history_contract,eval_history_options
 from build_submission import build,MODELS
 
 
@@ -40,6 +41,7 @@ async def main():
     p.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
     p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
     p.add_argument('--capture-protocol',choices=CAPTURE_PROTOCOLS,default=CONTEXT_CAPTURE_PROTOCOL)
+    p.add_argument('--history-profile',choices=HISTORY_PROFILES,default=OFFICIAL_COMPACTION)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
@@ -88,6 +90,7 @@ async def main():
     if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:manifest['instruction_protocol']=args.instruction_protocol
     if args.budget_profile!=PILOT_BUDGET:manifest['budget_profile']=args.budget_profile
     if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['capture_protocol']=args.capture_protocol
+    if args.history_profile!=NO_COMPACTION:manifest['history_profile']=args.history_profile
     manager=ContainerManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000))
     manifest['image_id']=manager.client.images.get(args.image).id
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
@@ -112,13 +115,15 @@ async def main():
             delegate=ProtocolFixtureClient()
         client=RecordingClient(journal,delegate=delegate)
         models=ModelRegistry()
-        models.register(args.model,LiteLlm(model='openai/'+args.model,api_base=args.endpoint,api_key='local',
+        llm=LiteLlm(model='openai/'+args.model,api_base=args.endpoint,api_key='local',
                                          extra_headers={'X-Gemma-Identity':digest(server_identity)} if not args.cpu_protocol_fixture else {},
-                                         num_retries=5,llm_client=client))
+                                         num_retries=5,llm_client=client)
+        models.register(args.model,llm)
         config=EvalConfig(tasks_path=args.tasks,snapshots_dir=args.inputs/'snapshots',results_dir=folder,
             submission_dir=args.out/'artifact/agent',models=models,wheels_dir=args.wheels,
             graph_dir=str(args.inputs/'graphs'),embeddings_dir=str(args.inputs/'embeddings'),
             image=args.image,**budget_values(args.budget_profile),
+            **eval_history_options(args.history_profile,llm),
             display_mode='quiet')
         manifest.setdefault('contract',{'budget':asdict(config.budget),'harness':asdict(config.harness),
             'environment':manifest['environment'],'image_id':manifest['image_id'],
@@ -129,6 +134,8 @@ async def main():
                 instruction_set_sha256=digest(instruction_set(args.instruction_protocol)))
         if args.budget_profile!=PILOT_BUDGET:manifest['contract']['budget_profile']=args.budget_profile
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['contract']['capture_protocol']=args.capture_protocol
+        if args.history_profile!=NO_COMPACTION:
+            manifest['contract']['history']=history_contract(args.history_profile)
         if external:manifest['contract']['external_dev']=manifest['external_dev']
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
@@ -155,6 +162,7 @@ async def main():
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=args.instruction_protocol
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:result['capture_protocol']=args.capture_protocol
+        if args.history_profile!=NO_COMPACTION:result['history_profile']=args.history_profile
         result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']
         result['capture_complete']=capture_error is None

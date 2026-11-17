@@ -37,3 +37,5 @@ After a complete four-arm cohort supplies verified successful TRAIN contexts, ca
 ```
 
 The transport checks identical pinned weights, context bytes, order, token digests, frozen generator identity and the separate native response identity. It transfers only inputs. Native HF computes both positive and neutral hidden states itself; no vLLM activations or numerical-equivalence claim becomes a target. Ordinary native contexts retain their exact-identity requirement. Transport controls do not establish learned quality, native-generation parity, nonlinear-to-PEFT conversion or production adapter parity.
+
+[History compaction](history-compaction.md) is now an explicit prospective profile matching the official starter. Earlier local collection omitted it; those runs remain a separate no-compaction cohort. Exact input-token controls alone did not establish the complete inference setup.

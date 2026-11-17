@@ -2,7 +2,7 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
 
-**Work in progress. No SOTA improvement or official Kaggle score has been measured.** Current evidence includes CPU checks, the official compiler, real-task scorer controls, pretrained tool calling, and verified full-budget TRAIN fixes. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
+**Work in progress. No SOTA improvement or official Kaggle score has been measured.** The [first official OFF control](docs/official-submission.md), submission **58457991**, is pending. Current evidence includes CPU checks, the official compiler, real-task scorer controls, pretrained tool calling, and verified full-budget TRAIN fixes. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
@@ -22,7 +22,8 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
 | Official vLLM collection | [Pinned 31B serving](docs/vllm-collection.md) passes exact multiline tool and input-format controls; first full-budget TRAIN baseline patch passes fresh tests |
-| Competition | [Authenticated downloads and leaderboard verified](reports/official-access.json) on 2026-11-17; leading public score 0.29; no scored submission yet |
+| History management | [Official compaction settings](docs/history-compaction.md) qualified through an actual ADK CPU loop; old runs retain their separate no-compaction scope |
+| Competition | [First OFF code submission](reports/official-off-baseline-submission-v1.json) created and pending on 2026-11-17; leading public score reconfirmed at 0.29; no score yet |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
 

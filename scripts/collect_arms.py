@@ -17,6 +17,7 @@ from gemma_particle.curation import select_contexts,instruction_set,DEFAULT_INST
 from gemma_particle.budgets import PILOT_BUDGET,budget_values
 from gemma_particle.capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 from gemma_particle.data import read_jsonl,write_jsonl
+from gemma_particle.history import NO_COMPACTION,HISTORY_PROFILES,history_contract
 
 
 def teacher_skip_reason(policy,off):
@@ -43,6 +44,10 @@ def main():
     args=p.parse_args()
     plan=json.loads((args.root/'plan.json').read_text())
     protocol=plan.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
+    history_profile=plan.get('history_profile',NO_COMPACTION)
+    if history_profile not in HISTORY_PROFILES:raise ValueError('unknown history profile')
+    if history_profile!=NO_COMPACTION and plan.get('history')!=history_contract(history_profile):
+        raise ValueError('declared history settings changed')
     if 'budget_profile' not in plan:
         raise ValueError('new collection plans must explicitly declare their operational budget')
     budget_profile=plan['budget_profile']
@@ -58,6 +63,8 @@ def main():
             sources.append('src/gemma_particle/budgets.py')
         if capture_protocol!=LEGACY_CAPTURE_PROTOCOL:
             sources.extend(['src/gemma_particle/capture.py','src/gemma_particle/context_budget.py','scripts/verify_trajectories.py'])
+        if history_profile!=NO_COMPACTION:
+            sources.extend(['src/gemma_particle/history.py','src/gemma_particle/adk_capture.py'])
         observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
         if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())
@@ -84,6 +91,7 @@ def main():
                 if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:command.extend(['--instruction-protocol',protocol])
                 command.extend(['--budget-profile',budget_profile])
                 command.extend(['--capture-protocol',capture_protocol])
+                command.extend(['--history-profile',history_profile])
                 for task_id in selected:command.extend(['--task-id',task_id])
                 execute(command,logs/f'{arm}-agent.log')
             manifest=json.loads((agent/'cohort.json').read_text())
@@ -94,6 +102,8 @@ def main():
                 raise ValueError('existing arm is incomplete or belongs to another cohort; reconcile it first')
             if manifest.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)!=capture_protocol:
                 raise ValueError('existing arm belongs to a different capture protocol')
+            if manifest.get('history_profile',NO_COMPACTION)!=history_profile:
+                raise ValueError('existing arm belongs to a different history profile')
             verified=args.root/(arm+'-verification')
             if not verified.exists():
                 command=['scripts/verify_trajectories.py','--cohort',str(agent),'--tasks',str(args.raw_tasks),
