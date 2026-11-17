@@ -1,0 +1,24 @@
+{
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "memory_fraction": 0.7,
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "training_updates": 0,
+  "initial_on_equals_off": true,
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 294.00 MiB. GPU 1 has a total capacity of 47.40 GiB of which 14.07 GiB is free. Including non-PyTorch memory, this process has 33.31 GiB memory in use. 33.18 GiB allowed; Of the allocated memory 32.93 GiB is allocated by PyTorch, and 70.52 MiB is reserved by PyTorch but unallocated.",
+  "peak_allocated_bytes": 35359539200,
+  "peak_reserved_bytes": 35433480192,
+  "peak_host_rss_bytes": 40448782336,
+  "schema": "gemma4-long-offload-expandable-error-v1",
+  "status": "resource_error",
+  "as_of": "2026-11-17T06:26:20.488860+00:00",
+  "raw_result_sha256": "d662d7e133f3e26cf434b3a60566ed58652b581e719dc7736df9b647bbd98ffd",
+  "log_sha256": "9c8b434026fcfebe67b50a6c598a9e7a56ea08f93be3467978228c05840ed2c0",
+  "gradient_qualification": "not achieved; backward failed in attention output adapter during checkpoint recomputation",
+  "next_delta": "same full two sequences and allocator, explicit .75 shared GPU cap; running",
+  "scope": "synthetic resource probe; zero optimizer updates, no targets"
+}

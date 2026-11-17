@@ -1,0 +1,54 @@
+{
+  "schema": "gemma4-decision-model-qualification-v1",
+  "model": "typesafe/jev-1.14",
+  "endpoint": "https://api.nano-gpt.com/api/v1/decisions",
+  "created_at": "2026-11-17T06:25:17.190280+00:00",
+  "status": "passed",
+  "training_updates": 0,
+  "scope": "synthetic typed transport/ordering control; no target admission or real-task quality claim",
+  "request_sha256": "95a7c439975f777bfd43eb14fe2392a1fcf3ed678b8c314efb6760df927afdf3",
+  "api_calls": 0,
+  "replay_source": "runs/nanogpt-jev114-api-control-v2/response.json",
+  "checks": {
+    "observed_above_unverified": true,
+    "observed_test_likely": true,
+    "unsupported_claim_identified": true
+  },
+  "response_sha256": "bdc7878bf166e837f31419fc92a1a10086b79b5331f2225c2cacb0759ac2f5c3",
+  "usage": {
+    "input_tokens": 730,
+    "output_tokens": 92,
+    "estimated_cost": 0
+  },
+  "cost": null,
+  "response_model": "typesafe/jev-1.14",
+  "seconds": 0.00018571107648313046,
+  "as_of": "2026-11-17T06:26:20.487229+00:00",
+  "authenticated_live_call": {
+    "receipt": "runs/nanogpt-jev114-api-control-v2/result.json",
+    "original_status": "error",
+    "reason": "client rejected independently rounded score/distribution; response retained",
+    "http_response_received": true,
+    "seconds": 0.8285092429723591,
+    "receipt_sha256": "17cc6c1a856e45f751edc13c71cedaab3fd727d7ce7ee993accdc192f9fda573"
+  },
+  "initial_attempt": {
+    "receipt": "runs/nanogpt-jev114-api-control-v1/result.json",
+    "status": "error",
+    "response_preserved": false,
+    "receipt_sha256": "073b5180cf46454f541a1d4ca945af3bbabcd900e036d2bcd684937eec70d7b3"
+  },
+  "api_calls_total": 2,
+  "offline_revalidation_calls": 0,
+  "cpu_tests": {
+    "command": "CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q tests/test_decisions.py",
+    "passed": 3
+  },
+  "sources": {
+    "src/gemma_particle/decisions.py": "4ad2f05a27758880a613283e0f655feb1b9ae67903a42ec6b8e4b9afd749fe87",
+    "scripts/qualify_decision_model.py": "6d93b9bef9ad57bba69f5fa5464b58656c217b35c3d3421d5b21ca63f34380fa",
+    "tests/test_decisions.py": "7e2f087817ee3a28272f2515853717ab47820be5911c7bb65fd71d8347dd25cc"
+  },
+  "target_admission": "unchanged: complete instructed fresh-test success and failed matched OFF",
+  "real_task_judgment_qualification": false
+}

@@ -6,6 +6,8 @@ An application of [paired-context behavior learning](https://huggingface.co/blog
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
+The optional [NanoGPT decision client](docs/decision-model.md) uses pinned Jev 1.14 and passes a real typed-API control with synthetic repair traces. It is available for behavior analysis; fresh repository tests still determine task success.
+
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
 
 [Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Lossless CPU activation storage](docs/activation-storage.md) passes CPU gradient and continuation controls; the first long-history GPU backward exceeded its shared memory cap, and a separate allocator profile is being tested.
