@@ -1,18 +1,19 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T03:32:53.257676+00:00",
+  "as_of": "2026-11-17T03:39:23.754002+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
-    "real_task_verifier_controls": "five task/environment controls passed; Requests full-test control remains blocked; reports/verifier-controls-v4.json",
+    "real_task_verifier_controls": "seven task/environment controls passed; original Requests full-test control remains blocked; reports/verifier-controls-v5.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
     "native_pretrained_serving": "E2B BF16 SDPA tool calls qualified on shared GPU1, cap0.35; reports/native-serving-calibration.json",
     "first_native_train_pilot": "four E2B TRAIN tasks complete: all four arms unresolved, no admissible contexts; reports/e2b-native-collection-v1.json",
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; first four-arm TRAIN cohort running; reports/vllm-serving-qualification-v1.json",
-    "supplementary_dev": "42 issue-only tasks/24 repositories fixed before inference; independent CPU negative/reference controls running; reports/supplementary-dev-protocol-v1.json"
+    "supplementary_dev": "42 issue-only tasks/24 repositories fixed before inference; independent CPU negative/reference controls running; reports/supplementary-dev-protocol-v1.json",
+    "31b_vllm_collection": "two TRAIN cohorts running on shared GPUs; first three arms of11194 time out unresolved; no targets or updates; reports/31b-vllm-collection-initial-v1.json"
   },
   "task_resolution": [
     {

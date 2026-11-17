@@ -1,0 +1,34 @@
+{
+  "schema": "gemma4-train-observations-v1",
+  "as_of": "2026-11-17T03:39:23.753845+00:00",
+  "scope": "TRAIN trace observations and a future hypothesis; no claimed improvement or admission change",
+  "observations": [
+    {
+      "run": "31b-vllm-11194-v1",
+      "arms": [
+        "off",
+        "reproduce",
+        "localize"
+      ],
+      "outcome": "all three verified unresolved after task timeout; fourth arm pending"
+    },
+    {
+      "source": "runs/31b-vllm-11355-v1/off/fastapi_11355/requests/0010-response.json",
+      "source_sha256": "b18c1c6e0fcad96d2b1ef138f1c02c48fdf21ff1b32ba859c096c63e49468377",
+      "observation": "A read_file filepath argument contains a backtick and attempted start_line/end_line syntax; the resulting tool error consumes budget. Valid JSON does not guarantee a valid tool argument.",
+      "function": {
+        "arguments": "{\"filepath\": \"fastapi/dependencies/utils.py`, start_line: 200, end_line: 230\"}",
+        "name": "read_file"
+      }
+    },
+    {
+      "run": "31b-vllm-11194-v1/localize",
+      "observation": "Repeated read_file calls returned the same beginning of a file; the model eventually switched to an explicit sed range after more than 200 seconds."
+    }
+  ],
+  "proposed_next_hypothesis": {
+    "instruction": "Use each tool schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. If a range read fails or repeats the file header, use run_command with sed to read the exact range. Avoid repeating unchanged calls and preserve time for an edit, a focused check and submit_patch.",
+    "implementation_requirement": "New explicitly versioned instruction cohort; preserve v1 byte behavior and all existing failures. Declare before running new outcomes; never add it to an in-flight arm.",
+    "status": "not implemented or evaluated"
+  }
+}

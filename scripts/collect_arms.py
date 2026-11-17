@@ -76,7 +76,7 @@ def main():
             process=Path(f'/proc/{args.stop_server_pid}/cmdline')
             command=process.read_bytes().split(b'\0') if process.exists() else []
             expected=str(args.server_identity.parent).encode()
-            if b'scripts/serve_native.py' in command and expected in command:
+            if any(script in command for script in (b'scripts/serve_native.py',b'scripts/serve_vllm.py')) and expected in command:
                 os.kill(args.stop_server_pid,signal.SIGINT)
 
 
