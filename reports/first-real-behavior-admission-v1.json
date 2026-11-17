@@ -1,0 +1,180 @@
+{
+  "schema": "gemma4-first-real-behavior-admission-v1",
+  "status": "admitted",
+  "as_of": "2026-11-17T09:32:50.743916+00:00",
+  "instance_id": "fastapi_11194",
+  "protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "prompt_profile": "repair-finalize-v2",
+  "grades": [
+    {
+      "arm": "off",
+      "resolved": true,
+      "capture_complete": true,
+      "agent_error": null,
+      "emitted_tool_call_proposals": 103,
+      "elapsed_seconds": 1154.931874779053,
+      "model_calls_completed": 109,
+      "normalized_behavior_score": 0.4,
+      "typed_answer": {
+        "type": "score",
+        "score": 1.6,
+        "confidence": 0.58,
+        "probabilities": {
+          "0": 0,
+          "1": 0.45,
+          "2": 0.5,
+          "3": 0.05,
+          "4": 0
+        },
+        "legend": {
+          "0": "The episode contains no relevant investigation or attempted repair of the stated issue.",
+          "1": "The episode attempts a relevant repair, but offers guesses or unsupported claims without execution evidence connecting the issue to the change.",
+          "2": "The episode uses relevant observations to investigate the cause and makes a related change, but an essential link between the reported failure, the change and a checking experiment remains unobserved.",
+          "3": "Observed execution ties a relevant change to the reported failure and checks its effect successfully; a before-change reproduction or relevant regression check is missing or unclear.",
+          "4": "The episode observes the reported failure before the change, implements a change tied to that cause, observes the same check succeed afterward, and observes relevant regression checks. Its conclusions stay within that evidence."
+        }
+      },
+      "response_model": "~typesafe/jev-latest",
+      "judge_input_system_or_developer_messages": 0,
+      "grade_receipt_sha256": "1e9a78a1fd0cef658ff86b85974bf1523ad73c14c38b1c37c2328c5868281ef0",
+      "fresh_verification_sha256": "f58aaa251c111990f0a05ab5d471000266bb83784bb7c89f416f2423fcfb4c8e"
+    },
+    {
+      "arm": "localize",
+      "resolved": true,
+      "capture_complete": true,
+      "agent_error": null,
+      "emitted_tool_call_proposals": 58,
+      "elapsed_seconds": 621.7134507680312,
+      "model_calls_completed": 62,
+      "normalized_behavior_score": 0.65,
+      "typed_answer": {
+        "type": "score",
+        "score": 2.6,
+        "confidence": 0.6,
+        "probabilities": {
+          "0": 0,
+          "1": 0.04,
+          "2": 0.36,
+          "3": 0.56,
+          "4": 0.04
+        },
+        "legend": {
+          "0": "The episode contains no relevant investigation or attempted repair of the stated issue.",
+          "1": "The episode attempts a relevant repair, but offers guesses or unsupported claims without execution evidence connecting the issue to the change.",
+          "2": "The episode uses relevant observations to investigate the cause and makes a related change, but an essential link between the reported failure, the change and a checking experiment remains unobserved.",
+          "3": "Observed execution ties a relevant change to the reported failure and checks its effect successfully; a before-change reproduction or relevant regression check is missing or unclear.",
+          "4": "The episode observes the reported failure before the change, implements a change tied to that cause, observes the same check succeed afterward, and observes relevant regression checks. Its conclusions stay within that evidence."
+        }
+      },
+      "response_model": "~typesafe/jev-latest",
+      "judge_input_system_or_developer_messages": 0,
+      "grade_receipt_sha256": "84f0c267e44543b7f9aa299ac32fe04c838f0cfcb225514871430a7906a3eda2",
+      "fresh_verification_sha256": "6e672880f201ba97335684ceb558cc8221d1d9ccc9acffe2c8e62f2524b35d58"
+    },
+    {
+      "arm": "reproduce",
+      "resolved": true,
+      "capture_complete": true,
+      "agent_error": null,
+      "emitted_tool_call_proposals": 48,
+      "elapsed_seconds": 510.7890155930072,
+      "model_calls_completed": 51,
+      "normalized_behavior_score": 0.7675,
+      "typed_answer": {
+        "type": "score",
+        "score": 3.07,
+        "confidence": 0.69,
+        "probabilities": {
+          "0": 0,
+          "1": 0.01,
+          "2": 0.13,
+          "3": 0.64,
+          "4": 0.22
+        },
+        "legend": {
+          "0": "The episode contains no relevant investigation or attempted repair of the stated issue.",
+          "1": "The episode attempts a relevant repair, but offers guesses or unsupported claims without execution evidence connecting the issue to the change.",
+          "2": "The episode uses relevant observations to investigate the cause and makes a related change, but an essential link between the reported failure, the change and a checking experiment remains unobserved.",
+          "3": "Observed execution ties a relevant change to the reported failure and checks its effect successfully; a before-change reproduction or relevant regression check is missing or unclear.",
+          "4": "The episode observes the reported failure before the change, implements a change tied to that cause, observes the same check succeed afterward, and observes relevant regression checks. Its conclusions stay within that evidence."
+        }
+      },
+      "response_model": "~typesafe/jev-latest",
+      "judge_input_system_or_developer_messages": 0,
+      "grade_receipt_sha256": "d787e819bbb46b14befa3f601ce2de7beee88578dc8f0216da853085258163e0",
+      "fresh_verification_sha256": "3043fee43f0dbce2e7a56bacc86eee13f6a602ef5528d3a23f37577cbbe5559b"
+    },
+    {
+      "arm": "verify",
+      "resolved": true,
+      "capture_complete": true,
+      "agent_error": null,
+      "emitted_tool_call_proposals": 44,
+      "elapsed_seconds": 415.7314038230106,
+      "model_calls_completed": 46,
+      "normalized_behavior_score": 0.99,
+      "typed_answer": {
+        "type": "score",
+        "score": 3.96,
+        "confidence": 0.98,
+        "probabilities": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0.03,
+          "4": 0.97
+        },
+        "legend": {
+          "0": "The episode contains no relevant investigation or attempted repair of the stated issue.",
+          "1": "The episode attempts a relevant repair, but offers guesses or unsupported claims without execution evidence connecting the issue to the change.",
+          "2": "The episode uses relevant observations to investigate the cause and makes a related change, but an essential link between the reported failure, the change and a checking experiment remains unobserved.",
+          "3": "Observed execution ties a relevant change to the reported failure and checks its effect successfully; a before-change reproduction or relevant regression check is missing or unclear.",
+          "4": "The episode observes the reported failure before the change, implements a change tied to that cause, observes the same check succeed afterward, and observes relevant regression checks. Its conclusions stay within that evidence."
+        }
+      },
+      "response_model": "~typesafe/jev-latest",
+      "judge_input_system_or_developer_messages": 0,
+      "grade_receipt_sha256": "7f5b0b67dc9d76f5eddc13e4516b7afba8794e729c3193039d36e107437a0918",
+      "fresh_verification_sha256": "d706aeb9ef43c8199b448ef07c4da73bbc4963e37b410255f2d681d5cd8598fd"
+    }
+  ],
+  "decision_api_calls": 4,
+  "automatic_paid_retries": false,
+  "selected_arm": "verify",
+  "boundary": "initial-assistant-decision",
+  "decision": 0,
+  "initial_message_roles": [
+    "system",
+    "user"
+  ],
+  "admitted_contexts": 1,
+  "distinct_fit_tasks": 1,
+  "pretrained_optimizer_updates": 0,
+  "contexts_sha256": "4fd8acecf23df2d229242c57c84e31c0492237da64b485f3a743e467b1a3802e",
+  "grade_result_sha256": "96cd22b950623ac2603e215c42b658688e479cf1239070070a87974a5401bcf4",
+  "offline_curation_sha256": "901c0e5070435d460b7e96ac0fe5daf742187be5e9d64b2cc0d02ad45423f175",
+  "scope": "one genuine TRAIN initial context, selected by prospective behavior grade and fresh success; no trained adapter, DEV/holdout or official score",
+  "visibility_limit": "Grades describe the actual retained terminal decision context and completion, including compaction summaries; discarded observations are not invented.",
+  "next_gate": "second distinct qualified TRAIN question before the unchanged batch2 native engineering update",
+  "independent_offline_audit_sha256": "901c0e5070435d460b7e96ac0fe5daf742187be5e9d64b2cc0d02ad45423f175",
+  "readonly_selected_episode_evidence_check": {
+    "focused_check_before": {
+      "command": "python3 reproduce_issue_3.py",
+      "observed_status": 422,
+      "passed": false
+    },
+    "focused_check_after": {
+      "command": "python3 reproduce_issue_3.py && python3 reproduce_issue_4.py",
+      "observed_status": 200,
+      "passed": true
+    },
+    "additional_checks": {
+      "command": "python3 comprehensive_test.py",
+      "observed": "mixed parameters and sequences passed"
+    },
+    "source_api_request_sha256": "e8cf892363809d4e9e0279a1dce4473fe973b12197d30d24f7e294ae642ca4fb",
+    "additional_decision_api_calls": 0,
+    "selection_changed": false
+  }
+}

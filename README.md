@@ -8,7 +8,7 @@ The intended behavior is systematic repository repair: reproduce a failure, loca
 
 The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/jev-latest` and passes a real typed-API control with synthetic repair traces. It is available for behavior analysis; fresh repository tests still determine task success.
 
-A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its synthetic rubric and CPU admission controls pass; fresh collection, one-pass grading and offline evidence validation are implemented. No real trajectory has yet been graded or admitted under it.
+A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its [first real quartet](reports/first-real-behavior-admission-v1.json) supplies one initial target: all four arms pass fresh tests, and Jev selects `verify` at .99 over OFF at .40. Independent offline curation reproduces the selection. A second distinct question is required before the first pretrained update.
 
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
@@ -27,7 +27,8 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
-| Real-task scorer controls | [58 of 67 TRAIN tasks have qualified per-task environments](reports/train-environment-qualification-v2.json); all 42 supplementary DEV environments pass; failures and separate dependency repairs retained |
+| Real-task scorer controls | [58 TRAIN environments](reports/train-environment-qualification-v2.json) plus [2 isolated JSON-dependency repairs](reports/train-json-environment-qualification-v1.json) qualify60 distinct original tasks across recorded images; all42 supplementary DEV environments pass |
+| Behavior admission | [One genuine initial TRAIN context](reports/first-real-behavior-admission-v1.json), selected by four actual Jev judgments and fresh teacher success; zero pretrained optimizer updates |
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
