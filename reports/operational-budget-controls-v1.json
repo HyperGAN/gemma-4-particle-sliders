@@ -1,0 +1,114 @@
+{
+  "schema": "gemma4-operational-budget-controls-v1",
+  "status": "passed",
+  "checks": [
+    {
+      "arm": "off",
+      "pilot_archive_continuity": true,
+      "pilot_sha256": "5be2652ca1413d99cd4b7bfc25279b8a6a418ea6776732c21f85aea2c3c914fe",
+      "full_sha256": "05a2bee7bc26199e3b260c20548ecb6a545951d59bce85e77627ada46daa0a02",
+      "packaged_and_runtime_budget": {
+        "timeout_seconds": 300,
+        "max_tool_calls": 100,
+        "max_time_minutes": 60,
+        "max_turns": 500
+      },
+      "compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "reproduce",
+      "pilot_archive_continuity": true,
+      "pilot_sha256": "6dcde10461750f0b462b0881d5ceb5151ca4a29c097c435f185a05e6e0e67823",
+      "full_sha256": "48ea26dc4ba08c09d81a15f23aafb4944bb2ef4932962f0877b90f9f339f75bc",
+      "packaged_and_runtime_budget": {
+        "timeout_seconds": 300,
+        "max_tool_calls": 100,
+        "max_time_minutes": 60,
+        "max_turns": 500
+      },
+      "compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "localize",
+      "pilot_archive_continuity": true,
+      "pilot_sha256": "6c93347381202bf5a8fdda18f30117ac69bdb9b9a4371881389b2d9aeff75055",
+      "full_sha256": "f370e080aacc1248d8a396a75c0b0aebd49aa8f62757e519f66b369d05ed48bd",
+      "packaged_and_runtime_budget": {
+        "timeout_seconds": 300,
+        "max_tool_calls": 100,
+        "max_time_minutes": 60,
+        "max_turns": 500
+      },
+      "compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "verify",
+      "pilot_archive_continuity": true,
+      "pilot_sha256": "34c2c3e59e1ca68f18dd0cac0212f66bca2ad6895ffe092f2f8741e6e1f72be8",
+      "full_sha256": "f9617b796d3bbe40bb3ddfc265130bcb2f3d865458b59f79bfd3a44d4aca65e6",
+      "packaged_and_runtime_budget": {
+        "timeout_seconds": 300,
+        "max_tool_calls": 100,
+        "max_time_minutes": 60,
+        "max_turns": 500
+      },
+      "compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    }
+  ],
+  "scope": "packaged/runtime budget and compiler checks; no inference, accuracy, or trained adapter",
+  "raw_receipt_sha256": "b56d44ae79fbba61561af1f2b6e7a53aaa49df7774515a3f8693103311e00f10",
+  "profiles": {
+    "pilot-5m-v1": {
+      "timeout_seconds": 60,
+      "max_tool_calls": 40,
+      "max_time_minutes": 5,
+      "max_turns": 70
+    },
+    "official-default-60m-v1": {
+      "timeout_seconds": 300,
+      "max_tool_calls": 100,
+      "max_time_minutes": 60,
+      "max_turns": 500
+    }
+  },
+  "guide": {
+    "path": "data/kaggle-official/HARNESS_README.md",
+    "sha256": "445000219b803942c469391ec8b69791a31e9cec2f934738c767e34b5ca0aa1f",
+    "section": "7.1. Default Budgets; downloaded official guide, not a claim about unknown host overrides"
+  },
+  "execution_sources": {
+    "src/gemma_particle/budgets.py": "be17006878d14c733e9a0a3be6abffd57a57029f962c4e90295a47ce4421901d",
+    "src/gemma_particle/curation.py": "b1e0645a3cafe4ce431e6ecb7ffe605bbd5c640baf1b87b55cbfda75a8f77a10",
+    "scripts/build_submission.py": "8d204035f9921c579596a5c0d6f63cc200283ed81a0742adab96227144079949",
+    "scripts/run_trajectories.py": "d69e2d4eec4ee764c3d4c1b3b21d8cbf6b2636cd4f915e6c961a3df09695ee36",
+    "scripts/collect_arms.py": "0b66d62391e6623c9c229c97db6f70818959b116520e64ced710a4a101c20563"
+  },
+  "cpu_preflight_sha256": "2c29161ab6dbe6303d229c5ed2ea2cf43f5d0b653021fc65bdf6bbf938e0d630",
+  "reason": "Five-minute pilot limits were this project's choice and do not establish full-budget model capability.",
+  "source_checkout": "/ml2/kaggle-hackathon-gemma-4-budget",
+  "as_of": "2026-11-17T03:53:08.610856+00:00"
+}

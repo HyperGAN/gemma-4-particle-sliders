@@ -115,4 +115,5 @@ def select_contexts(tasks, outcomes):
                              "target_arm": winner["arm"], "verification": winner["verification"],
                              "quality_rubric": RUBRIC})
             if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
+            if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
     return selected

@@ -8,13 +8,15 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 import yaml
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
+from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,budget_values
 
 MODELS = [f"gemma-4-{size}-it-qat-w4a16-ct" for size in ("31b", "12b", "e4b", "e2b")]
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL):
+def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL,budget_profile=PILOT_BUDGET):
     instructions=instruction_set(instruction_protocol)
+    budget=budget_values(budget_profile)
     out = Path(out)
     if out.exists():
         raise FileExistsError("build directory already exists; use a new artifact path")
@@ -43,6 +45,8 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
     if instruction:
         prompt = agent / "prompts/system.md"
         prompt.write_text(prompt.read_text().rstrip() + "\n\n" + instructions[instruction] + "\n")
+    if budget_profile!=PILOT_BUDGET:
+        (agent/'eval_config.yaml').write_text(yaml.safe_dump({'evaluation':budget},sort_keys=False))
     files = sorted(p for p in agent.rglob("*") if p.is_file())
     if sum(p.stat().st_size for p in files) >= 3 * 1024**3:
         raise ValueError("unpacked submission must be smaller than 3 GiB")
@@ -60,6 +64,7 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
                "files": {str(p.relative_to(agent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
                "official_validation": "pending", "scorer_vllm_parity": "unmeasured", "kaggle_score": None}
     if instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:receipt['instruction_protocol']=instruction_protocol
+    if budget_profile!=PILOT_BUDGET:receipt['budget_profile']=budget_profile
     (out / "build.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return receipt
 
@@ -71,5 +76,6 @@ if __name__ == "__main__":
     parser.add_argument("--adapter", type=Path)
     parser.add_argument("--target-instruction", choices=TARGET_INSTRUCTIONS)
     parser.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
+    parser.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=PILOT_BUDGET)
     args = parser.parse_args()
-    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol), indent=2))
+    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol,args.budget_profile), indent=2))
