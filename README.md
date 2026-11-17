@@ -19,6 +19,7 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
+| Official vLLM collection | [Pinned 31B serving](docs/vllm-collection.md) passes exact multiline tool and input-format controls; first TRAIN cohort running |
 | Competition | [Authenticated downloads and leaderboard verified](reports/official-access.json) on 2026-11-17; leading public score 0.29; no scored submission yet |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
@@ -62,6 +63,8 @@ The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich
 Cache/training/conversion commands require an explicit device and should only run after CPU preparation. Native pretrained collection has started on shared GPU 1 with a .35 memory fraction; unrelated jobs remain running. [Native serving instructions](docs/native-serving.md) describe the qualified controls, explicit SDPA cohort, excluded eager-memory episode and request identity checks. No learned adapter has been trained yet.
 
 The first four E2B TRAIN tasks completed all four arms without a verified fix and supplied zero contexts. This is a result under native HF's five-minute budget. Faster scorer-style serving is being qualified before drawing a model-capacity conclusion. [Collection receipts](reports/e2b-native-collection-v1.json) preserve failures and timeouts.
+
+The separate official-vLLM 31B cohort is now collecting. [Its protocol](docs/vllm-collection.md) preserves the exact official prompt tokens while computing native hidden targets independently. A [supplementary 42-task DEV cohort](docs/supplementary-dev.md) was fixed across 24 repositories before inference; its full negative/reference environment qualification is still running. The original Requests DEV results and Rich/HTTPX holdout remain intact.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:

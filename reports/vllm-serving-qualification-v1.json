@@ -1,0 +1,298 @@
+{
+  "schema": "gemma4-vllm-serving-qualification-v1",
+  "as_of": "2026-11-17T03:30:27.225764+00:00",
+  "server_identity": {
+    "kind": "gemma4",
+    "served_model": "gemma-4-31b-it-qat-w4a16-ct",
+    "pretrained_inference": true,
+    "runtime": "official vLLM 0.19.1; local single-GPU research cohort",
+    "model_identity": {
+      "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+      "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+      "dtype": "bfloat16",
+      "weight_format": "ct-w4g32",
+      "attn_implementation": "vllm:auto"
+    },
+    "device": "cuda:0",
+    "memory_fraction": 0.6,
+    "memory_budget_kind": "vLLM engine target; not a CUDA allocator cap",
+    "observed_free_bytes": 44364201984,
+    "total_device_bytes": 51527024640,
+    "strength": 0,
+    "native_checkpoint": null,
+    "max_context": 32768,
+    "tensor_parallel_size": 1,
+    "max_num_seqs": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "vllm": "0.19.1",
+      "transformers": "5.13.1",
+      "compressed-tensors": "0.15.0.1",
+      "fastapi": "0.163.1",
+      "pydantic": "2.14.3"
+    },
+    "official_sources": {
+      "vllm": {
+        "version": "0.19.1",
+        "wheel_sha256": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+        "verified_python_files": 1554
+      },
+      "compressed-tensors": {
+        "version": "0.15.0.1",
+        "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+        "verified_python_files": 102
+      },
+      "transformers": {
+        "version": "5.13.1",
+        "wheel_sha256": "53f0ea8aa397e29244c2377ba981bcaf0c87adcf44fbdd447ef6306522afcacd",
+        "verified_python_files": 2533
+      }
+    },
+    "launch": [
+      "vllm",
+      "serve",
+      "google/gemma-4-31B-it-qat-w4a16-ct",
+      "--revision",
+      "52f3f65bc7a02d555763bc923bd1d9094898219d",
+      "--tokenizer-revision",
+      "52f3f65bc7a02d555763bc923bd1d9094898219d",
+      "--served-model-name",
+      "gemma-4-31b-it-qat-w4a16-ct",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8026",
+      "--dtype",
+      "bfloat16",
+      "--tensor-parallel-size",
+      "1",
+      "--gpu-memory-utilization",
+      "0.6",
+      "--max-model-len",
+      "32768",
+      "--max-num-seqs",
+      "1",
+      "--max-num-batched-tokens",
+      "2048",
+      "--enforce-eager",
+      "--language-model-only",
+      "--no-scheduler-reserve-full-isl",
+      "--enable-auto-tool-choice",
+      "--tool-call-parser",
+      "gemma4",
+      "--reasoning-parser",
+      "gemma4",
+      "--reasoning-config",
+      "{\"reasoning_start_str\": \"<|channel>\", \"reasoning_end_str\": \"<channel|>\"}",
+      "--middleware",
+      "gemma_particle.vllm_identity.guard"
+    ],
+    "sources": {
+      "/ml2/kaggle-hackathon-gemma-4/scripts/serve_vllm.py": "3e01f46718275708ef75110810344199556e16fe944959dc607ab685383ea1b4",
+      "configs/31b-ct-pilot.json": "916586bfd032ee1e21835f3867e3e4dfc1fe6ae4b37235fa4306e23036c0cf7c",
+      "src/gemma_particle/vllm_identity.py": "9c762df267351f4bf9a4f42ceb51f58ed9ba7753829b9303636e3cf88221659c",
+      "src/gemma_particle/data.py": "a1af2afdeafb0f1407d4ff3cad9bbc069653ff1e9a9221a0829b9a4aca065b4a"
+    },
+    "scope": "frozen-base generation; native HF targets and production four-L4 parity are separate qualifications"
+  },
+  "server_identity_file_sha256": "4abf6ddfaac0d0400e4adb3e3ba0043b7d44c8ba5c0443150eb1759b80e4b906",
+  "multiline_control": {
+    "status": "passed",
+    "elapsed_seconds": 1.5647942579817027,
+    "identity_sha256": "bbcccf813d6a45f906178b4cf309cae3f4122eb2120d7cd69c615999ba0bf9b4",
+    "usage": {
+      "prompt_tokens": 96,
+      "total_tokens": 119,
+      "completion_tokens": 23,
+      "prompt_tokens_details": null
+    },
+    "valid_tool_call": true,
+    "exact_multiline_argument": true,
+    "request_identity_guard": true,
+    "request_sha256": "0cacbaf785d6e3513d6fef2cd4de08dc3390a5088a8ab280cb85664809fc62e3",
+    "response_sha256": "dabd6379cf714afd86097fd28ad22134aecaeeb5aa18d9d666dd49cdc24177b8",
+    "scope": "serving protocol only; no repository task or adapter quality"
+  },
+  "original_native_string_tokenization": {
+    "equal": false,
+    "tokens": 2865,
+    "native_tokens": 2864,
+    "wire_request_sha256": "98d733b6693e895dbba3c2917af7a5a713b49d94fa2341c3c0047ad136839efb",
+    "generation_identity_sha256": "bbcccf813d6a45f906178b4cf309cae3f4122eb2120d7cd69c615999ba0bf9b4",
+    "token_ids_sha256": "f27cf63f5e28380ff8c6c12f045cd96dc485d30e9825e4a6981111c48746850f",
+    "native_token_ids_sha256": "a93fa6e4c15454225a5fd15c767da464817772b977992ddd203ca61f01895b49"
+  },
+  "explicit_openai_content_tokenization": {
+    "scope": "input-tokenization equality only; no activation or task score",
+    "server_identity_sha256": "bbcccf813d6a45f906178b4cf309cae3f4122eb2120d7cd69c615999ba0bf9b4",
+    "results": [
+      {
+        "request_sha256": "ae0f910a5a9f09d08ed1507be316abd465df23a9c20a869c632e2594fbd7d7b0",
+        "equal": true,
+        "vllm_tokens": 2865,
+        "native_tokens": 2865
+      },
+      {
+        "request_sha256": "90e6393d7bd15f9b1bf2bcf093790a07b2292ac8c0afd7ce510a4cc658dab725",
+        "equal": true,
+        "vllm_tokens": 3243,
+        "native_tokens": 3243
+      },
+      {
+        "request_sha256": "9bd8173e66bd5459be5a67fe8caaf963181d4acb7f5dee804bee9b0eeb0f0d7c",
+        "equal": true,
+        "vllm_tokens": 3347,
+        "native_tokens": 3347
+      },
+      {
+        "request_sha256": "1e7e2784fee7b1ccdf8ac57fe9e5995b514032b30991ea9685c6d1e42954854a",
+        "equal": true,
+        "vllm_tokens": 3702,
+        "native_tokens": 3702
+      },
+      {
+        "request_sha256": "11d173998b8cbcfc8dedbe145da53e1960876ae54c35b6abd7e5cffb056df1ab",
+        "equal": true,
+        "vllm_tokens": 4281,
+        "native_tokens": 4281
+      },
+      {
+        "request_sha256": "c9618e8580853d82d593b508ef6a7b7cd848f45071a98b96a75cc02ab2c56f12",
+        "equal": true,
+        "vllm_tokens": 4393,
+        "native_tokens": 4393
+      },
+      {
+        "request_sha256": "fcca382005624ce692552939238cd28d0937bed769ba6a973a20fc38e7d72329",
+        "equal": true,
+        "vllm_tokens": 5044,
+        "native_tokens": 5044
+      },
+      {
+        "request_sha256": "23718e17633d3bd649421553d63965a3bb9a8c7d6dab5ed96c61e89ac9be3e06",
+        "equal": true,
+        "vllm_tokens": 5197,
+        "native_tokens": 5197
+      },
+      {
+        "request_sha256": "16d668d03e281c3e5a28921d14d58d13fb5fc4dc2ed494bf9c83993b9fc52eef",
+        "equal": true,
+        "vllm_tokens": 6885,
+        "native_tokens": 6885
+      },
+      {
+        "request_sha256": "788677f0ecd90ce771a0e140e63d6f94509633b58c78e15cf29bf13d341a4396",
+        "equal": true,
+        "vllm_tokens": 8423,
+        "native_tokens": 8423
+      },
+      {
+        "request_sha256": "141997f4663d214b1d9caa6938ae2e557d4f52fd05c207b2f271eb703e07d5fd",
+        "equal": true,
+        "vllm_tokens": 10181,
+        "native_tokens": 10181
+      },
+      {
+        "request_sha256": "cd8c7f936eab3131ef6da2256044a2b410ecb5f7f0523017c49d3779e3d8e6f4",
+        "equal": true,
+        "vllm_tokens": 11599,
+        "native_tokens": 11599
+      },
+      {
+        "request_sha256": "544ac92b09412aa3e56afb0afc2b2d3e32b283bd48693f23e9d78aeb424a820d",
+        "equal": true,
+        "vllm_tokens": 11745,
+        "native_tokens": 11745
+      },
+      {
+        "request_sha256": "c8996a35973f120972109d4a624cf528f894744cd1d0cef39ea477fd75137bc5",
+        "equal": true,
+        "vllm_tokens": 12379,
+        "native_tokens": 12379
+      },
+      {
+        "request_sha256": "ac389b1d88bc8c7036dae246c609b3bff3f569242444fa163b044bf27bc4fa16",
+        "equal": true,
+        "vllm_tokens": 12714,
+        "native_tokens": 12714
+      },
+      {
+        "request_sha256": "2fe29524cc510faa846c35509f09eaf7662b2edefd39789fdce5356167ebcc2e",
+        "equal": true,
+        "vllm_tokens": 12853,
+        "native_tokens": 12853
+      },
+      {
+        "request_sha256": "310f884ee79add3837c989c9e88ff16a749cc30e4bb2f2944fc460904ec3425e",
+        "equal": true,
+        "vllm_tokens": 13732,
+        "native_tokens": 13732
+      },
+      {
+        "request_sha256": "c818cc7dbe0ad5086f8468f56c65054760893ebc7500d83dcbfec6025ce34a6b",
+        "equal": true,
+        "vllm_tokens": 13875,
+        "native_tokens": 13875
+      },
+      {
+        "request_sha256": "2224d633c834cead19b9b7d77ce839681767a43e44a8f0f48d7f1988b896c645",
+        "equal": true,
+        "vllm_tokens": 13983,
+        "native_tokens": 13983
+      },
+      {
+        "request_sha256": "53e094af3ca7036a9b298f79ce7d49d488f838b36b6ff86038dbe1a6f1ada188",
+        "equal": true,
+        "vllm_tokens": 15675,
+        "native_tokens": 15675
+      },
+      {
+        "request_sha256": "4f9ee0e33c6e7c568ca5f842281ff0aa53a51f69d01afca3c0e080ed5ce85994",
+        "equal": true,
+        "vllm_tokens": 15821,
+        "native_tokens": 15821
+      },
+      {
+        "request_sha256": "95189f64637891cf134bfaaddd81af8686076d105eacb694e64d7f8e0f43879f",
+        "equal": true,
+        "vllm_tokens": 16219,
+        "native_tokens": 16219
+      },
+      {
+        "request_sha256": "b0281a2863cb85011e927dbf1111919b2e381e05d318e19c46342998670f8e6c",
+        "equal": true,
+        "vllm_tokens": 17645,
+        "native_tokens": 17645
+      },
+      {
+        "request_sha256": "77858a3479736b8b52aa2f37901c0ab06a26abb5adb07eb66c42ba5fa4746d6c",
+        "equal": true,
+        "vllm_tokens": 17751,
+        "native_tokens": 17751
+      },
+      {
+        "request_sha256": "1e4c92a658f51f73821efd96a4c2c6a5dcfefbb7b82e8287d93c0227ee0b936a",
+        "equal": true,
+        "vllm_tokens": 18488,
+        "native_tokens": 18488
+      }
+    ]
+  },
+  "earlier_attempts": [
+    {
+      "run": "vllm-31b-ct-server-v1",
+      "status": "startup failed before inference; offline snapshot lacked README.md and .gitattributes; pinned metadata then downloaded"
+    },
+    {
+      "run": "vllm-31b-ct-calibration-v1",
+      "status": "failed_multiline_instruction",
+      "valid_tool_call": true,
+      "multiline_argument_preserved": false,
+      "request_identity_guard": true,
+      "scope": "model rewrote two lines as semicolons; this is not evidence of a parser newline defect",
+      "request_sha256": "fe110d3aaef8fd07b679bbfc88dd76b19ec5aec6882b0297b7fb282952694cdb",
+      "response_sha256": "442dca9a43e13715498ddae87f3b426e0c43184aeca68e81393f57adc6ef8ba6"
+    }
+  ],
+  "scope": "serving and input-token serialization controls only; no learned adapter, DEV, holdout or Kaggle score"
+}

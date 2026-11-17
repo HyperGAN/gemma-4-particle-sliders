@@ -12,6 +12,7 @@ from gemma_particle.curation import TARGET_INSTRUCTIONS
 from gemma_particle.model import ContextRow
 from gemma_particle.runtime import load_native, model_identity, save_cache, file_hash
 from gemma_particle.prompting import tokenize_context
+from gemma_particle.transport import validate_transport
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--config', type=Path, default=Path('configs/pilot.json'))
@@ -20,6 +21,7 @@ p.add_argument('--train-tasks', type=Path, default=Path('data/splits-v1/train.js
 p.add_argument('--out', type=Path, required=True)
 p.add_argument('--device', required=True)
 p.add_argument('--memory-fraction', type=float, default=.25)
+p.add_argument('--prompt-transport',type=Path,help='explicit exact-token vLLM-to-native input transport; activations never transfer')
 args = p.parse_args()
 config = json.loads(args.config.read_text())
 tasks = read_jsonl(args.train_tasks)
@@ -39,20 +41,29 @@ for row in contexts:
             or positive[0]['content'].replace(insertion,'',1) != neutral[0]['content'] or neutral[1:] != positive[1:]):
         raise ValueError('teacher/student must share question and complete observed history')
 identity = model_identity(config)
-if not contexts or any(row.get('model_identity')!=identity for row in contexts):
-    raise ValueError('target trajectories must use the exact pinned BF16 cache model')
-tok = AutoTokenizer.from_pretrained(identity['repo'], revision=identity['revision'])
+transport=None
+if args.prompt_transport:
+    transport=json.loads(args.prompt_transport.read_text())
+    encoded_pairs=validate_transport(transport,contexts,contexts_sha256=file_hash(args.contexts),response_identity=identity)
+else:
+    if not contexts or any(row.get('model_identity')!=identity for row in contexts):
+        raise ValueError('target trajectories must use the exact pinned BF16 cache model or explicit prompt transport')
+    tok = AutoTokenizer.from_pretrained(identity['repo'], revision=identity['revision'])
 native = load_native(config, device=args.device, memory_fraction=args.memory_fraction, checkpointing=False)
 try:
     prepared = []
-    for row in contexts:
-        encoded = [tokenize_context(tok,row[key],row['tools'],row['generation']) for key in ('neutral_messages','positive_messages')]
+    for index,row in enumerate(contexts):
+        encoded = ([encoded_pairs[index][side+'_ids'] for side in ('neutral','positive')] if transport else
+                   [tokenize_context(tok,row[key],row['tools'],row['generation']) for key in ('neutral_messages','positive_messages')])
         if max(map(len, encoded)) > 32768:
             raise ValueError('context exceeds scorer window; truncation would change the paired question')
         context = ContextRow(tuple(encoded[0]), tuple(encoded[1]), row['instance_id'], row['decision'])
         prepared.append(native.prepare(context))
         print(json.dumps({'cached': len(prepared), 'total': len(contexts), 'task': row['instance_id']}), flush=True)
     save_cache(args.out, prepared, {'model_identity': identity, 'contexts_sha256': file_hash(args.contexts),
-        'train_sha256': file_hash(args.train_tasks), 'tokenizer': identity, 'context_digest': digest(contexts)})
+        'train_sha256': file_hash(args.train_tasks), 'tokenizer':transport['server_identity'] if transport else identity,
+        'prompt_transport_sha256':file_hash(args.prompt_transport) if transport else None,
+        'generator_model_identity':transport['generator_model_identity'] if transport else identity,
+        'context_digest': digest(contexts)})
 finally:
     native.close()

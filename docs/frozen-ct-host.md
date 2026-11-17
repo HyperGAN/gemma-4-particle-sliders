@@ -18,6 +18,8 @@ The CPU controls compare outputs and input gradients with the public decompresso
 
 The [resource receipt](../reports/frozen-ct-qualification-v1.json) records real 31B checks at 128 and 4,096 tokens. Both preserve exact initial ON/OFF, finite connected adapter gradients, a frozen base and unchanged adapter parameters. The 4,096-token check peaked at about 25.4 GiB allocated under a .60 process cap. These synthetic probes perform zero optimizer updates and cannot supply training targets.
 
+A separate [two-sequence check](../reports/frozen-ct-qualification-v2.json) at 4,096 tokens passed at about 28.1 GiB allocated under a .70 cap on GPU 1. All 4,141 adapter gradient tensors were connected and finite. This still does not qualify the memory or quality of an actual public-recipe update, or longer observed histories.
+
 ```bash
 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 nice -n 10 .venv/bin/python scripts/profile_native.py \
   --config configs/31b-ct-pilot.json --device cuda:0 --memory-fraction .60 \
@@ -26,4 +28,4 @@ OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 nice -n 10 .venv/bin/python scripts/profile_
 
 Floating hosts retain their .50 maximum process fraction; the explicit CT host permits up to .75 and checks for at least 8 GiB of observed headroom before allocation. The measured profile uses .60, leaving 40% of device capacity for other processes. Existing jobs remain running.
 
-Longer contexts, actual recipe-update memory, coding outcomes, linear conversion and production serving parity are still required. Native CT generation is expensive, so a separate official vLLM/Torch 2.10 environment is being prepared for faster collection. Its results must be identified separately from native HF collection; no compatible target-transfer claim has been established yet.
+Longer contexts, actual recipe-update memory, coding outcomes, linear conversion and production serving parity are still required. Native CT generation is expensive, so a separate [official vLLM/Torch 2.10 environment](vllm-collection.md) now collects trajectories. Exact input-token transport keeps that generator's provenance separate from native hidden-state computation; it makes no numerical-equivalence claim about the two backends.

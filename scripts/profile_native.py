@@ -21,10 +21,11 @@ def main():
     p.add_argument('--device',required=True)
     p.add_argument('--memory-fraction',type=float,required=True)
     p.add_argument('--max-tokens',type=int,default=128)
+    p.add_argument('--batch-size',type=int,choices=[1,2],default=1)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('resource profile is immutable')
-    if not 8<=args.max_tokens<=4096:raise ValueError('bounded 8..4096 token resource probe required')
+    if not 8<=args.max_tokens<=8192:raise ValueError('bounded 8..8192 token resource probe required')
     torch.set_num_threads(4)
     config=json.loads(args.config.read_text())
     identity=model_identity(config)
@@ -33,7 +34,7 @@ def main():
         add_special_tokens=True)[:args.max_tokens]
     args.out.mkdir(parents=True,mode=0o700)
     receipt={'schema':'gemma4-native-resource-qualification-v1','model_identity':identity,'device':args.device,
-        'memory_fraction':args.memory_fraction,'context_tokens':len(ids),'training_updates':0,
+        'memory_fraction':args.memory_fraction,'context_tokens':len(ids),'batch_size':args.batch_size,'training_updates':0,
         'context_kind':'synthetic resource/derivative probe; forbidden as a training target',
         'scope':'memory, finite forward, exact initial OFF and live adapter gradients; not learned quality',
         'status':'started'}
@@ -54,8 +55,8 @@ def main():
         with torch.no_grad():off=native.hidden(ids,strength=0).detach().clone()
         if device.type=='cuda':torch.cuda.synchronize(device)
         receipt['off_seconds']=time.perf_counter()-start
-        start=time.perf_counter();response=native.hidden(ids,strength=1)
-        receipt['initial_on_equals_off']=torch.equal(response.detach(),off)
+        start=time.perf_counter();response=torch.cat([native.hidden(ids,strength=1) for _ in range(args.batch_size)],dim=0)
+        receipt['initial_on_equals_off']=torch.equal(response.detach(),off.expand_as(response))
         direction=torch.linspace(.1,1,native.width,device=response.device)
         gradients=torch.autograd.grad((response*direction).sum(),tuple(native.network.parameters()),allow_unused=True)
         if device.type=='cuda':torch.cuda.synchronize(device)
