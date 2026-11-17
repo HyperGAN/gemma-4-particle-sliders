@@ -40,7 +40,7 @@ def test_live_inplace_mutation_is_rejected_and_hooks_restore_after_error():
 
 
 @pytest.mark.parametrize('storage',['device','cpu'])
-@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp'])
+@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp','nested_positional_attention_mlp'])
 def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(storage,checkpoint_profile):
     direct=Native(tiny_model(),identity={'fixture':'activation-storage'})
     wrapped=Native(tiny_model(),identity=direct.identity,checkpointing=True,activation_storage=storage,
@@ -70,7 +70,7 @@ def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(sto
 
 
 @pytest.mark.parametrize('preset',['rhbi_optimized','empf'])
-@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp'])
+@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp','nested_positional_attention_mlp'])
 def test_cpu_storage_recipe_update_and_exact_continuation(preset,checkpoint_profile):
     natives=[]
     try:
@@ -91,11 +91,12 @@ def test_cpu_storage_recipe_update_and_exact_continuation(preset,checkpoint_prof
         for native in natives:native.close()
 
 
-def test_nested_profile_full_resume_is_rejected_by_block_profile_before_mutation():
+@pytest.mark.parametrize('nested_profile',['nested_attention_mlp','nested_positional_attention_mlp'])
+def test_nested_profile_full_resume_is_rejected_by_block_profile_before_mutation(nested_profile):
     natives=[]
     try:
         games=[]
-        for profile in ('block','nested_attention_mlp'):
+        for profile in ('block',nested_profile):
             native=Native(tiny_model(),identity={'fixture':'checkpoint-profile'},checkpointing=True,
                           activation_storage='cpu',checkpoint_profile=profile)
             natives.append(native)
@@ -108,3 +109,31 @@ def test_nested_profile_full_resume_is_rejected_by_block_profile_before_mutation
         assert_equal(before,games[0].state_dict())
     finally:
         for native in natives:native.close()
+
+
+def test_keyword_input_lifetime_is_released_by_binding_without_changing_gradient():
+    from contextlib import contextmanager
+    from torch import nn
+    from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
+    from gemma_particle.checkpoint_inputs import checkpoint_with_positional_inputs
+    class Network:
+        scale=1.
+        @contextmanager
+        def scaled(self,scale):yield
+    class Block(nn.Module):
+        def forward(self,hidden_states):return hidden_states.square().sum()
+    gradients=[]
+    for canonicalized in (False,True):
+        block=Block();original=block.forward
+        install=checkpoint_with_positional_inputs if canonicalized else checkpoint_with_adapter_scale
+        handle=install(block,Network())
+        try:
+            parameter=torch.tensor(2.,requires_grad=True)
+            value=parameter*torch.arange(1.,5.);source=weakref.ref(value)
+            with CPUActivationStorage():result=block(hidden_states=value)
+            del value;gc.collect()
+            assert (source() is None)==canonicalized
+            gradients.append(torch.autograd.grad(result,parameter)[0])
+        finally:handle.close()
+        assert block.forward==original and not getattr(block,'_pg09_scale_checkpoint',False)
+    assert torch.equal(gradients[0],gradients[1])

@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-positional-checkpoint-cpu-v1",
+  "status": "passed",
+  "as_of": "2026-11-17T07:04:57.961122+00:00",
+  "profile": "nested_positional_attention_mlp",
+  "cpu_checks": 91,
+  "official_compiler": "passed; no inference",
+  "tiny_cuda_checks": 6,
+  "preflight_sha256": "34af7cc9c2bde221dd8746a997626397bdb2910a9ed2638ef82ae6de2fb36610",
+  "cuda_control_sha256": "a07c323bbb959379543eec336ed7989e245affa2673187164791d2aa13683332",
+  "config_sha256": "52418f9082db0935280c736841b89ec11ec2f3c1cd497a993beef582b4fcc40e",
+  "keyword_lifetime_control": {
+    "ordinary_public_keyword_input_retained": true,
+    "bound_positional_input_released": true,
+    "input_gradient_equal": true
+  },
+  "controls": [
+    "nonzero native outputs and full adapter gradients match direct shared-KV Gemma fixture",
+    "deferred backward preserves captured adapter strength and restores ambient strength",
+    "CPU/device packed CT outputs and all adapter gradients exactly match public dense decompression on CPU and tiny CUDA",
+    "both public recipes match prior profile updates and preserve exact full-state continuation",
+    "incompatible full-profile resume rejected before mutation",
+    "all owned wrappers removed on close"
+  ],
+  "sources": {
+    "src/gemma_particle/checkpoint_inputs.py": "3aadb7fda54c3111b9242cb5e23ea6ddd2d7ee6088099e14dc513575f6a5d94f",
+    "src/gemma_particle/model.py": "4fdb0b890a1e2fa5372b52ff8c261c49d9726208c993396bd762bd6cec04f41d",
+    "src/gemma_particle/runtime.py": "a4e0cadeb6ff50cd0010c2b666432e1ceb7d700b798a95d94bc2f9b5e31b6d84",
+    "scripts/profile_native.py": "99c85c23ef10b2a830530869cd0785c04ace643177900b7a4e92aba6b73d80ba",
+    "tests/test_activation_storage.py": "36401c5c97a8cfe291b7552f160ef6ddabb4ad5d48613d5f2d86936c8b858a02",
+    "tests/test_ct_linear.py": "478b61b035cafb15cb407c39de342310a44e55e87156b2f7d9df686749eba398"
+  },
+  "pretrained_updates": 0,
+  "long_history_gpu_qualification": "pending",
+  "scope": "CPU/random-tiny-CUDA controls only; no pretrained quality or SOTA claim"
+}

@@ -43,6 +43,10 @@ def main():
         'allocator_environment':{key:os.environ.get(key) for key in ('PYTORCH_ALLOC_CONF','PYTORCH_CUDA_ALLOC_CONF')},
         'status':'started','phase':'loading','on_forwards_completed':0}
     sources=[Path(__file__),args.config,Path('src/gemma_particle/model.py'),Path('src/gemma_particle/runtime.py')]
+    if config.get('checkpoint_profile')=='nested_positional_attention_mlp':
+        sources.append(Path('src/gemma_particle/checkpoint_inputs.py'))
+    if config.get('activation_storage')=='cpu':
+        sources.append(Path('src/gemma_particle/activation_storage.py'))
     if config.get('frozen_quantization'):
         from gemma_particle.ct_linear import verify_ct_sources
         receipt['ct_sources']=verify_ct_sources()

@@ -1,0 +1,22 @@
+{
+  "schema": "gemma4-positional-packed-cuda-control-v1",
+  "status": "passed",
+  "pytest_exit_code": 0,
+  "device": "cuda:1",
+  "allocator_cap_fraction": 0.03,
+  "context_kind": "tiny random Gemma4 CT architecture; forbidden as training targets",
+  "training_updates": 0,
+  "tests": 6,
+  "scope": "exact GPU output/all-adapter-gradient equality for CPU/device packed storage across direct/original nested/positional nested checkpoint profiles",
+  "seconds": 7.607781931059435,
+  "peak_allocated_bytes": 10183168,
+  "peak_reserved_bytes": 23068672,
+  "sources": {
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98",
+    "src/gemma_particle/model.py": "4fdb0b890a1e2fa5372b52ff8c261c49d9726208c993396bd762bd6cec04f41d",
+    "src/gemma_particle/runtime.py": "a4e0cadeb6ff50cd0010c2b666432e1ceb7d700b798a95d94bc2f9b5e31b6d84",
+    "src/gemma_particle/checkpoint_inputs.py": "3aadb7fda54c3111b9242cb5e23ea6ddd2d7ee6088099e14dc513575f6a5d94f",
+    "tests/test_ct_linear.py": "478b61b035cafb15cb407c39de342310a44e55e87156b2f7d9df686749eba398"
+  },
+  "log_sha256": "7421b6e66ae50a7ea6a281f5c55058f9e73020b7d0eeb206c17ac166b75f5ce1"
+}

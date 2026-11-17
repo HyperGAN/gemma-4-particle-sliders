@@ -21,3 +21,5 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True OMP_NUM_THREADS=4 MKL_NUM_THREA
 ```
 
 Only actual resource results can establish whether this fits. Transfer latency, host RAM and a public-recipe step on genuine admitted contexts still need measurement. The original .70/.75 resource failures and block-storage receipts are preserved.
+
+The CPU-first .40 and .50 attempts subsequently failed in their first gradient-enabled forward. A [keyword-input lifetime correction](checkpoint-input-binding.md) now passes 91 CPU checks and six tiny CUDA controls as a distinct profile, preserving the full model computation while exposing declared tensor inputs to public checkpoint saves. Its full-history .40-cap result is pending.

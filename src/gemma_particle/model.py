@@ -116,7 +116,7 @@ class Native:
             raise ValueError("pinned pretrained identity or explicit CPU fixture identity required")
         if activation_storage not in ('device', 'cpu') or (activation_storage == 'cpu' and not checkpointing):
             raise ValueError('CPU activation storage requires block checkpointing')
-        if checkpoint_profile not in ('block', 'nested_attention_mlp') or (checkpoint_profile != 'block' and not checkpointing):
+        if checkpoint_profile not in ('block', 'nested_attention_mlp','nested_positional_attention_mlp') or (checkpoint_profile != 'block' and not checkpointing):
             raise ValueError('nested attention/MLP checkpoints require block checkpointing')
         self.source_cohort=require_core_source()
         self.activation_storage=activation_storage
@@ -141,11 +141,15 @@ class Native:
             self.slider = Slider(model, **slider_options)
             self.network = AdapterParameters(self.slider.named_parameters(), self.slider.scaled)
             if checkpointing:
+                checkpoint=checkpoint_with_adapter_scale
+                if checkpoint_profile=='nested_positional_attention_mlp':
+                    from .checkpoint_inputs import checkpoint_with_positional_inputs
+                    checkpoint=checkpoint_with_positional_inputs
                 for layer in self.trunk.layers:
-                    self._handles.append(checkpoint_with_adapter_scale(layer, self.network))
-                    if checkpoint_profile == 'nested_attention_mlp':
+                    self._handles.append(checkpoint(layer, self.network))
+                    if checkpoint_profile != 'block':
                         for subblock in (layer.self_attn, layer.mlp):
-                            self._handles.append(checkpoint_with_adapter_scale(subblock, self.network))
+                            self._handles.append(checkpoint(subblock, self.network))
         except BaseException:
             self.close()
             raise

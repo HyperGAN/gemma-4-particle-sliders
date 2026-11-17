@@ -49,7 +49,7 @@ def test_exact_derivative_and_no_saved_dense_matrix():
     assert ((16,8),torch.int32) in saved
 
 
-@pytest.mark.parametrize('checkpoint_profile',['none','nested_attention_mlp'])
+@pytest.mark.parametrize('checkpoint_profile',['none','nested_attention_mlp','nested_positional_attention_mlp'])
 @pytest.mark.parametrize('packed_storage',['device','cpu'])
 def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path,checkpoint_profile,packed_storage):
     from copy import deepcopy

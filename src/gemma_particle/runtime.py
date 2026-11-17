@@ -38,7 +38,7 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     if activation_storage not in ('device','cpu'):
         raise ValueError('unqualified activation storage profile')
     checkpoint_profile=config.get('checkpoint_profile','block') if checkpointing else 'block'
-    if checkpoint_profile not in ('block','nested_attention_mlp'):
+    if checkpoint_profile not in ('block','nested_attention_mlp','nested_positional_attention_mlp'):
         raise ValueError('unqualified checkpoint profile')
     from transformers import AutoModelForImageTextToText,CompressedTensorsConfig
     identity = model_identity(config)
