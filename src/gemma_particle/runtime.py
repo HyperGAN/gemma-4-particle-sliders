@@ -24,22 +24,40 @@ def model_identity(config):
     attention=config.get('attn_implementation','eager')
     if attention not in ('eager','sdpa'):
         raise ValueError('qualified attention implementation must be eager or sdpa')
-    return {"repo": config["model"], "revision": revision, "dtype": "bfloat16", 'attn_implementation':attention}
+    identity={"repo": config["model"], "revision": revision, "dtype": "bfloat16", 'attn_implementation':attention}
+    if config.get('frozen_quantization'):
+        if config['frozen_quantization']!='ct-w4g32':raise ValueError('unqualified frozen quantization format')
+        identity['weight_format']='ct-w4g32'
+    return identity
 
 
 def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
-    from transformers import AutoModelForImageTextToText
+    from transformers import AutoModelForImageTextToText,CompressedTensorsConfig
     identity = model_identity(config)
     device = torch.device(device)
+    quantized=config.get('frozen_quantization')=='ct-w4g32'
+    quant_options={}
+    if quantized:
+        from .ct_linear import verify_ct_sources,replace_compressed_linears
+        verify_ct_sources()
+        quant_options['quantization_config']=CompressedTensorsConfig(run_compressed=True)
     if device.type == 'cuda':
-        if not 0 < memory_fraction <= .5:
-            raise ValueError("shared GPU memory fraction must be positive and at most 0.5")
+        limit=.75 if quantized else .5
+        if not 0 < memory_fraction <= limit:
+            raise ValueError(f"shared GPU memory fraction must be positive and at most {limit}")
+        torch.cuda.set_device(device)
+        free,total=torch.cuda.mem_get_info(device)
+        if total*memory_fraction>free-8*1024**3:
+            raise ValueError('requested memory cap would leave less than 8 GiB of observed GPU headroom')
         torch.cuda.set_per_process_memory_fraction(memory_fraction, device)
     elif device.type != 'cpu':
         raise ValueError("CPU or explicitly shared CUDA device required")
     model = AutoModelForImageTextToText.from_pretrained(identity['repo'], revision=identity['revision'],
-        dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device))
+        dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device),**quant_options)
+    if quantized:
+        replace_compressed_linears(model)
     return Native(model, identity=identity, checkpointing=checkpointing, rank=config['rank'], alpha=config['alpha'],
+                  host_profile='frozen-ct-w4g32' if quantized else 'float-linear',
                   particles=config['particles'], particle_width=config['particle_width'], seed=config['seed'])
 
 

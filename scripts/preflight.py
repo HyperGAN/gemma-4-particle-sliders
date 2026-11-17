@@ -1,6 +1,7 @@
 """Run CPU engineering gates and retain a compact, source-bound receipt."""
 import hashlib
 import importlib.metadata
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -31,7 +32,8 @@ for folder in ('src','tests','scripts','submission','patches','configs'):
             sources[str(p.relative_to(ROOT))] = hashlib.sha256(p.read_bytes()).hexdigest()
 receipt = {'schema':'gemma4-cpu-preflight-v1', 'status':'passed', 'gpu_used':False,
            'checks':checks, 'sources':sources,
-           'packages':{p:importlib.metadata.version(p) for p in ['torch','particlegan','particle-sliders-core','transformers','peft','numpy']},
+           'packages':{p:importlib.metadata.version(p) for p in ['torch','particlegan','particle-sliders-core','transformers','peft','numpy']
+                       + (['compressed-tensors'] if importlib.util.find_spec('compressed_tensors') else [])},
            'harness_receipt_sha256':hashlib.sha256((ROOT/'reports/harness-environment.json').read_bytes()).hexdigest(),
            'scope':'CPU random Gemma 4 fixture, software checks and competition compiler only; no pretrained task accuracy or SOTA claim'}
 (ROOT/'reports/cpu-preflight.json').write_text(json.dumps(receipt,indent=2)+'\n')

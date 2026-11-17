@@ -1,0 +1,97 @@
+{
+  "schema": "gemma4-verifier-controls-v4",
+  "previous_receipt": "reports/verifier-controls-v3.json",
+  "previous_receipt_sha256": "e853ded4af7f10a05d6fb3ab998239a7a9517194c25e66e95a7400c659af9537",
+  "additional_controls": [
+    {
+      "run": "verifier-fastapi12942-official-v1",
+      "result": {
+        "schema": "gemma4-real-task-verifier-controls-v1",
+        "task": "fastapi_12942",
+        "kind": "verifier calibration; reference oracle is not an agent",
+        "gpu_used": false,
+        "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+        "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+        "split": "train",
+        "wheel_selection_sha256": "75e75c2621746808b4836834be5decad23293c89871a44bd0b6142f05138a8d5",
+        "snapshot_sha256": "68f9786237a6b5cc811190e95f8d45045d850aa09f77cb8be71e6bfd8e900a2a",
+        "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+        "arms": {
+          "empty": {
+            "resolved": false,
+            "test_exit_code": 1,
+            "error": null,
+            "wall_seconds": 20.402779083000496
+          },
+          "reference": {
+            "resolved": true,
+            "test_exit_code": 0,
+            "error": null,
+            "wall_seconds": 10.082232893910259
+          }
+        },
+        "origin_checks": [
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          },
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          }
+        ],
+        "injected_wheel_tar_sha256": "8f97462d8505f44b2077571e6891e493a2221b57e3c89347828a15959654684d",
+        "status": "passed"
+      },
+      "result_sha256": "81e15fc933b969260b2d29e9d9cdd65fea9c1242afd552839b18178edd38db13"
+    },
+    {
+      "run": "verifier-fastapi13207-official-v1",
+      "result": {
+        "schema": "gemma4-real-task-verifier-controls-v1",
+        "task": "fastapi_13207",
+        "kind": "verifier calibration; reference oracle is not an agent",
+        "gpu_used": false,
+        "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+        "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+        "split": "train",
+        "wheel_selection_sha256": "88e9797d74042cf0efeac9bceaa662beca32323c808cf6b9c0f816957549b78c",
+        "snapshot_sha256": "6c60db4ffb645e8ca686e82e997127ea3f7744a2fddda510ec03653110813b4c",
+        "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+        "arms": {
+          "empty": {
+            "resolved": false,
+            "test_exit_code": 1,
+            "error": null,
+            "wall_seconds": 20.498892360017635
+          },
+          "reference": {
+            "resolved": true,
+            "test_exit_code": 0,
+            "error": null,
+            "wall_seconds": 10.065716411918402
+          }
+        },
+        "origin_checks": [
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          },
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          }
+        ],
+        "injected_wheel_tar_sha256": "d3e6dc175b7fdf2b8cd62318d4ed58ea051279c48258efb2078e936d1d1bc708",
+        "status": "passed"
+      },
+      "result_sha256": "3650db1ed79cee23c693494f1e1d37c8eafd11807416863d409bbfc7612be1e7"
+    }
+  ],
+  "total_qualified_task_environments": 5,
+  "kind": "verifier calibration, not agent accuracy"
+}

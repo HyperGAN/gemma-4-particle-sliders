@@ -1,15 +1,16 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17",
+  "as_of": "2026-11-17T03:15:36.619723+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
-    "real_task_verifier_controls": "three task/environment controls passed; Requests full-test control remains blocked; reports/verifier-controls-v3.json",
+    "real_task_verifier_controls": "five task/environment controls passed; Requests full-test control remains blocked; reports/verifier-controls-v4.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
     "native_pretrained_serving": "E2B BF16 SDPA tool calls qualified on shared GPU1, cap0.35; reports/native-serving-calibration.json",
-    "first_native_train_pilot": "TRAIN FastAPI11194: OFF timed out without patch; reproduce produced a patch that failed verification; remaining arms collecting; reports/native-train-pilot-v1.json"
+    "first_native_train_pilot": "four E2B TRAIN tasks complete: all four arms unresolved, no admissible contexts; reports/e2b-native-collection-v1.json",
+    "31b_ct_host": "CPU derivative/loading controls and 128/4096-token GPU forward/backward pass; no updates or learned-quality claim; reports/frozen-ct-qualification-v1.json"
   },
   "task_resolution": [
     {

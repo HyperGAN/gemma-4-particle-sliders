@@ -26,10 +26,18 @@ def text_trunk(model):
 
 
 class Slider(nn.Module):
-    def __init__(self, model, *, rank=8, alpha=8, particles=128, particle_width=4, seed=0):
+    def __init__(self, model, *, rank=8, alpha=8, particles=128, particle_width=4, seed=0, host_profile='float-linear'):
         super().__init__()
         if particle_width != 4:
             raise ValueError("shared TinyParticleProjection requires four-dimensional particles")
+        if host_profile=='float-linear':
+            host_type=nn.Linear
+        elif host_profile=='frozen-ct-w4g32':
+            from .ct_linear import FrozenCTLinear
+            host_type=FrozenCTLinear
+        else:
+            raise ValueError('unqualified projection host profile')
+        self.host_profile=host_profile
         prefix, trunk = text_trunk(model)
         self.particles = nn.Parameter(torch.randn(particles, particle_width, device=next(trunk.parameters()).device))
         # Public table initializer supplies deterministic R2 particle locations.
@@ -46,8 +54,8 @@ class Slider(nn.Module):
                     host = getattr(layer.self_attn, projection, None)
                     if host is None:
                         continue
-                    if type(host) is not nn.Linear or isinstance(getattr(host.forward, "__self__", None), TinyParticleProjection):
-                        raise ValueError("unwrapped native floating Linear required; quantized training is not qualified")
+                    if type(host) is not host_type or isinstance(getattr(host.forward, "__self__", None), TinyParticleProjection):
+                        raise ValueError("unwrapped projection matching the explicit host profile required")
                     name = f"{prefix}.layers.{i}.self_attn.{projection}"
                     adapter = TinyParticleProjection(name, host, self.particles, rank=rank, alpha=alpha)
                     self.hosts.append((name, host, adapter))
@@ -151,6 +159,7 @@ class Native:
     def metadata(self):
         return {"protocol": "gemma4-matched-assistant-decision-pg0100-v1", "model_identity": self.identity,
                 "response": "full native final hidden state", "adapter_names": list(self.network.names),
+                "host_profile":self.slider.host_profile,
                 "target_convention": "same question and observed history; teacher has selected behavioral system instruction",
                 "ema_decay": None}
 

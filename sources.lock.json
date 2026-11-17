@@ -30,5 +30,13 @@
     "member": "vllm/v1/sample/logits_processor/builtin.py",
     "source_sha256": "769038f9f91a613f2157556e74413466218e1ca9a5e9e166487a3660809d6e28",
     "execution": "three unchanged state methods under one HF generation sequence; not production vLLM parity"
+  },
+  "frozen_ct_host": {
+    "source": "https://www.kaggle.com/datasets/metric/gemma-4-developer-agent-wheelhouse",
+    "wheel": "compressed_tensors-0.15.0.1-py3-none-any.whl",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "law": "public symmetric group-32 INT4 decompression, frozen constants, exact dense input derivative",
+    "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "model_revision": "52f3f65bc7a02d555763bc923bd1d9094898219d"
   }
 }

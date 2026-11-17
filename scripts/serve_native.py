@@ -47,7 +47,10 @@ def main():
     native=load_native(config,device=args.device,memory_fraction=args.memory_fraction,checkpointing=False)
     trained=restore_native(native,args.native) if args.native else None
     generator=NativeGenerator(native,tokenizer,served_model=args.served_model,strength=args.strength,max_seconds=args.max_request_seconds)
-    sources={str(p):file_hash(p) for p in [Path(__file__),Path('src/gemma_particle/generation.py'),Path('src/gemma_particle/official_thinking.py'),Path('src/gemma_particle/prompting.py')]}
+    source_paths=[Path(__file__),Path('src/gemma_particle/generation.py'),Path('src/gemma_particle/official_thinking.py'),
+        Path('src/gemma_particle/prompting.py'),Path('src/gemma_particle/model.py'),Path('src/gemma_particle/runtime.py'),Path('sources.lock.json')]
+    if config.get('frozen_quantization'):source_paths.append(Path('src/gemma_particle/ct_linear.py'))
+    sources={str(p):file_hash(p) for p in source_paths}
     identity={'kind':'gemma4','served_model':args.served_model,'model_identity':model_identity(config),
         'pretrained_inference':True,'runtime':'native transformers; separate from production vLLM',
         'packages':{p:importlib.metadata.version(p) for p in ['torch','transformers','particle-sliders-core','particlegan','fastapi','uvicorn','pydantic']},

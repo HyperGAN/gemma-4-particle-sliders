@@ -1,0 +1,21 @@
+{
+  "seed": 0,
+  "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "model_revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+  "attn_implementation": "sdpa",
+  "frozen_quantization": "ct-w4g32",
+  "research_presets": ["rhbi_optimized", "empf"],
+  "rank": 8,
+  "alpha": 8,
+  "particles": 128,
+  "particle_width": 4,
+  "updates": 1024,
+  "batch_size": 2,
+  "checkpoints": [256, 512, 1024],
+  "dev_strengths": [0, 0.5, 1, 1.5],
+  "weights": "raw",
+  "ema_decay": null,
+  "response": "full native final hidden state at matched assistant decisions",
+  "status": "experimental separate CT host; CPU derivative controls pass; full-model memory and GPU qualification pending",
+  "cohort_delta": "Official frozen CT W4 group-32 matrices with public decompression and exact dense input derivative; batch 2 for shared memory feasibility. Not interchangeable with BF16 E2B cohorts."
+}

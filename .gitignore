@@ -2,6 +2,7 @@
 .venv/
 .harness-venv/
 .kaggle-venv/
+.vllm-venv/
 .babel-reports/
 data/
 runs/

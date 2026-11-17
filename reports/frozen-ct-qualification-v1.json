@@ -1,0 +1,96 @@
+{
+  "schema": "gemma4-frozen-ct-qualification-v1",
+  "as_of": "2026-11-17T03:05:10.826249+00:00",
+  "model_weights_receipt": "reports/model-weights-31b-ct.json",
+  "training_updates": 0,
+  "learned_quality": "unmeasured",
+  "host_law": "public CT group-32 symmetric INT4 decompression; exact dense input derivative; packed constants saved for backward",
+  "cpu_controls": [
+    "public dense output and input-gradient equality",
+    "double-precision gradcheck and no saved dense matrix",
+    "loaded tiny Gemma checkpoint and adapter-gradient equality against public dense decompression"
+  ],
+  "gpu_profiles": [
+    {
+      "schema": "gemma4-native-resource-qualification-v1",
+      "model_identity": {
+        "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+        "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+        "dtype": "bfloat16",
+        "attn_implementation": "sdpa",
+        "weight_format": "ct-w4g32"
+      },
+      "device": "cuda:0",
+      "memory_fraction": 0.6,
+      "context_tokens": 128,
+      "training_updates": 0,
+      "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+      "scope": "memory, finite forward, exact initial OFF and live adapter gradients; not learned quality",
+      "status": "passed",
+      "load_seconds": 27.362603327957913,
+      "off_seconds": 8.41257762501482,
+      "initial_on_equals_off": true,
+      "backward_seconds": 22.78077162289992,
+      "response_shape": [
+        1,
+        5376
+      ],
+      "gradient_tensors": 4141,
+      "connected_gradient_tensors": 4141,
+      "nonzero_gradient_tensors": 230,
+      "finite_gradients": true,
+      "adapter_unchanged": true,
+      "frozen_base": true,
+      "host_profile": "frozen-ct-w4g32",
+      "peak_allocated_bytes": 24720537088,
+      "peak_reserved_bytes": 24968691712
+    },
+    {
+      "schema": "gemma4-native-resource-qualification-v1",
+      "model_identity": {
+        "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+        "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+        "dtype": "bfloat16",
+        "attn_implementation": "sdpa",
+        "weight_format": "ct-w4g32"
+      },
+      "device": "cuda:0",
+      "memory_fraction": 0.6,
+      "context_tokens": 4096,
+      "training_updates": 0,
+      "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+      "scope": "memory, finite forward, exact initial OFF and live adapter gradients; not learned quality",
+      "status": "passed",
+      "ct_sources": {
+        "version": "0.15.0.1",
+        "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+        "verified_python_files": 102
+      },
+      "execution_sources": {
+        "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "da79f46daa60170b08957c8a79bafa8eda424d32692ab2f9ee985ca0c486cec4",
+        "configs/31b-ct-pilot.json": "916586bfd032ee1e21835f3867e3e4dfc1fe6ae4b37235fa4306e23036c0cf7c",
+        "src/gemma_particle/model.py": "de88d69af2ac2d3074af1e3c689569a221e5e67c206900ae6a6e8c30700e128a",
+        "src/gemma_particle/runtime.py": "603e05073efe70b3c74d92f07d39bca1e97c57543ff64c877decddf3d71369b3",
+        "src/gemma_particle/ct_linear.py": "cb8d51500bd4039e8d06b2b4843e08a20395455a2c5e999131ff8377bd4bff89"
+      },
+      "load_seconds": 22.977232026983984,
+      "off_seconds": 15.031037525972351,
+      "initial_on_equals_off": true,
+      "backward_seconds": 52.61276309902314,
+      "response_shape": [
+        1,
+        5376
+      ],
+      "gradient_tensors": 4141,
+      "connected_gradient_tensors": 4141,
+      "nonzero_gradient_tensors": 230,
+      "finite_gradients": true,
+      "adapter_unchanged": true,
+      "frozen_base": true,
+      "host_profile": "frozen-ct-w4g32",
+      "peak_allocated_bytes": 27272915968,
+      "peak_reserved_bytes": 28500295680
+    }
+  ],
+  "limits": "Synthetic resource probes, not targets. Longer contexts, actual recipe updates, native coding quality, conversion and production parity remain unmeasured."
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "gemma4-pinned-weights-v1",
+  "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+  "file": "model.safetensors",
+  "bytes": 23265352448,
+  "sha256": "1b9b1d622a93f02c0d33f98e502f233b5d707443af6ddc464ed0bf5498506c20",
+  "matches_hub_lfs_sha256": true,
+  "gpu_used_for_verification": false
+}

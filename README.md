@@ -15,9 +15,10 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
-| Real-task scorer controls | [Passed on three task/environment combinations](reports/verifier-controls-v3.json): empty fails, reference passes, edited workspace import confirmed |
+| Real-task scorer controls | [Passed on five task/environment combinations](reports/verifier-controls-v4.json): empty fails, reference passes, edited workspace import confirmed |
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
+| Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
 | Competition | [Authenticated downloads and leaderboard verified](reports/official-access.json) on 2026-11-17; leading public score 0.29; no scored submission yet |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
@@ -59,6 +60,8 @@ The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich
 [The experiment protocol](docs/protocol.md) describes the remaining work. `run_trajectories.py` runs sanitized TRAIN/DEV tasks and captures actual model requests. `verify_trajectories.py` is a separate process that alone reads reference-bearing tasks, validates matching environment identities and tests each patch in a fresh container. Curation requires all four declared arms, a failed OFF control and a complete successful instruction run from the exact pinned BF16 frozen base. Genuine OFF task timeouts retain their failure status and hash-bound initial request. It preserves observed history, tools, ADK's appended system text and captured thinking mode. Scripted CPU probes are explicitly rejected as targets.
 
 Cache/training/conversion commands require an explicit device and should only run after CPU preparation. Native pretrained collection has started on shared GPU 1 with a .35 memory fraction; unrelated jobs remain running. [Native serving instructions](docs/native-serving.md) describe the qualified controls, explicit SDPA cohort, excluded eager-memory episode and request identity checks. No learned adapter has been trained yet.
+
+The first four E2B TRAIN tasks completed all four arms without a verified fix and supplied zero contexts. This is a result under native HF's five-minute budget. Faster scorer-style serving is being qualified before drawing a model-capacity conclusion. [Collection receipts](reports/e2b-native-collection-v1.json) preserve failures and timeouts.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:
