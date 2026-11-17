@@ -34,6 +34,8 @@ def main():
     p.add_argument('--prompt-profile', choices=PROMPT_PROFILES, default=DEFAULT_PROMPT_PROFILE)
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
+    p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
+    p.add_argument('--image', default='gemma-particle-sandbox:fastapi-deps-v2')
     args = p.parse_args()
     protocol = load_behavior_protocol(args.protocol)
     executor = args.executor.resolve()
@@ -43,7 +45,7 @@ def main():
     subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=executor, check=True)
     if sha256_file(executor / 'research/jev-evidence-loop-v1.json') != sha256_file(args.protocol):
         raise ValueError('prospective protocol differs from frozen executor')
-    tasks = read_jsonl(Path('data/splits-v1/train.jsonl'))
+    tasks = read_jsonl(args.visible_tasks)
     validate_agent_tasks(tasks)
     if any(t['split'] != 'train' for t in tasks) or args.task_id not in {t['instance_id'] for t in tasks}:
         raise ValueError('sanitized TRAIN task required')
@@ -54,7 +56,7 @@ def main():
     receipt = Path(row['receipt']).resolve()
     wheels = Path(row['wheels']).resolve()
     control = json.loads(receipt.read_text())
-    image = 'gemma-particle-sandbox:fastapi-deps-v2'
+    image = args.image
     image_id = subprocess.check_output(['docker', 'image', 'inspect', '--format', '{{.Id}}', image], text=True).strip()
     if (row['status'] != 'passed' or sha256_file(receipt) != row['receipt_sha256']
             or control['status'] != 'passed' or image_id != qualification['image_id']
@@ -94,6 +96,7 @@ def main():
         'source_git': commit, 'source_checkout': str(executor),
         'execution_sources': {s: sha256_file(executor / s) for s in sources},
         'environment_control_sha256': row['receipt_sha256'], 'teacher_policy': 'all-four',
+        'image':image, 'image_id':image_id, 'visible_tasks_sha256':sha256_file(args.visible_tasks),
         'instruction_protocol': 'tools-v2', 'capture_protocol': CONTEXT_CAPTURE_PROTOCOL,
         'history_profile': OFFICIAL_COMPACTION, 'history': history_contract(OFFICIAL_COMPACTION),
         'budget_profile': OFFICIAL_BUDGET, 'budget': budget_values(OFFICIAL_BUDGET),

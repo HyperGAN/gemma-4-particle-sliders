@@ -1,0 +1,90 @@
+{
+  "schema": "gemma4-train-environment-qualification-v1",
+  "as_of": "2026-11-17T09:19:34.791506+00:00",
+  "image": "gemma-particle-sandbox:fastapi-json-deps-v3",
+  "image_id": "sha256:f21c58368d30b6485b6bf5fb7138561b7115ce5893d24cda23b3ed93b200e66c",
+  "source_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+  "qualified": 2,
+  "controls": [
+    {
+      "instance_id": "fastapi_14962",
+      "status": "passed",
+      "receipt": "runs/json-test-dependency-controls-v1/fastapi_14962/result.json",
+      "receipt_sha256": "7a9717eed7c782e24055302977c6ce7c4074c273592fc4d4a0627858d11c46a0",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14962",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 12.680088144959882
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 15.06628975388594
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b6d6572e9eba6e2696fbd34ec182a6f62760bdb03de4813446d6569b4e6495bb",
+      "selected_environment": "declared-json-test-dependency-image-v3"
+    },
+    {
+      "instance_id": "fastapi_14964",
+      "status": "passed",
+      "receipt": "runs/json-test-dependency-controls-v1/fastapi_14964/result.json",
+      "receipt_sha256": "3b5e08cece5478979a6c2f173d9b13e88ed0a95ff5da5e1102e0a4ddd34b2552",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14964",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 12.61473115393892
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 15.063060433836654
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "f09059d29d925ac0b5ed96ddd8ee164e656cdf164d8ae88a53bae3ff783659e8",
+      "selected_environment": "declared-json-test-dependency-image-v3"
+    }
+  ],
+  "visible_manifest": "data/train-json-repair-v1/train.jsonl",
+  "visible_tasks_sha256": "53ebb2575192e8cc7e5f6dec115293c01008d8484d393eeb2fa51c7996676c88",
+  "cohort": "fixed two-task JSON dependency repair; complete controls for this subset",
+  "plan_sha256": "b1ef6a40b3036fa5530b93d38b76b76ecc8b6a10efb391195c3934e2b70f683d",
+  "previous_full_qualification_sha256": "17a0d45e1fcb118add886a0e214376dd57e4e1afccb7b424f7b1c19c175aa542",
+  "distinct_original_train_tasks_qualified_across_recorded_environments": 60,
+  "selection_policy": "two tasks declared before new controls; unchanged snapshot core wheel profiles; add only declared JSON test dependencies in separate image",
+  "scope": "CPU environment qualification only; existing active pools/images/order unchanged; no model results or targets"
+}

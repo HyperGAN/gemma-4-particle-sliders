@@ -1,0 +1,59 @@
+{
+  "schema": "gemma4-real-episode-preparation-v1",
+  "created_at": "2026-11-17T09:16:35.821521+00:00",
+  "protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "api_calls": 0,
+  "admitted_contexts": 0,
+  "pretrained_optimizer_updates": 0,
+  "arms": [
+    {
+      "arm": "off",
+      "instance_id": "fastapi_11194",
+      "outcome_sha256": "c7b3a89b56bcd3d45ad308635962d485cb52beb8aa57fb3098e8725d0957d4d1",
+      "terminal_request_sha256": "f7e0e645ed2438d574f6c1f7b9574c32dde41254466d33d1063f24bb78ac7c13",
+      "terminal_response_sha256": "41e410d134e76af3adc4cb600e473b1e92e47750f948b8641d08de52128da2de",
+      "episode_sha256": "f2bcdcbeed57e639bbd174fb03836ade4af26ad9efa6daca41d79ace77242476",
+      "api_request_sha256": "796a579ddab784f3917242806a658e0235166d8ccdc5c019f68a697fdbe6fc5a",
+      "wire_request_sha256": "70557c7eb41554e6c9260e30e2f76aa5a6bd4b2292aac2b346df736935ecd33e",
+      "bytes": 12399,
+      "episode_messages": 10,
+      "system_or_developer_messages": 0,
+      "issue_fields": [
+        "hints_text",
+        "problem_statement"
+      ],
+      "resolved": true,
+      "capture_complete": true
+    },
+    {
+      "arm": "reproduce",
+      "instance_id": "fastapi_11194",
+      "outcome_sha256": "3e9e95a7c57d657ae37646b72c79976a07da13d3dfcb40850d5428d02c2538c0",
+      "terminal_request_sha256": "b85ca86afdd72ceb8411867dbc981adc06094182bf18b167162d2565a1ade1d3",
+      "terminal_response_sha256": "2c3e5e19362a7d5f70ca19a17f363828d1f46a205b14848bd5bf9ae448e474a9",
+      "episode_sha256": "a57a9179adc3e37367a0c9ee726d3e117b9b5445e6a16645a062be28c4e3fe1a",
+      "api_request_sha256": "72d1f7212a75199086af36cd3d67d4362e0bcd0ade811ed15407a68101805053",
+      "wire_request_sha256": "7fb4bd8516ac7aed31457c24a2b61de7def8133310e6dcaeceb4c7f5199a0301",
+      "bytes": 47226,
+      "episode_messages": 38,
+      "system_or_developer_messages": 0,
+      "issue_fields": [
+        "hints_text",
+        "problem_statement"
+      ],
+      "resolved": true,
+      "capture_complete": true
+    }
+  ],
+  "scope": "CPU real-episode serialization and initial cue pairing only; quartet incomplete, no behavior grading or target admission",
+  "status": "passed",
+  "initial_pair_validated": true,
+  "initial_decision": 0,
+  "initial_neutral_matches_actual_off": true,
+  "raw_result_sha256": "6fa742b9aad90f869bdade39c402793a71b103f39547b4aac86f44b7cf22f1ae",
+  "execution_sources": {
+    "src/gemma_particle/behavior_curation.py": "c4bfdd3a6da45700ddf1b071e91611f85bc3f9778a0a3cff39684dbe1122a1f0",
+    "src/gemma_particle/curation.py": "91797f03af255eff52a6c0943b93f519a43ea41cbe39f710a600b514e1da3e8e",
+    "src/gemma_particle/decisions.py": "be96f1e1bbe302c5043e3aefbfdd2c11da5e251af42ba4b338e0e7bbacf6cc1d"
+  }
+}

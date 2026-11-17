@@ -65,6 +65,7 @@ def main():
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
+    p.add_argument('--image', default='gemma-particle-sandbox:fastapi-deps-v2')
     args = p.parse_args()
     for name in ('root', 'executor', 'curator', 'server_identity', 'protocol', 'qualification', 'visible_tasks'):
         setattr(args, name, getattr(args, name).resolve())
@@ -85,8 +86,13 @@ def main():
     if sha256_file(args.curator/'research/jev-evidence-loop-v1.json') != sha256_file(args.protocol):
         raise ValueError('curator protocol differs')
     qualification = json.loads(args.qualification.read_text())
-    selected = select_tasks(read_jsonl(args.visible_tasks), qualification,
-        protocol['cohort_policy']['excluded_fit_tasks'])
+    actual_image = subprocess.check_output(['docker','image','inspect','--format','{{.Id}}',args.image],text=True).strip()
+    if actual_image != qualification['image_id']:
+        raise ValueError('requested image differs from its qualified task cohort')
+    visible = read_jsonl(args.visible_tasks)
+    visible_ids = {r['instance_id'] for r in visible}
+    reserved = protocol['cohort_policy']['excluded_fit_tasks']
+    selected = select_tasks(visible, qualification, [task for task in reserved if task in visible_ids])
     raw_tasks = args.visible_tasks.parent.parent/'kaggle-official/tasks.jsonl'
     if sha256_file(raw_tasks) != qualification['source_sha256']:
         raise ValueError('qualified TRAIN source changed')
@@ -98,6 +104,7 @@ def main():
                 or first['source_git'] != args.executor_commit
                 or first.get('behavior_protocol_sha256') != sha256_file(args.protocol)
                 or first.get('prompt_profile',DEFAULT_PROMPT_PROFILE) != args.prompt_profile
+                or first.get('image', 'gemma-particle-sandbox:fastapi-deps-v2') != args.image
                 or first.get('endpoint') != args.endpoint.rstrip('/')):
             raise ValueError('existing first quartet differs from this fixed-order study')
         birth = collector_identity(args.first_collector_pid, args.first_cohort)
@@ -113,6 +120,7 @@ def main():
         'task_ids':[r['instance_id'] for r in selected],
         'excluded_tasks':protocol['cohort_policy']['excluded_fit_tasks'],
         'qualification_sha256':sha256_file(args.qualification), 'visible_tasks_sha256':sha256_file(args.visible_tasks),
+        'image':args.image, 'image_id':actual_image,
         'raw_tasks_sha256':qualification['source_sha256'], 'server_identity':server,
         'endpoint':args.endpoint.rstrip('/'), 'executor':str(args.executor), 'executor_commit':args.executor_commit,
         'prompt_profile':args.prompt_profile,
@@ -146,12 +154,13 @@ def main():
                 '--executor', str(args.executor), '--executor-commit', args.executor_commit,
                 '--server-identity', str(args.server_identity), '--endpoint', args.endpoint,
                 '--task-id', task_id, '--protocol', str(args.protocol), '--qualification', str(args.qualification),
-                '--prompt-profile',args.prompt_profile],
+                '--prompt-profile',args.prompt_profile, '--visible-tasks',str(args.visible_tasks),'--image',args.image],
                 args.root/'logs'/f'{task_id}-prepare.log')
             inputs = raw_tasks.parent
             execute(args.executor, args.executor/'.harness-venv/bin/python', ['scripts/collect_arms.py',
                 '--root', str(cohort), '--visible-tasks', str(args.visible_tasks), '--raw-tasks', str(raw_tasks),
                 '--inputs', str(inputs), '--wheels', str(Path(record['wheels']).resolve()),
+                '--image',args.image,
                 '--server-identity', str(args.server_identity), '--endpoint', args.endpoint],
                 args.root/'logs'/f'{task_id}-collect.log')
         grades = args.root/(task_id+'-grades')
