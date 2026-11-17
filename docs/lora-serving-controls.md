@@ -28,4 +28,4 @@ PYTHONPATH=src .harness-venv/bin/python scripts/qualify_vllm_lora.py \
   --out runs/own-lora-effect
 ```
 
-Loading and effect qualification remain unmeasured until that actual server/control finishes. They do not establish native nonlinear-to-linear conversion fidelity, real candidate task success or an official score.
+The [actual official-vLLM control](../reports/vllm-lora-effect-control-v1.json) passed all eight requests: identical prompt token IDs, exactly zero logprob difference for the zero adapter, and a .5296175 maximum common-token logprob change for the nonzero probe. The owned test server then exited and GPU 1 returned to 20 MiB used. This establishes short-prompt loading and effect for synthetic matrices; native nonlinear-to-linear conversion fidelity, real candidate task success and an official learned score remain unmeasured.

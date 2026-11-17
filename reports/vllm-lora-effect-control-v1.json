@@ -1,0 +1,53 @@
+{
+  "schema": "gemma4-vllm-lora-effect-control-v1",
+  "status": "passed",
+  "created_at": "2026-11-17T08:04:07.825292+00:00",
+  "server_identity_sha256": "8bbb72180a5f1f896bd85e5f0fa94471293fba852d3f174451f6149f49063249",
+  "server_identity_file_sha256": "8f55f3769d1b43c883a752cd7143fc09bfbf5905e63d2c5067ded7de8dff5ba1",
+  "pretrained_inference": true,
+  "synthetic_adapters": true,
+  "training_updates": 0,
+  "requests_completed": 8,
+  "requests_attempted": 8,
+  "http_responses_received": 8,
+  "sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/qualify_vllm_lora.py": "d71080a6b9ecd426b2c25c6eeef98458f1545440abfab9d3fbc3aeb0fcb5bef0",
+    "src/gemma_particle/lora_serving.py": "841b145b49faea86d0449bdb5aa7a274869518d34d02ae625f826b53c919303a"
+  },
+  "scope": "local official-vLLM alias/input/effect controls; no trained adapter, native approximation or coding-quality claim",
+  "phase": "/v1/completions",
+  "prompt_token_ids": [
+    12670,
+    11790,
+    16433,
+    2256,
+    236761,
+    107,
+    13293,
+    506,
+    3658,
+    5508,
+    236761,
+    107,
+    7925,
+    236787
+  ],
+  "checks": {
+    "zero_token_equal": true,
+    "zero_top_ids_equal": true,
+    "zero_logprobs_within_tolerance": true,
+    "nonzero_effect_observed": true
+  },
+  "passed": true,
+  "zero_max_logprob_delta": 0.0,
+  "probe_max_common_logprob_delta": 0.5296175479888916,
+  "tolerance": 1e-05,
+  "model_aliases_advertised": true,
+  "prompt_token_ids_equal": true,
+  "seconds": 5.75333118182607,
+  "raw_result_sha256": "79f63d7a0fea7b778820a2e4754df41ece6ec70cea2a2d6649c287eb5286bb27",
+  "http_calls_sha256": "a04a71c41ed63f7803a5469d99292c007c92a749aff8ba26b3f3c96117ed7999",
+  "http_requests_sha256": "a7e9ba8bfa220a18f9c9f64a36313a3447226455f63bbeb7dcd6929bf631038b",
+  "fixture_manifest_sha256": "986f3baf91e82c28816dcbeedf1db826033ee55c3e365e6a9f1006001633f20e",
+  "scope_note": "All230 actual attention targets use fixed synthetic matrices, same exported PEFT name convention. This proves local loading/alias/zero-nonzero effect at the fixed short prompt, not learned conversion quality or long-context/task performance."
+}

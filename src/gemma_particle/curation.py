@@ -23,7 +23,7 @@ def instruction_set(protocol=DEFAULT_INSTRUCTION_PROTOCOL):
     return INSTRUCTION_PROTOCOLS[protocol]
 
 
-def select_contexts(tasks, outcomes):
+def validate_context_outcomes(tasks, outcomes):
     """Outcomes contain matched complete runs, not judge-generated target answers.
 
     A verifier receipt binds the task, patch SHA, test result, and exact
@@ -88,7 +88,6 @@ def select_contexts(tasks, outcomes):
         if row["arm"] in arms:
             raise ValueError("duplicate arm; define a new declared trial instead")
         arms[row["arm"]] = row
-    selected = []
     for task_id, arms in sorted(by_task.items()):
         protocols={r.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL) for r in arms.values()}
         if len(protocols)!=1:raise ValueError('curation arms have unmatched instruction protocols')
@@ -104,6 +103,15 @@ def select_contexts(tasks, outcomes):
             raise ValueError('curation arms have unmatched model/environment/budget contracts')
         if any(r['model_identity']!=baseline['model_identity'] for r in arms.values()):
             raise ValueError('curation arms have unmatched model identities')
+    return by_task
+
+
+def select_contexts(tasks, outcomes):
+    """Original binary win-over-failed-OFF, all-decision selection policy."""
+    by_task = validate_context_outcomes(tasks, outcomes)
+    selected = []
+    for task_id, arms in sorted(by_task.items()):
+        baseline=arms['off']
         if baseline["resolved"]:
             continue
         if not baseline.get('first_request'):
@@ -117,37 +125,55 @@ def select_contexts(tasks, outcomes):
             continue
         # Fixed tie break, declared before observing results.
         winner = min(candidates, key=lambda r: (r["tool_calls"], r["elapsed_seconds"], r["arm"]))
-        off_messages=baseline['first_request']['messages']
-        if not off_messages or off_messages[0]['role']!='system':
-            raise ValueError('captured OFF system prompt required')
-        base_system=off_messages[0]['content']
-        off_request=baseline['first_request']
-        insertion='\n\n'+instructions[winner['arm']]
-        for packet in winner["requests"]:
-            if not is_assistant_decision(packet,winner.get('history_profile',NO_COMPACTION)):continue
-            request=packet['request']
-            if any(request[k]!=off_request[k] for k in ('model','tools','generation')):
-                raise ValueError('teacher tools or generation differ from the OFF control')
-            if packet['request_sha256'] != digest(request):
-                raise ValueError('captured request changed')
-            history = deepcopy(request['messages'])
-            if not history or history[0]["role"] != "system":
-                raise ValueError("a paired context requires the base system prompt")
-            positive_system=history[0]['content']
-            if positive_system.count(insertion)!=1 or positive_system.replace(insertion,'',1)!=base_system:
-                raise ValueError('teacher must differ from actual OFF system bytes by the declared instruction only')
-            neutral = deepcopy(history)
-            neutral[0]["content"] = base_system
-            selected.append({"schema":"gemma4-paired-context-v2", "instance_id": task_id, "split": "train", "decision": packet['decision'],
-                             "neutral_messages": neutral, "positive_messages": history,
-                             "tools":deepcopy(request['tools']), "generation":deepcopy(request['generation']),
-                             "teacher_request_sha256":packet['request_sha256'],
-                             "evaluation_contract_sha256":winner['evaluation_contract_sha256'],
-                             "model_identity":winner['model_identity'],
-                             "target_arm": winner["arm"], "verification": winner["verification"],
-                             "quality_rubric": RUBRIC})
-            if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
-            if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
-            if 'capture_protocol' in winner:selected[-1]['capture_protocol']=winner['capture_protocol']
-            if 'history_profile' in winner:selected[-1]['history_profile']=winner['history_profile']
+        selected.extend(pair_contexts(winner, baseline))
+    return selected
+
+
+def pair_contexts(winner, baseline, *, initial_only=False):
+    """Preserve the actual teacher request; remove only its declared cue."""
+    task_id=winner['instance_id']
+    protocol=winner.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
+    instructions=instruction_set(protocol)
+    selected=[]
+    off_messages=baseline['first_request']['messages']
+    if not off_messages or off_messages[0]['role']!='system':
+        raise ValueError('captured OFF system prompt required')
+    base_system=off_messages[0]['content']
+    off_request=baseline['first_request']
+    insertion='\n\n'+instructions[winner['arm']]
+    for packet in winner["requests"]:
+        if not is_assistant_decision(packet,winner.get('history_profile',NO_COMPACTION)):continue
+        request=packet['request']
+        if initial_only and selected:break
+        if any(request[k]!=off_request[k] for k in ('model','tools','generation')):
+            raise ValueError('teacher tools or generation differ from the OFF control')
+        if packet['request_sha256'] != digest(request):
+            raise ValueError('captured request changed')
+        history = deepcopy(request['messages'])
+        if not history or history[0]["role"] != "system":
+            raise ValueError("a paired context requires the base system prompt")
+        positive_system=history[0]['content']
+        if positive_system.count(insertion)!=1 or positive_system.replace(insertion,'',1)!=base_system:
+            raise ValueError('teacher must differ from actual OFF system bytes by the declared instruction only')
+        neutral = deepcopy(history)
+        neutral[0]["content"] = base_system
+        if initial_only and (packet['decision']!=0
+                or any(m['role'] not in ('system','user') for m in history)
+                or neutral!=off_request['messages']
+                or request!=winner['first_request']):
+            raise ValueError('initial target must match the whole initial OFF conversation with no assistant/tool history')
+        selected.append({"schema":"gemma4-paired-context-v2", "instance_id": task_id, "split": "train", "decision": packet['decision'],
+                         "neutral_messages": neutral, "positive_messages": history,
+                         "tools":deepcopy(request['tools']), "generation":deepcopy(request['generation']),
+                         "teacher_request_sha256":packet['request_sha256'],
+                         "evaluation_contract_sha256":winner['evaluation_contract_sha256'],
+                         "model_identity":winner['model_identity'],
+                         "target_arm": winner["arm"], "verification": winner["verification"],
+                         "quality_rubric": RUBRIC})
+        if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
+        if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
+        if 'capture_protocol' in winner:selected[-1]['capture_protocol']=winner['capture_protocol']
+        if 'history_profile' in winner:selected[-1]['history_profile']=winner['history_profile']
+    if initial_only and len(selected)!=1:
+        raise ValueError('one complete initial assistant decision required')
     return selected

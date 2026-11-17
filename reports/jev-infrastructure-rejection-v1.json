@@ -1,0 +1,17 @@
+{
+  "schema": "gemma4-behavior-infrastructure-rejection-v1",
+  "status": "passed",
+  "created_at": "2026-11-17T08:28:27.693515+00:00",
+  "failure": "collector launch omitted /v1; all4 model transports returned404 before tool use",
+  "raw_progress_sha256": "de4251ee01e8d3d565cd5e385397626135e3efecfa4bb14e07ed7383abd84843",
+  "grade_result_sha256": "df3e8d981b13755dd96e736fb95ba8689e1ddec9126b79fe3f50ced4c6fe7e49",
+  "offline_curation_sha256": "75a6f0a39714935faa47cc9a748f44ed2643db36d6f4491f57129556877b62d1",
+  "raw_arms": 4,
+  "raw_arms_resolved": 0,
+  "eligible_grades": 0,
+  "decision_api_calls": 0,
+  "admitted_contexts": 0,
+  "training_updates": 0,
+  "correction": "new immutable v2 quartet uses validated loopback /v1 and live identity; same prospective protocol/budget",
+  "scope": "correct rejection of an infrastructure-failed cohort; no real behavior grade, fitted target or quality claim"
+}
