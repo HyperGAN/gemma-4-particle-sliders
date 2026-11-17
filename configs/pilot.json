@@ -1,0 +1,31 @@
+{
+  "seed": 0,
+  "model": "google/gemma-4-E2B-it",
+  "model_revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+  "research_presets": [
+    "rhbi_optimized",
+    "empf"
+  ],
+  "rank": 8,
+  "alpha": 8,
+  "particles": 128,
+  "particle_width": 4,
+  "updates": 1024,
+  "batch_size": 8,
+  "checkpoints": [
+    256,
+    512,
+    1024
+  ],
+  "dev_strengths": [
+    0,
+    0.5,
+    1,
+    1.5
+  ],
+  "weights": "raw",
+  "ema_decay": null,
+  "response": "full native final hidden state at matched assistant decisions",
+  "gpu_policy": "CPU preparation first; share existing GPUs; explicit memory fraction and bounded workload",
+  "status": "draft, requires model revision, harness parity and CPU gates before GPU execution"
+}

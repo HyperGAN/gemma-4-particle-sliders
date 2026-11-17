@@ -1,0 +1,70 @@
+{
+  "schema": "gemma4-cpu-preflight-v1",
+  "status": "passed",
+  "gpu_used": false,
+  "checks": [
+    {
+      "command": [
+        "/ml2/kaggle-hackathon-gemma-4/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests",
+        ".deps/particle-sliders/packages/particle-sliders-core/tests/test_pg0100_integration.py"
+      ],
+      "exit_code": 0,
+      "output_sha256": "92846a1ea91ac215c8d20fbd0c0b632f9d0777642a4f1e23852d7412252c172a"
+    },
+    {
+      "command": [
+        "/ml2/kaggle-hackathon-gemma-4/.harness-venv/bin/python",
+        "scripts/validate_submission.py",
+        "dist/baseline-31b/agent"
+      ],
+      "exit_code": 0,
+      "output_sha256": "3483bfb91848e73439c6a79bb4620dc73f575c23a894550f2a1bb8dcf94d9c09"
+    }
+  ],
+  "sources": {
+    "src/gemma_particle/__init__.py": "e1e74b2b66901e5679012a9b4fde6a5d93543a60a4e606557d45dbe38e7ab544",
+    "src/gemma_particle/curation.py": "4c0ec42b33d2ab0be4c2e2744e432a13ceaac0f47c73c4704a7a416e69d3c13b",
+    "src/gemma_particle/data.py": "a1af2afdeafb0f1407d4ff3cad9bbc069653ff1e9a9221a0829b9a4aca065b4a",
+    "src/gemma_particle/evaluation.py": "742c7679fee9c7a3307c53fd7ff5dfee70a7bf8b327bf01e8b113308d96d2a00",
+    "src/gemma_particle/export.py": "d32d92f453d92e528d96ca80b6f98aa9d36203330599facc6c409a71c7ccfa2d",
+    "src/gemma_particle/model.py": "75745a4094409cbd5ff0a9051c508adea3d7055af3a5118b40c408575fec9ee5",
+    "src/gemma_particle/remote_zip.py": "6e54c7e88b142f4d85bfd5cb7afa598f9c1f373ee0edf8896dbd9ccc8eba6468",
+    "src/gemma_particle/runtime.py": "1aa5aa6394cbe2109532340cb84f8fa71331be56fdba8dbe3e4d3110d3d1cd6e",
+    "tests/conftest.py": "3111bdd09841be2bcbc7387be5aa801c333f085a668f9726352786eba21ab91d",
+    "tests/test_data.py": "c3a544c2c74ce43ef0fba12d47c902e967ec432d798a612343aec72d06d96f2a",
+    "tests/test_evaluation.py": "f4afd98d267c85567ea9f99069ee604c5112700ac6fc67ecc30c418af72605ce",
+    "tests/test_export.py": "ce8b2fb03990212f4e5bb28112ca00864a641539ee5f79eefb4a6b793b3abae5",
+    "tests/test_gemma_binding.py": "de07e303be6336878d6c6e76a501970e712118e9478d918250dd578e2f8f5ae2",
+    "tests/test_remote_zip.py": "0daff6e1c909661ba6f713a226483301500e6456e2866792799b9385a120b7db",
+    "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
+    "scripts/bootstrap.py": "96642d6cadf203f32e9a59d8279f5a4b20d32c40a77321dbf41d1d5caac25463",
+    "scripts/build_submission.py": "b7ccb61507024a0c69f330aa11c96ad8bf5c3949ef624ea0479b66da71f99ad5",
+    "scripts/cache_contexts.py": "c5e73f7261b8dc28bb7d1eace777c05ee8ca2721afc83fc0cfe4c52142c46ab9",
+    "scripts/convert_to_peft.py": "2684afa2a3448d37ffd368db3e24dad0e4ecb2f20f6477a994230ae2f0b2d117",
+    "scripts/curate.py": "bcffd97225bcf7232d8ec04667b81bafdf87e98e2ea9ae8dbc09e3561a8b44bd",
+    "scripts/fetch_public_inputs.py": "31d84dfac00db60ba88d132a9a9fcc60f6ab2fcbeb729fbd0a19a7e1415076d2",
+    "scripts/preflight.py": "9833b452235fcfe4dda0159770e48975785a88511b4ddcf20360b0f9a4d492f3",
+    "scripts/prepare_tasks.py": "2b5904af930ba9049702ad8f61e7ca59ec1185190e74e367535cf87e9aa04f46",
+    "scripts/train.py": "5787579cba980d731567f72f2a4a9c036385afe650ecdfe867cd57c0a676f4f6",
+    "scripts/validate_submission.py": "3aee471ecdd7dd438d0b998bba4dc56d14f6675fbe8dbd504cca9619f34c8467",
+    "submission/agent.yaml": "49e4c9f5662c83b18d585bd5fb16cb8eef006d46610c13d1f725240d30c883c0",
+    "submission/configs/sampling.yaml": "8f0116a1dc4e64b6eb78af99bc675f76030fa262708d7232cd62ecac1bea91f5",
+    "submission/eval_config.yaml": "9051faf64ff167bf6c9709c888fe35e37af08309886c6fc8a8a8608e72e0c0f4",
+    "submission/prompts/system.md": "a6794476679e0ad6a35b4615355bb9737501bcfc8528b9a16936857cde0df9ea",
+    "patches/particle-sliders-pg0100.patch": "42e4b606bb4334e79505e0e8736d9283ccdae2440f1e5b9870f28f50876f1500",
+    "configs/pilot.json": "efabdada9d6db47d5c017b5c0ff0f5a97497a12fa1c4e496de6b799908a8de91"
+  },
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "particlegan": "0.10.0",
+    "particle-sliders-core": "0.15.0.dev0",
+    "transformers": "5.13.1",
+    "peft": "0.21.3",
+    "numpy": "1.26.4"
+  },
+  "scope": "CPU random Gemma 4 fixture, software checks and mirrored compiler only; no pretrained task accuracy or SOTA claim"
+}

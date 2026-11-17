@@ -1,0 +1,66 @@
+# Gemma 4 Particle Sliders
+
+An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.0** and an experimental Particle Sliders core.
+
+**Work in progress. No pretrained Gemma task score or SOTA improvement has been measured.** The current evidence covers CPU engineering checks and compilation with a mirrored competition compiler. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
+
+The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
+
+Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
+
+| Component | Current evidence |
+|---|---|
+| ParticleGAN | `develop` commit `af0764b144cf81b12117d80deceeae24e8bf45db`, package 0.10.0 |
+| Particle Sliders | `acbe43fe…` plus the hash-pinned [0.10 bridge patch](patches/particle-sliders-pg0100.patch) |
+| Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
+| PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
+| Submission | Prompt baseline compiled by mirrored `adk-submission==0.2.13`; no inference during this check |
+| Competition | Current account entry, current harness parity, current top score, and scored submission still required |
+
+[sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
+
+Install PyTorch appropriate to the machine first. The tested training environment uses Python 3.11, Torch 2.14.1, and Transformers 5.13.1. The mirrored compiler requires a separate Python 3.12 environment.
+
+```bash
+python3.11 -m venv --system-site-packages .venv
+.venv/bin/python -m pip install 'setuptools>=84.2.1' wheel backports.tarfile
+.venv/bin/python scripts/bootstrap.py
+.venv/bin/python -m pip install -r requirements-model.txt pytest
+CUDA_VISIBLE_DEVICES='' .venv/bin/python -m pytest -q tests
+```
+
+The bootstrap checks exact commits and the source patch hash. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins.
+
+Small inputs can be fetched from a pinned [public mirror](https://huggingface.co/datasets/HanG/gemma-4-developer-agent). This enables preparation while Kaggle access is being arranged; it does not establish current competition parity. ZIP byte ranges are checked exactly and capped at a transfer budget. [Input receipts](reports/input-provenance.json) bind the extracted members. Raw reference patches stay in ignored `data/`; agent-visible splits remove both `patch` and `test_patch`.
+
+```bash
+.venv/bin/python scripts/fetch_public_inputs.py  # list ZIP members, without downloading snapshots
+.venv/bin/python scripts/fetch_public_inputs.py \
+  --member root/.cache/kagglehub/competitions/gemma-4-developer-agent/tasks.jsonl
+.venv/bin/python scripts/prepare_tasks.py \
+  --source data/public-mirror/root/.cache/kagglehub/competitions/gemma-4-developer-agent/tasks.jsonl
+.venv/bin/python scripts/build_submission.py --out dist/baseline-31b
+```
+
+The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich and HTTPX (49). This repository-disjoint split is a small engineering pilot, not an estimate of hidden competition performance. No holdout supplies targets, conversion activations, or selection feedback. Larger training-data coverage and DEV adequacy remain research work.
+
+[The experiment protocol](docs/protocol.md) describes the remaining work. The scripts for curation, native state caching, bounded training, exact resume, native exports, and PEFT conversion are provided. Cache/training/conversion commands require an explicit device and should only run after CPU preparation. GPU runs share existing workloads, use a memory cap, and leave unrelated jobs running. No GPU work has been started for the current receipt.
+
+```bash
+# After complete TRAIN runs have genuine fresh-container verification receipts:
+.venv/bin/python scripts/curate.py --outcomes data/train-outcomes.jsonl --out data/contexts.jsonl
+# These next commands load pretrained weights and execute model work:
+.venv/bin/python scripts/cache_contexts.py --contexts data/contexts.jsonl --out runs/cache --device cuda:0
+.venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 --chunk-updates 64
+# Continue with the original config, cache and checkpoint; never relabel a new cohort as resume.
+.venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 \
+  --resume runs/empf/FULL-0064.pt --chunk-updates 64
+.venv/bin/python scripts/convert_to_peft.py --cache runs/cache --native runs/empf/RAW-1024 \
+  --out runs/empf/peft --device cuda:0
+.venv/bin/python scripts/build_submission.py --model gemma-4-e2b-it-qat-w4a16-ct \
+  --adapter runs/empf/peft --out dist/empf-e2b
+```
+
+RHBI's public recipe uses a CPU polar execution profile. CUDA training requires the explicitly recorded `--gpu-native-polar` derivative; it is not silently selected. Native research uses BF16 pretrained weights with FP32 adapter/critic parameters. Production W4A16 quantization is a separate evaluation condition. Current source recipes and default rates are preserved; a learning-rate search must be declared before execution.
+
+Successful CPU tests do not establish better coding behavior. Genuine task outcomes, conversion loss, wall time, error rates, model/quantization/harness identity, and the official scored submission remain the evidence needed to meet the goal.

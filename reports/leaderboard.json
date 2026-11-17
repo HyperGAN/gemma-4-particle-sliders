@@ -1,0 +1,19 @@
+{
+  "schema": "gemma4-current-results-v1",
+  "as_of": "2026-11-17",
+  "objective_achieved": false,
+  "gpu_used": false,
+  "engineering": {
+    "cpu_preflight": "passed; reports/cpu-preflight.json",
+    "baseline_compiler": "passed against mirrored adk-submission 0.2.13",
+    "real_task_verifier_controls": "in preparation"
+  },
+  "task_resolution": [
+    {"arm": "off", "status": "unmeasured", "score": null},
+    {"arm": "prompt-positive", "status": "unmeasured", "score": null},
+    {"arm": "native-rhbi", "status": "unmeasured", "score": null},
+    {"arm": "native-empf", "status": "unmeasured", "score": null},
+    {"arm": "distilled-peft", "status": "unmeasured", "score": null}
+  ],
+  "kaggle": {"entry": "unverified", "submission_id": null, "score": null, "current_sota": null, "sota_beaten": false}
+}

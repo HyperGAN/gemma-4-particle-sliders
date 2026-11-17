@@ -1,0 +1,12 @@
+.deps/
+.venv/
+.harness-venv/
+.babel-reports/
+data/
+runs/
+dist/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.pyc
+research/article.txt

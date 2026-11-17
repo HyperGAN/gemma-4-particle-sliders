@@ -1,0 +1,66 @@
+{
+  "data/public-mirror/data-receipt.json": {
+    "source": "https://huggingface.co/datasets/HanG/gemma-4-developer-agent/resolve/12aaee3902c7bb573d516113a695150d90d50250/gemma-4-developer-agent.zip",
+    "mirror_revision": "12aaee3902c7bb573d516113a695150d90d50250",
+    "authority": "public mirror; requires current Kaggle verification",
+    "members": [
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/HARNESS_README.md",
+        "bytes": 49356,
+        "sha256": "3d6e57a13234cb4e783ba24eaab486459af76e0923ea4c6607cd41cc8961bbbb"
+      },
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/tasks.jsonl",
+        "bytes": 1984455,
+        "sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6"
+      },
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/sample_submission/agent.yaml",
+        "bytes": 438,
+        "sha256": "c7fbbbbdc44778419be8e9f53a85800eeb17d0cf151e0846c46e107401b72034"
+      },
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/sample_submission/eval_config.yaml",
+        "bytes": 232,
+        "sha256": "adb486b67535fa59b427b79d44dafc131176f1f1964d184e16046ed520ede02d"
+      },
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/sample_submission/configs/sampling.yaml",
+        "bytes": 120,
+        "sha256": "3dab0b2506dae34ce92fef7b380d6073729104b23fe2cf66d44ac1d2f213aa6a"
+      },
+      {
+        "member": "root/.cache/kagglehub/competitions/gemma-4-developer-agent/sample_submission/adapters/main_lora/adapter_config.json",
+        "bytes": 664,
+        "sha256": "75a46da2db7f3c70442e5c728f64059aff52cf64174cee7aeb3a4ec37f6e78fb"
+      }
+    ]
+  },
+  "data/wheelhouse/wheels-receipt.json": {
+    "source": "https://huggingface.co/datasets/HanG/gemma-4-developer-agent/resolve/12aaee3902c7bb573d516113a695150d90d50250/gemma-4-developer-agent-wheelhouse-v30.zip",
+    "mirror_revision": "12aaee3902c7bb573d516113a695150d90d50250",
+    "authority": "public mirror; requires current Kaggle verification",
+    "members": [
+      {
+        "member": "adk_submission-0.2.13-py3-none-any.whl",
+        "bytes": 66528,
+        "sha256": "69642a13145151040fb96b483170f96cc7cff1d509851d21d08bc7a0ad3ef371"
+      },
+      {
+        "member": "swegemma-0.2.11-py3-none-any.whl",
+        "bytes": 119520,
+        "sha256": "63f054a3d42eb6c582e2b42195f96b22f4b9ee69d6e42ae62cedeb4dd6cf5480"
+      },
+      {
+        "member": "adk_eval_core-0.1.0-py3-none-any.whl",
+        "bytes": 90060,
+        "sha256": "ca261146828a3d8ab0894b4766bc61a0905e3ef94f8eede17561a4a058404e1f"
+      },
+      {
+        "member": "google_adk-1.36.1-py3-none-any.whl",
+        "bytes": 2877731,
+        "sha256": "1a2f6868c509e3151fb0de3575a7d18b45c338be86f420924dad74e7193631a0"
+      }
+    ]
+  }
+}

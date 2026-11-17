@@ -1,0 +1,26 @@
+{
+  "particlegan": {
+    "url": "https://github.com/HyperGAN/ParticleGAN.git",
+    "commit": "af0764b144cf81b12117d80deceeae24e8bf45db",
+    "version": "0.10.0"
+  },
+  "particle_sliders": {
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "commit": "acbe43fe96e57589b202cb9c1183aec81330d408",
+    "version": "0.15.0.dev0",
+    "patch": "patches/particle-sliders-pg0100.patch",
+    "patch_sha256": "42e4b606bb4334e79505e0e8736d9283ccdae2440f1e5b9870f28f50876f1500"
+  },
+  "article_reference": {
+    "url": "https://github.com/HyperGAN/tiny-aya-particle-sliders",
+    "commit": "38fefba3a9029cea4573a0ebbfa758890c43af1c",
+    "code_copied": false
+  },
+  "bridge_provenance": {
+    "source": "local Anima feat/anima-pg0100-rhbi-empf overlay, 2026-11-17",
+    "original_pg_commit": "952c3b62ba434f7da194067923351ff5748ef8dd",
+    "pg_python_sources_identical_to_latest_develop": true,
+    "description": "Reused conditional engine, tests and build metadata; source manifest rebound to byte-identical latest develop. Released PG09 engine is preserved.",
+    "gemma_host_fix": "Do not forward the BISPF/EMPF input_domain keyword to intrinsically continuous RHBI penalty."
+  }
+}
