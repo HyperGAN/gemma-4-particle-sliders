@@ -13,7 +13,7 @@
         ".deps/particle-sliders/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "92846a1ea91ac215c8d20fbd0c0b632f9d0777642a4f1e23852d7412252c172a"
+      "output_sha256": "e90aaf3ffac0da4a14841d3f59c216bf4e364c8663cd35d75ed252fbe67cb18c"
     },
     {
       "command": [
@@ -38,7 +38,7 @@
     "tests/test_data.py": "c3a544c2c74ce43ef0fba12d47c902e967ec432d798a612343aec72d06d96f2a",
     "tests/test_evaluation.py": "f4afd98d267c85567ea9f99069ee604c5112700ac6fc67ecc30c418af72605ce",
     "tests/test_export.py": "ce8b2fb03990212f4e5bb28112ca00864a641539ee5f79eefb4a6b793b3abae5",
-    "tests/test_gemma_binding.py": "de07e303be6336878d6c6e76a501970e712118e9478d918250dd578e2f8f5ae2",
+    "tests/test_gemma_binding.py": "b0ba126255bdbf8a019675c953efb8fa7309f1b2cb630edf4e1cf305ff00f583",
     "tests/test_remote_zip.py": "0daff6e1c909661ba6f713a226483301500e6456e2866792799b9385a120b7db",
     "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
     "scripts/bootstrap.py": "96642d6cadf203f32e9a59d8279f5a4b20d32c40a77321dbf41d1d5caac25463",
@@ -46,11 +46,12 @@
     "scripts/cache_contexts.py": "c5e73f7261b8dc28bb7d1eace777c05ee8ca2721afc83fc0cfe4c52142c46ab9",
     "scripts/convert_to_peft.py": "2684afa2a3448d37ffd368db3e24dad0e4ecb2f20f6477a994230ae2f0b2d117",
     "scripts/curate.py": "bcffd97225bcf7232d8ec04667b81bafdf87e98e2ea9ae8dbc09e3561a8b44bd",
-    "scripts/fetch_public_inputs.py": "31d84dfac00db60ba88d132a9a9fcc60f6ab2fcbeb729fbd0a19a7e1415076d2",
+    "scripts/fetch_public_inputs.py": "26b0b7e4e2c2d76b80243dd06be441f502b525397a9ab8d3039637d1840199ae",
     "scripts/preflight.py": "9833b452235fcfe4dda0159770e48975785a88511b4ddcf20360b0f9a4d492f3",
     "scripts/prepare_tasks.py": "2b5904af930ba9049702ad8f61e7ca59ec1185190e74e367535cf87e9aa04f46",
-    "scripts/train.py": "5787579cba980d731567f72f2a4a9c036385afe650ecdfe867cd57c0a676f4f6",
+    "scripts/train.py": "0038205da1473d87b1c8de5d75b52988809dbd2a5999e01f87e54da4b6588bfc",
     "scripts/validate_submission.py": "3aee471ecdd7dd438d0b998bba4dc56d14f6675fbe8dbd504cca9619f34c8467",
+    "scripts/verify_controls.py": "b8e17a7f01edf5da71fabdf737429d3033964db3488543e6a3f4d84f47fb1809",
     "submission/agent.yaml": "49e4c9f5662c83b18d585bd5fb16cb8eef006d46610c13d1f725240d30c883c0",
     "submission/configs/sampling.yaml": "8f0116a1dc4e64b6eb78af99bc675f76030fa262708d7232cd62ecac1bea91f5",
     "submission/eval_config.yaml": "9051faf64ff167bf6c9709c888fe35e37af08309886c6fc8a8a8608e72e0c0f4",

@@ -7,8 +7,8 @@ from transformers import Gemma4TextConfig, Gemma4ForCausalLM
 from gemma_particle.model import ContextRow, Native, make_game
 
 
-def tiny_model():
-    config = Gemma4TextConfig(vocab_size=64, hidden_size=32, intermediate_size=64,
+def tiny_model(*, hidden_size=32):
+    config = Gemma4TextConfig(vocab_size=64, hidden_size=hidden_size, intermediate_size=64,
         num_hidden_layers=3, num_attention_heads=4, num_key_value_heads=1,
         head_dim=8, global_head_dim=8, max_position_embeddings=128,
         hidden_size_per_layer_input=0, vocab_size_per_layer_input=64,
@@ -67,5 +67,18 @@ def test_native_gemma4_updates_resume_and_off_parity(preset):
         assert all(torch.equal(value, model.state_dict()[key]) for key, value in frozen.items())
         assert all(not p.requires_grad for p in model.parameters())
         assert native.generated(rows[0]).requires_grad
+    finally:
+        native.close()
+
+
+@pytest.mark.parametrize("preset", ["rhbi_optimized", "empf"])
+def test_wide_native_states_keep_continuous_geometry(preset):
+    native = Native(tiny_model(hidden_size=192), identity={"fixture":"wide-random-Gemma4"})
+    try:
+        rows = [native.prepare(ContextRow((2,3,4+i), (2,8,9,3,4+i), str(i), 0)) for i in range(2)]
+        game = make_game(native, rows, preset=preset, steps=1, batch=2)
+        assert game.signature['resolved_penalty_domain'] == 'continuous'
+        assert game.signature['response_shape'] == [192]
+        assert game.step()['step'] == 1
     finally:
         native.close()

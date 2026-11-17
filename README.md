@@ -15,6 +15,7 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by mirrored `adk-submission==0.2.13`; no inference during this check |
+| Real-task scorer control | [Blocked](reports/verifier-control-v1.json): the mirrored environment fails even with the Requests reference patch |
 | Competition | Current account entry, current harness parity, current top score, and scored submission still required |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
@@ -64,3 +65,5 @@ The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich
 RHBI's public recipe uses a CPU polar execution profile. CUDA training requires the explicitly recorded `--gpu-native-polar` derivative; it is not silently selected. Native research uses BF16 pretrained weights with FP32 adapter/critic parameters. Production W4A16 quantization is a separate evaluation condition. Current source recipes and default rates are preserved; a learning-rate search must be declared before execution.
 
 Successful CPU tests do not establish better coding behavior. Genuine task outcomes, conversion loss, wall time, error rates, model/quantization/harness identity, and the official scored submission remain the evidence needed to meet the goal.
+
+The first real-task verifier control ran unchanged `swegemma.verify_task` in two separate air-gapped containers on `requests_6757`. Both the empty patch and reference patch exited 1. The reference run had 134 passing tests, 187 fixture errors due to absent `pytest-httpbin`, and six failures involving offline networking and TLS/certificate behavior. This environment is blocked for scoring; no filters, clock changes, network relaxation, or test bypasses were applied. The next step is to match the current official environment and restore the task's declared dependencies before interpreting model results.

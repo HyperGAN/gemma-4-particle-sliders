@@ -46,10 +46,19 @@ def main():
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(payload)
                 receipts.append({"member": name, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
-            receipt = {"source": url, "mirror_revision": REVISION,
-                       "authority": "public mirror; requires current Kaggle verification", "members": receipts}
             args.out.mkdir(parents=True, exist_ok=True)
-            (args.out / f"{args.archive}-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+            receipt_path = args.out / f"{args.archive}-receipt.json"
+            previous = json.loads(receipt_path.read_text()) if receipt_path.exists() else None
+            if previous and previous["source"] != url:
+                raise ValueError("input directory belongs to a different archive source")
+            by_name = {r["member"]: r for r in previous["members"]} if previous else {}
+            for row in receipts:
+                if row["member"] in by_name and by_name[row["member"]] != row:
+                    raise ValueError("input receipt changed")
+                by_name[row["member"]] = row
+            receipt = {"source": url, "mirror_revision": REVISION,
+                       "authority": "public mirror; requires current Kaggle verification", "members": list(by_name.values())}
+            receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
             print(json.dumps(receipt, indent=2))
         print(json.dumps({"transferred_bytes": remote.transferred}))
 

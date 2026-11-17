@@ -7,7 +7,7 @@ import time
 
 import torch
 from gemma_particle.data import read_jsonl
-from gemma_particle.model import make_game
+from gemma_particle.model import make_game, Prepared
 from gemma_particle.runtime import load_native, load_cache, model_identity, save_native, file_hash
 
 p = argparse.ArgumentParser(description=__doc__)
@@ -30,9 +30,10 @@ if any(r['split'] != 'train' for r in tasks):
     raise ValueError('TRAIN manifest required')
 if args.out.exists() and not args.resume:
     raise FileExistsError('existing run requires its exact checkpoint')
-rows, index = load_cache(args.cache, identity=model_identity(config), train_ids={r['instance_id'] for r in tasks}, device=args.device)
+rows, index = load_cache(args.cache, identity=model_identity(config), train_ids={r['instance_id'] for r in tasks})
 native = load_native(config, device=args.device, memory_fraction=args.memory_fraction)
 try:
+    rows = [Prepared(row.row, row.target.to(native.particles.device), row.neutral.to(native.particles.device)) for row in rows]
     game = make_game(native, rows, preset=args.preset, steps=config['updates'], batch=config['batch_size'],
                      optimizer_dense_profile='gpu_native_polar' if args.gpu_native_polar else 'recipe')
     args.out.mkdir(parents=True, exist_ok=True)

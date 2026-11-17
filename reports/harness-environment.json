@@ -1,0 +1,31 @@
+{
+  "python": "3.12.15",
+  "source_checks": {
+    "swegemma": {
+      "version": "0.2.11",
+      "python_files": 34,
+      "installed_sources_match_wheel": true,
+      "wheel_sha256": "63f054a3d42eb6c582e2b42195f96b22f4b9ee69d6e42ae62cedeb4dd6cf5480"
+    },
+    "adk_submission": {
+      "version": "0.2.13",
+      "python_files": 20,
+      "installed_sources_match_wheel": true,
+      "wheel_sha256": "69642a13145151040fb96b483170f96cc7cff1d509851d21d08bc7a0ad3ef371"
+    },
+    "adk_eval_core": {
+      "version": "0.1.0",
+      "python_files": 44,
+      "installed_sources_match_wheel": true,
+      "wheel_sha256": "ca261146828a3d8ab0894b4766bc61a0905e3ef94f8eede17561a4a058404e1f"
+    }
+  },
+  "dependencies": {
+    "google-adk": "1.36.1",
+    "litellm": "1.109.1",
+    "pydantic": "2.14.3",
+    "docker": "7.2.0",
+    "numpy": "2.5.5"
+  },
+  "authority": "public mirror wheelhouse v30; current Kaggle parity unverified"
+}

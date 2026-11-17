@@ -1,0 +1,37 @@
+{
+  "schema": "gemma4-real-task-verifier-controls-v1",
+  "task": "requests_6757",
+  "kind": "verifier calibration; reference oracle is not an agent",
+  "gpu_used": false,
+  "image_id": "sha256:84a289c05e7df52a983b5ac1f3f956f1abeaefcffec7c337b659f57db29f0f47",
+  "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+  "snapshot_sha256": "dd2c178bb35c5aa3ad82ed8b4393fe087da0fa2fe30465bee4a4d3357475a44c",
+  "arms": {
+    "empty": {
+      "resolved": false,
+      "test_exit_code": 1,
+      "error": null,
+      "wall_seconds": 27.398295889026485
+    },
+    "reference": {
+      "resolved": false,
+      "test_exit_code": 1,
+      "error": null,
+      "wall_seconds": 27.136973303044215
+    }
+  },
+  "status": "blocked: local mirror environment does not pass reference control",
+  "diagnosis": {
+    "fixture_errors": 187,
+    "other_failures": 6,
+    "passed_tests": 134,
+    "missing_dependency": "pytest-httpbin==2.0.0, declared in repository requirements-dev.txt",
+    "environment_failures": [
+      "air-gapped network raises ENETUNREACH instead of expected connection timeout",
+      "Python 3.13 strict TLS authority-key validation",
+      "expired local test certificate at current date"
+    ],
+    "scope": "No test filters, clock changes, network relaxation or validation bypass applied; this exact environment is not qualified for task-resolution scoring."
+  },
+  "execution_script_sha256": "d52f1dc11c33014fd98a4ff79d6ffb3d0ce76fc4bee4745669849ea4cdb076c5"
+}

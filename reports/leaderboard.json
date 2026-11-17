@@ -6,7 +6,7 @@
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
     "baseline_compiler": "passed against mirrored adk-submission 0.2.13",
-    "real_task_verifier_controls": "in preparation"
+    "real_task_verifier_controls": "mirror-v30 requests_6757 blocked: both empty and reference exit 1; missing pytest-httpbin plus air-gap/TLS failures; reports/verifier-control-v1.json"
   },
   "task_resolution": [
     {"arm": "off", "status": "unmeasured", "score": null},
