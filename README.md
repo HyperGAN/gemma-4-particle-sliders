@@ -15,7 +15,7 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
-| Real-task scorer controls | [Passed on five task/environment combinations](reports/verifier-controls-v4.json): empty fails, reference passes, edited workspace import confirmed |
+| Real-task scorer controls | [Passed on seven task/environment combinations](reports/verifier-controls-v5.json): empty fails, reference passes, edited workspace import confirmed |
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
