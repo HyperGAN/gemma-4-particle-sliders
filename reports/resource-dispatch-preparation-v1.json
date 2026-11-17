@@ -1,0 +1,94 @@
+{
+  "schema": "gemma4-resource-dispatch-preparation-v1",
+  "created_at": "2026-11-17T16:17:56.439495+00:00",
+  "status": "CPU preparation qualified;no actual numerical parity or resource activation",
+  "source_sha256": {
+    "scripts/run_resource_dev_grid.py": "13374650f928a28a567ccba6a4cffb7f329e155bb45d181a7cee9855d20d24b1",
+    "src/gemma_particle/resource_dispatch.py": "d8f37a2ab90582daa3c6357b741f64656e8e8849df2b74f70f856f4d313e27e2",
+    "tests/test_resource_dispatch.py": "4dfbb27e08c1cf44378690ce371fd80c165bcd9773c4a5effb0d52196b81fc6c",
+    "tests/test_resource_controller.py": "7562b29dd774f522da765480d389b5fb8137da23c2badde39cbc41b87a8e1168"
+  },
+  "frozen_generation_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "frozen_qualifier_commit": "a4d6bab6fc8dc39e320e6d72f5924b18af215972",
+  "frozen_offline_auditor_commit": "1ad16363480c7752a7ada8f5610aadb4c141e1ac",
+  "declaration_sha256": "7eee26b86bc70a11415118065177f418f7e8e532cf1c74e8f618da7fd7db0729",
+  "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "tests": {
+    "focused_passed": 52,
+    "full_cpu_passed": 327,
+    "skipped": 3,
+    "public_python_files_equal": 157,
+    "private_data_or_dist_present": false,
+    "focused_log_sha256": "a5569240a95d8170a909344ed1d5b19b9ae134ab6bd336571453c9b7b3ef972e",
+    "full_cpu_log_sha256": "d63970046068c357c780957f3bf670f254cb9e747ad9d7b63c418534905bf330",
+    "real_CPU_lifecycle_cases": [
+      "full9waves and final22-result comparator invocation",
+      "unqualified hardware blocks all task panels",
+      "first candidate no observed effect blocks both panels",
+      "second candidate no observed effect blocks both panels",
+      "failed task process retains completed peer and stops before further waves",
+      "observed owner exit and competing owner rejection",
+      "producer completion plus release",
+      "exact owner cleanup",
+      "before/after slot records accepted by independent resource reader"
+    ],
+    "fixture_limits": "scheduler integration uses real CPU children,actual HTTP MockTransport/effect checks and supplied native/packet/hardware/final-comparator boundaries;not real Gemma tasks,GPU parity,quality or authentication",
+    "complete_CPU_scenario_children": 40
+  },
+  "actual_live_waiter_boundary": {
+    "status": "expected_rejection",
+    "error": "prior dispatcher must be observed stopped with zero learned task attempts",
+    "counts": {
+      "HTTP_clients": 0,
+      "driver_queries": 0,
+      "non_git_children": 0
+    },
+    "output_created": false,
+    "prior_binding_live": true,
+    "source_sha256": "13374650f928a28a567ccba6a4cffb7f329e155bb45d181a7cee9855d20d24b1"
+  },
+  "actual_plan_only_boundary": {
+    "status": "prepared",
+    "counts": {
+      "HTTP_clients": 0,
+      "driver_queries": 0,
+      "non_git_children": 0
+    },
+    "plan_sha256": "b82ac5b6c4b55b504dc94be3e5d815454aedac6e8574f55798d307c78c1e3c65",
+    "source_sha256": "13374650f928a28a567ccba6a4cffb7f329e155bb45d181a7cee9855d20d24b1"
+  },
+  "source_bridge": {
+    "schema": "gemma4-resource-dispatch-source-bridge-v1",
+    "reference_commit": "6887222ea09d62650f1b4d3d42584cbdeb775098",
+    "whole_files_equal": {
+      "scripts/wait_and_train_pilot.py": true,
+      "scripts/collect_behavior_pool.py": true,
+      "scripts/run_learned_dev_grid.py": true,
+      "scripts/run_dev_condition.py": true,
+      "scripts/compare_dev_conditions.py": true,
+      "scripts/qualify_hardware_pair.py": true,
+      "src/gemma_particle/dev_evidence.py": true,
+      "src/gemma_particle/dev_selection.py": true,
+      "src/gemma_particle/learned_effect.py": true,
+      "src/gemma_particle/resource_supplement.py": true,
+      "src/gemma_particle/confirmation.py": true
+    },
+    "scope": "existing training,collection,generation,comparison,numerical qualification,effect,resource and confirmation files byte unchanged;new separate controller only;not a full semantic equivalence proof"
+  },
+  "actual_counts_at_preparation": {
+    "completed_TRAIN_quartets": 6,
+    "admitted_initial_targets": 1,
+    "pretrained_training_updates": 0,
+    "OFF_DEV_completed": 15,
+    "OFF_DEV_resolved": 9,
+    "learned_DEV_conditions": 0,
+    "confirmation_attempts": 0
+  },
+  "new_actual_GPU_model_work": false,
+  "actual_parity_passes": 0,
+  "actual_qualified_resource_records": 0,
+  "actual_resource_activations": 0,
+  "coordinator_resource_preference": "question pending revision2;no answer claimed",
+  "remaining": "freeze and controlled CPU-waiter replacement;actual native/conversion/control completion and release;actual numerical parity and resource audit;full18 learned conditions and22-condition choice;independent confirmation access and locked49 pair;learned official score above fresh SOTA",
+  "goal": "active;not achieved"
+}
