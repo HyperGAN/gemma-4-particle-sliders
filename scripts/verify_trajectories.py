@@ -24,6 +24,8 @@ from gemma_particle.harness_identity import package_identity,wheel_identity,sha2
 from gemma_particle.dev import load_external_dev,qualified_dev_identity,WORKSPACE_PACKAGES
 from gemma_particle.sandbox import isolate_sandbox_cache,SourceBoundManager
 from gemma_particle.history import NO_COMPACTION,history_contract,is_assistant_decision
+from gemma_particle.confirmation import (load_confirmation_access, confirmation_pair_identity,
+    validate_confirmation_server, validate_confirmation_reservation)
 
 
 async def main():
@@ -35,12 +37,31 @@ async def main():
     p.add_argument('--image',required=True)
     p.add_argument('--external-dev-manifest',type=Path)
     p.add_argument('--external-dev-qualification',type=Path)
+    p.add_argument('--confirmation-access',type=Path)
+    p.add_argument('--confirmation-pair',type=Path)
     p.add_argument('--endpoint',help='local bound tokenizer endpoint for declared context-budget OFF proofs')
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('verification cohort is immutable')
+    confirmation=None;confirmation_identity=None
+    if bool(args.confirmation_access)!=bool(args.confirmation_pair):
+        raise ValueError('confirmation verification requires both explicit access and the original pair claim')
+    if args.confirmation_access:
+        if args.external_dev_manifest or args.external_dev_qualification:
+            raise ValueError('confirmation and supplementary DEV scopes cannot be combined')
+        confirmation=load_confirmation_access(args.confirmation_access)
+        confirmation_identity=confirmation_pair_identity(confirmation,args.confirmation_pair)
+        if sha256_file(args.tasks)!=confirmation.identity['official_tasks_sha256']:
+            raise ValueError('original official reference dataset required for confirmation verification')
     manifest=json.loads((args.cohort/'cohort.json').read_text())
     contract=manifest['contract']
+    if confirmation:
+        if (manifest.get('confirmation')!=confirmation_identity or contract.get('confirmation')!=confirmation_identity
+                or manifest['visible_tasks_sha256']!=confirmation.receipt['holdout_manifest_sha256'] or manifest['arm']!='off'):
+            raise ValueError('captured confirmation differs from original access, pair or visible manifest')
+        validate_confirmation_server(confirmation,manifest['server_identity'],learned=bool(manifest.get('candidate_adapters')))
+    elif 'confirmation' in manifest or 'confirmation' in contract:
+        raise ValueError('captured confirmation requires its explicit original access and pair claim')
     history_profile=manifest.get('history_profile',NO_COMPACTION)
     if history_profile!=NO_COMPACTION and contract.get('history')!=history_contract(history_profile):
         raise ValueError('declared history management differs from evaluation contract')
@@ -88,6 +109,14 @@ async def main():
             visible['split']='dev'
             if visible!=expected or captured.get('external_dev')!=manifest['external_dev']:
                 raise ValueError('reference task differs from the frozen supplementary DEV task')
+        elif confirmation:
+            expected=next((r for r in confirmation.rows if r['instance_id']==task_id),None)
+            visible['split']='holdout'
+            condition=confirmation.receipt['selected_condition']['id'] if manifest.get('candidate_adapters') else 'off'
+            reservation=validate_confirmation_reservation(confirmation,args.confirmation_pair,condition,task_id,args.cohort)
+            if (visible!=expected or captured.get('confirmation')!=confirmation_identity
+                    or captured.get('confirmation_task_reservation_sha256')!=reservation):
+                raise ValueError('reference task or actual model execution differs from locked confirmation')
         else:
             if REPO_SPLITS.get(task.repo) not in ('train','dev'):
                 raise ValueError('this curation verifier excludes the untouched holdout')

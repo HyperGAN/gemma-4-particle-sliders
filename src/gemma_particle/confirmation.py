@@ -4,10 +4,13 @@ These are local evidence bindings, not authentication of invented receipts.
 Issuing access performs no model inference or confirmation evaluation.
 """
 from collections import Counter
+from dataclasses import dataclass
+import json
+import os
 from pathlib import Path
 
 from .conversion_handoff import read
-from .data import VISIBLE_FIELDS, read_jsonl
+from .data import VISIBLE_FIELDS, read_jsonl, digest
 from .harness_identity import sha256_file
 from .lora_serving import prepare_lora, BASE_REPO, BASE_REVISION
 
@@ -105,3 +108,152 @@ def build_confirmation_access(directory, plan, plan_sha256, reaudit_path, manife
         'permitted_conditions': ['off', choice['selected']], 'forbidden_training_and_selection': True,
         'model_inference': False, 'confirmation_results': None,
         'scope': 'access after immutable DEV selection; exactly one paired confirmation remains to be executed'}
+
+
+@dataclass(frozen=True)
+class LockedConfirmation:
+    receipt: dict
+    plan: dict
+    rows: list
+    identity: dict
+
+
+def load_confirmation_access(path):
+    from .dev_selection import load_selection_plan
+    path = Path(path)
+    access = read(path)
+    if (access.get('schema') != 'gemma4-locked-confirmation-access-v1'
+            or access.get('forbidden_training_and_selection') is not True
+            or access.get('model_inference') is not False or access.get('confirmation_results') is not None
+            or access.get('offline_dev_auditor_returncode') != 0):
+        raise ValueError('completed explicit confirmation access receipt required')
+    access_plan_path = Path(access['access_plan']); declaration = read(access_plan_path)
+    selection_path = Path(access['selection_plan'])
+    if (sha256_file(access_plan_path) != access['access_plan_sha256']
+            or declaration.get('schema') != 'gemma4-confirmation-access-plan-v1'
+            or declaration['selection_plan_sha256'] != access['selection_plan_sha256']
+            or sha256_file(selection_path) != access['selection_plan_sha256']
+            or declaration['dev_executor_commit'] != access['offline_dev_auditor_executor_commit']
+            or any(sha256_file(p) != value for p, value in declaration['declaration_pins'].items())
+            or sha256_file(access_plan_path.parent / 'dev-reaudit.log') != access['offline_dev_audit_log_sha256']):
+        raise ValueError('original access plan, source-bound offline reaudit and DEV declarations changed')
+    plan = load_selection_plan(selection_path)
+    expected = build_confirmation_access(declaration['dev_grid'], plan, access['selection_plan_sha256'],
+        access['reaudited_dev_choice'], access['holdout_manifest'], declaration['packet_producer'])
+    if any(access.get(key) != value for key, value in expected.items()):
+        raise ValueError('confirmation access differs from current locked choice, packet or manifest')
+    rows = read_jsonl(access['holdout_manifest'])
+    if sha256_file(access['holdout_manifest']) != access['holdout_manifest_sha256']:
+        raise ValueError('locked manifest changed during access validation')
+    official_source = read(plan['secondary']['qualification'])['source_sha256']
+    identity = {'access_receipt_sha256': sha256_file(path), 'selection_plan_sha256': access['selection_plan_sha256'],
+        'dev_choice_sha256': access['dev_choice_sha256'], 'holdout_manifest_sha256': access['holdout_manifest_sha256'],
+        'selected_condition_id': access['selected_condition']['id'], 'official_tasks_sha256': official_source,
+        'forbidden_training_and_selection': True}
+    return LockedConfirmation(access, plan, rows, identity)
+
+
+def validate_confirmation_treatment(scope, *, adapter, arm, model, prompt_profile, instruction_protocol,
+        budget_profile, history_profile, capture_protocol, source_root):
+    from .adapters import adapter_identity
+    from .capture import CONTEXT_CAPTURE_PROTOCOL
+    from .lora_serving import BASE_ALIAS
+    from .prompt_profiles import prompt_identity
+    matching = scope.plan['matching']; source_root = Path(source_root)
+    profiles = {'prompt_profile': prompt_profile, 'instruction_protocol': instruction_protocol,
+        'budget_profile': budget_profile, 'history_profile': history_profile}
+    if (arm != 'off' or model != BASE_ALIAS or capture_protocol != CONTEXT_CAPTURE_PROTOCOL
+            or any(value != matching[key] for key, value in profiles.items())
+            or sha256_file(source_root / 'submission/configs/sampling.yaml') != matching['sampling_file_sha256']
+            or prompt_identity((source_root / 'submission/prompts/system.md').read_text(), prompt_profile)['sha256']
+                != matching['common_system_sha256']):
+        raise ValueError('confirmation requires the exact locked OFF prompt, model and execution profiles')
+    if adapter is None: return 'off'
+    if {'particle_lora': adapter_identity(adapter)} != scope.receipt['selected_packet']['adapters']:
+        raise ValueError('only the exact selected learned adapter can enter confirmation')
+    return scope.receipt['selected_condition']['id']
+
+
+def validate_confirmation_server(scope, server, *, learned):
+    from .dev_evidence import canonical_contract
+    selected = scope.receipt['selected_packet']['adapters']
+    if (server.get('kind') != 'gemma4' or server.get('qualification_only') is not False
+            or server.get('pretrained_inference') is not True
+            or server['model_identity']['repo'] != scope.plan['model']
+            or server['model_identity']['revision'] != scope.plan['model_revision']
+            or learned and (server.get('adapters') != selected or server.get('base_only') is not False)
+            or not learned and not (server.get('adapters') == selected and server.get('base_only') is False
+                or server.get('adapters') == {} and server.get('base_only') is True)):
+        raise ValueError('actual pinned base or exact selected learned confirmation server required')
+    if sha256_file(scope.receipt['dev_choice']) != scope.identity['dev_choice_sha256']:
+        raise ValueError('locked DEV choice changed before confirmation server validation')
+    choice = read(scope.receipt['dev_choice'])
+    result_path = Path(choice['condition_results']['off']['path'])
+    off_result = read(result_path)
+    original_server = read(read(result_path.parent / 'plan.json')['server_identity'])
+    if (sha256_file(result_path) != choice['condition_results']['off']['sha256']
+            or digest(original_server) != off_result['server_identity_sha256']
+            or canonical_contract({'model_identity': original_server}) != canonical_contract({'model_identity': server})):
+        raise ValueError('confirmation serving contract differs from matched DEV baseline')
+
+
+def confirmation_claim_path(scope):
+    manifest = Path(scope.receipt['holdout_manifest']).resolve()
+    key = scope.identity['holdout_manifest_sha256']
+    return manifest.parent / '.confirmation-use' / (key + '.json')
+
+
+def claim_confirmation_pair(scope, out):
+    out = Path(out).resolve()
+    if out.exists(): raise FileExistsError('paired confirmation root must be fresh')
+    path = confirmation_claim_path(scope); path.parent.mkdir(parents=True, exist_ok=True)
+    value = {'schema': 'gemma4-confirmation-pair-claim-v1', 'identity': scope.identity,
+        'pair_root': str(out), 'permitted_conditions': scope.receipt['permitted_conditions'],
+        'count_per_condition': 49, 'owner_pid': os.getpid()}
+    with path.open('x') as stream: stream.write(json.dumps(value, indent=2) + '\n')
+    out.mkdir(parents=True)
+    return path
+
+
+def validate_confirmation_claim(scope, path):
+    path = Path(path)
+    if path.resolve() != confirmation_claim_path(scope).resolve():
+        raise ValueError('original choice/manifest anchored confirmation claim required')
+    claim = read(path)
+    if (claim.get('schema') != 'gemma4-confirmation-pair-claim-v1' or claim['identity'] != scope.identity
+            or claim['permitted_conditions'] != scope.receipt['permitted_conditions'] or claim['count_per_condition'] != 49):
+        raise ValueError('confirmation pair claim changed')
+    return claim
+
+
+def confirmation_pair_identity(scope, claim_path):
+    validate_confirmation_claim(scope, claim_path)
+    return {**scope.identity, 'pair_claim_sha256': sha256_file(claim_path)}
+
+
+def reservation_path(scope, condition, task_id):
+    key = digest({'condition': condition, 'instance_id': task_id})
+    return confirmation_claim_path(scope).with_suffix('.tasks') / (key + '.json')
+
+
+def reserve_confirmation_task(scope, claim_path, condition, task_id, cohort):
+    claim = validate_confirmation_claim(scope, claim_path); cohort = Path(cohort).resolve()
+    if (condition not in claim['permitted_conditions'] or task_id not in {r['instance_id'] for r in scope.rows}
+            or not cohort.is_relative_to(Path(claim['pair_root']).resolve())):
+        raise ValueError('only the fixed paired conditions/tasks/output root may run')
+    path = reservation_path(scope, condition, task_id); path.parent.mkdir(parents=True, exist_ok=True)
+    value = {'schema': 'gemma4-confirmation-task-reservation-v1', 'identity': scope.identity,
+        'pair_claim_sha256': sha256_file(claim_path), 'condition': condition, 'instance_id': task_id,
+        'cohort': str(cohort), 'policy': 'one model execution; preserve failures, never automatically reroll'}
+    with path.open('x') as stream: stream.write(json.dumps(value, indent=2) + '\n')
+    return sha256_file(path)
+
+
+def validate_confirmation_reservation(scope, claim_path, condition, task_id, cohort):
+    validate_confirmation_claim(scope, claim_path)
+    path = reservation_path(scope, condition, task_id); value = read(path)
+    if (value.get('schema') != 'gemma4-confirmation-task-reservation-v1' or value['identity'] != scope.identity
+            or value['pair_claim_sha256'] != sha256_file(claim_path) or value['condition'] != condition
+            or value['instance_id'] != task_id or value['cohort'] != str(Path(cohort).resolve())):
+        raise ValueError('actual confirmation model execution reservation differs')
+    return sha256_file(path)

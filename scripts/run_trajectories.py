@@ -1,6 +1,6 @@
 """Run the official agent loop with immutable model-boundary request capture.
 
-Only sanitized TRAIN/DEV tasks enter phase A. Verification is a separate process
+Sanitized TRAIN/DEV or explicitly released confirmation tasks enter phase A. Verification is a separate process
 that alone reads the reference-bearing task data. Nonfixture inference is local.
 """
 import argparse
@@ -31,6 +31,8 @@ from gemma_particle.dev import load_external_dev,validate_agent_tasks,qualified_
 from gemma_particle.history import NO_COMPACTION,OFFICIAL_COMPACTION,HISTORY_PROFILES,history_contract,eval_history_options
 from gemma_particle.adapters import register_packaged_adapter
 from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
+from gemma_particle.confirmation import (load_confirmation_access, validate_confirmation_treatment,
+    validate_confirmation_server, confirmation_pair_identity, reserve_confirmation_task)
 from build_submission import build,MODELS
 
 
@@ -51,6 +53,8 @@ async def main():
     p.add_argument('--cpu-protocol-fixture',action='store_true')
     p.add_argument('--external-dev-manifest',type=Path)
     p.add_argument('--external-dev-qualification',type=Path)
+    p.add_argument('--confirmation-access',type=Path,help='explicit post-selection access receipt; holdout remains forbidden by default')
+    p.add_argument('--confirmation-pair',type=Path,help='original one-pair claim anchored to the locked choice/manifest')
     p.add_argument('--inputs',type=Path,default=Path('data/control-inputs/root/.cache/kagglehub/competitions/gemma-4-developer-agent'))
     p.add_argument('--image',default='gemma-particle-sandbox:fastapi-deps-v2')
     p.add_argument('--wheels',type=Path,required=True)
@@ -62,11 +66,24 @@ async def main():
     endpoint=urlsplit(args.endpoint)
     if endpoint.scheme!='http' or endpoint.hostname not in ('localhost','127.0.0.1','::1') or endpoint.username or endpoint.password:
         raise ValueError('an explicit local model endpoint is required')
+    confirmation=None;confirmation_identity=None;confirmation_condition=None
+    if bool(args.confirmation_access)!=bool(args.confirmation_pair):
+        raise ValueError('confirmation requires both its explicit access receipt and original pair claim')
+    if args.confirmation_access:
+        if args.external_dev_manifest or args.external_dev_qualification or args.cpu_protocol_fixture:
+            raise ValueError('confirmation cannot be combined with supplementary DEV or CPU protocol fixtures')
+        confirmation=load_confirmation_access(args.confirmation_access)
+        confirmation_identity=confirmation_pair_identity(confirmation,args.confirmation_pair)
+        if args.tasks.resolve()!=Path(confirmation.receipt['holdout_manifest']).resolve():
+            raise ValueError('exact original locked visible confirmation manifest required')
+        confirmation_condition=validate_confirmation_treatment(confirmation,adapter=args.adapter,arm=args.arm,model=args.model,
+            prompt_profile=args.prompt_profile,instruction_protocol=args.instruction_protocol,budget_profile=args.budget_profile,
+            history_profile=args.history_profile,capture_protocol=args.capture_protocol,source_root=Path(__file__).resolve().parents[1])
     rows=read_jsonl(args.tasks)
     if bool(args.external_dev_manifest)!=bool(args.external_dev_qualification):
         raise ValueError('supplementary DEV requires both an explicit manifest and qualification')
     external=load_external_dev(args.external_dev_manifest) if args.external_dev_manifest else None
-    validate_agent_tasks(rows,external)
+    validate_agent_tasks(rows,external,confirmation=confirmation)
     if external and sha256_file(args.tasks)!=external.visible_file_sha256:
         raise ValueError('visible supplementary DEV bytes differ')
     lookup={r['instance_id']:r for r in rows}
@@ -81,6 +98,7 @@ async def main():
         identity=server_identity.get('model_identity',{})
         if not identity.get('repo') or len(identity.get('revision',''))!=40 or not identity.get('dtype'):
             raise ValueError('pinned model revision and precision required')
+        if confirmation:validate_confirmation_server(confirmation,server_identity,learned=args.adapter is not None)
         health=httpx.get(args.endpoint.rstrip('/').removesuffix('/v1')+'/health',timeout=5).json()
         if health.get('identity_sha256')!=digest(server_identity):
             raise ValueError('live endpoint differs from the declared server identity')
@@ -97,6 +115,7 @@ async def main():
     if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['capture_protocol']=args.capture_protocol
     if args.history_profile!=NO_COMPACTION:manifest['history_profile']=args.history_profile
     if args.prompt_profile!=DEFAULT_PROMPT_PROFILE:manifest['prompt_profile']=args.prompt_profile
+    if confirmation:manifest['confirmation']=confirmation_identity
     manager=ContainerManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000))
     manifest['image_id']=manager.client.images.get(args.image).id
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
@@ -107,6 +126,9 @@ async def main():
             inputs=args.inputs,image_id=manifest['image_id'],wheels=args.wheels)
     (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
     for task_id in args.task_id:
+        reservation_sha=None
+        if confirmation:
+            reservation_sha=reserve_confirmation_task(confirmation,args.confirmation_pair,confirmation_condition,task_id,args.out)
         row=lookup[task_id]
         visible={k:v for k,v in row.items() if k!='split'}
         task=Task(**visible)
@@ -153,6 +175,7 @@ async def main():
             base=(Path(__file__).resolve().parents[1]/'submission/prompts/system.md').read_text()
             manifest['contract']['common_prompt']=prompt_identity(base,args.prompt_profile)
         if external:manifest['contract']['external_dev']=manifest['external_dev']
+        if confirmation:manifest['contract']['confirmation']=confirmation_identity
         if adapter_identities:manifest['contract']['candidate_adapters']=adapter_identities
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
@@ -176,6 +199,8 @@ async def main():
         result['snapshot_sha256']=sha256_file(args.inputs/'snapshots'/f'{task_id}.tgz')
         result['model_identity']=server_identity.get('model_identity')
         if external:result['external_dev']=manifest['external_dev']
+        if confirmation:
+            result.update(confirmation=confirmation_identity,confirmation_task_reservation_sha256=reservation_sha)
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=args.instruction_protocol
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:result['capture_protocol']=args.capture_protocol

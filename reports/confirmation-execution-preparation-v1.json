@@ -1,0 +1,68 @@
+{
+  "schema": "gemma4-confirmation-execution-preparation-v1",
+  "as_of": "2026-11-17T14:04:33.729937+00:00",
+  "status": "cpu_preparation_passed_real_holdout_still_locked",
+  "gpu_model_work": false,
+  "real_confirmation_access_issued": false,
+  "real_confirmation_pair_claimed": false,
+  "real_confirmation_model_tasks": 0,
+  "real_reference_controls": 0,
+  "source_base_commit": "3588de18d16349f42d71e218dd76abf0529e661b",
+  "sources_sha256": {
+    "src/gemma_particle/confirmation.py": "06c49ad0278041661b335d3128ee2416e5d2673ac2be6d859e3b770a006c54bc",
+    "src/gemma_particle/dev.py": "dd7fbc6518cd11dc6027b96c955ce9f1638b42e15257186df005a80126b723f8",
+    "scripts/run_trajectories.py": "8fa0b19e079d7f6fbac67f98a15685af8f60be27fef61407fcf63586ad1c661b",
+    "scripts/verify_trajectories.py": "d009cb2767601fb44e6ecd4a3363f60c706e315160604e94d916b5314bfb1779",
+    "scripts/verify_controls.py": "1cafd52669a58b2d505d06621b836976d49a0da13b620f6ac7c5eb65482d0df9",
+    "scripts/unlock_confirmation.py": "0eace5bd6f72e19f115987f0655c01996b6826cf9fe92a31ba3139f03f6b9099",
+    "scripts/claim_confirmation_pair.py": "00af2ff114c823cb1981b28d836517ad209959b10f188db8d097bfb0affa44cf",
+    "tests/test_confirmation.py": "15213fe099ee08b72b163a335f73b63f963774f674a62b53437e17f3fb2cf5be",
+    "tests/test_confirmation_execution.py": "d4811665ddfe1ea62af294a4f400786d9f3416d427ea2caee8f41eca9e132373"
+  },
+  "checks": {
+    "focused_passed": 38,
+    "focused_log_sha256": "0241155c08c34044f4a37b3db1cd8384923e218d4cbdc3d3d61d768ccf3bf5f6",
+    "full_public_source_passed": 192,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "8ea3aa22ce4ef786617f18275878d7a0c4cf1b477d16496e0b012ac18ded8afb",
+    "public_python_files_compared": 133,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "fixture_scope": [
+      "synthetic access/22-result choice/18-packet provenance only;49 fake holdout rows",
+      "default guards reject holdout; explicit full access preserves holdout labels",
+      "teacher/different-model/changed-profile/changed-adapter rejection",
+      "one manifest-anchored pair across changed choices/output directories and98 exclusive task reservations",
+      "base/selected alias serving matches original canonical engine contract",
+      "3 actual CLI subprocesses reject incomplete access before sentinel task/reference paths"
+    ]
+  },
+  "official_call_syntax_bridge": {
+    "receipt_sha256": "f40100c5b7e0a711485a5fbeefb5eabd59ef2b0e5edbae93615df58f7cc26603",
+    "reference_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+    "files": {
+      "scripts/run_trajectories.py": {
+        "unchanged_critical_call_count": 11,
+        "call_ast_sha256": "14bc3f9fb9a6b42a6fe67c55cc9d5ee3b7af484db8e7108cb39d8c96e948407d"
+      },
+      "scripts/verify_trajectories.py": {
+        "unchanged_critical_call_count": 7,
+        "call_ast_sha256": "b1d8cd21bcf42d620e0140b60dc11e616436d59e78d9cdf0254b8597742023fa"
+      },
+      "scripts/verify_controls.py": {
+        "unchanged_critical_call_count": 4,
+        "call_ast_sha256": "62f94c1088c1601c02425135383a654ca308e739d1a92287368088f45e09834f"
+      }
+    },
+    "scope": "unchanged syntax/arguments for named official agent,model,compiler,sandbox and verifier calls; not a model quality or complete semantic equivalence proof"
+  },
+  "source_boundary": "all live collection/native/DEV/conversion/learned-grid executors remain frozen; stdlib-only original pilot uses frozen293 children",
+  "interface": "explicit confirmation access and anchored pair claim required for model generation/verification; controls require access before original reference reads",
+  "next_required_work": "actual DEV choice/access; complete49-task environment calibration; paired driver and audited report; official learned submission above fresh SOTA",
+  "scope": "CPU protected-entrypoint preparation only; no real holdout task, calibration, model quality, numerical hardware parity or official learned result"
+}

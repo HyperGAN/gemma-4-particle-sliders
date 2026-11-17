@@ -9,18 +9,31 @@ from gemma_particle.data import VISIBLE_FIELDS, write_jsonl
 from gemma_particle.harness_identity import sha256_file
 from test_conversion_handoff import put
 from test_dev_dispatch import packet_fixture
+from test_dev_selection import fixtures as dev_fixtures
 
 
 def access_fixture(root):
-    matrix, plan, plan_sha, _, _ = packet_fixture(root)
-    controls = [{'id': name, 'role': 'off' if name == 'off' else 'prompt-control', 'arm': 'off'}
+    matrix, native_plan, _, _, _ = packet_fixture(root)
+    panels = root / 'synthetic-dev-panels'; panels.mkdir()
+    plan, _, _ = dev_fixtures(panels)
+    plan['training'].update(native_plan['training'])
+    controls = [{'id': name, 'role': 'off' if name == 'off' else 'prompt-control',
+        'arm': 'off' if name == 'off' else name.removeprefix('prompt-')}
         for name in ['off', 'prompt-reproduce', 'prompt-localize', 'prompt-verify']]
-    plan['conditions'] = controls + plan['conditions']
+    plan['conditions'] = controls + native_plan['conditions']
     manifest = root / 'synthetic-holdout.jsonl'
     rows = [{**{k: 'CPU synthetic fixture' for k in VISIBLE_FIELDS}, 'instance_id': f'fixture-holdout-{i}',
         'repo': 'Textualize/rich' if i < 48 else 'encode/httpx', 'split': 'holdout'} for i in range(49)]
     write_jsonl(manifest, rows)
     plan['confirmation'] = {'count': 49, 'manifest_sha256': sha256_file(manifest)}
+    qualification = Path(plan['secondary']['qualification']); q = json.loads(qualification.read_text())
+    q['source_sha256'] = 'f' * 64; put(qualification, q)
+    plan['secondary']['qualification_sha256'] = sha256_file(qualification)
+    plan_path = root / 'selection-plan.json'; put(plan_path, plan); plan_sha = sha256_file(plan_path)
+    matrix_path = matrix / 'candidate-packets.json'; m = json.loads(matrix_path.read_text())
+    m['selection_plan_sha256'] = plan_sha; put(matrix_path, m)
+    matrix_status = matrix / 'progress.json'; s = json.loads(matrix_status.read_text())
+    s['candidate_packets_sha256'] = sha256_file(matrix_path); put(matrix_status, s)
     packets = json.loads((matrix / 'candidate-packets.json').read_text())['packets']
     by_id = {p['condition']['id']: p for p in packets}
     selected_id = packets[0]['condition']['id']

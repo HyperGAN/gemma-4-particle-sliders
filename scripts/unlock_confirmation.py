@@ -79,7 +79,7 @@ def main():
             raise ValueError('locked choice or declaration changed during offline reaudit')
         access = build_confirmation_access(args.dev_grid, plan, plan_sha,
             args.out / 'reaudited-dev-choice/selection.json', args.manifest, args.packets)
-        access.update(access_plan=str((args.out / 'plan.json').resolve()),
+        access.update(selection_plan=str(args.selection_plan), access_plan=str((args.out / 'plan.json').resolve()),
             access_plan_sha256=sha256_file(args.out / 'plan.json'),
             offline_dev_auditor_executor_commit=args.dev_executor_commit,
             offline_dev_audit_log_sha256=sha256_file(args.out / 'dev-reaudit.log'),

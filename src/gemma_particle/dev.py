@@ -23,6 +23,7 @@ WORKSPACE_PACKAGES = {
     'python-attrs/attrs':'attrs', 'Python-Markdown/markdown':'markdown',
     'marshmallow-code/marshmallow':'marshmallow', 'pallets/flask':'flask',
     'executablebooks/markdown-it-py':'markdown_it', 'Delgan/loguru':'loguru',
+    'Textualize/rich':'rich', 'encode/httpx':'httpx',
 }
 
 
@@ -34,13 +35,22 @@ class ExternalDevSelection:
     visible_file_sha256: str
 
 
-def validate_agent_tasks(rows, external=None):
+def validate_agent_tasks(rows, external=None, *, confirmation=None):
+    from .confirmation import LockedConfirmation
+    if external is not None and confirmation is not None:
+        raise ValueError('supplementary DEV and locked confirmation scopes cannot be combined')
+    if confirmation is not None and not isinstance(confirmation, LockedConfirmation):
+        raise ValueError('validated explicit locked confirmation access required')
     fields=set(VISIBLE_FIELDS)|{'split'}
-    if not rows or any(set(r)!=fields or r['split'] not in ('train','dev') for r in rows):
+    allowed=('holdout',) if confirmation is not None else ('train','dev')
+    if not rows or any(set(r)!=fields or r['split'] not in allowed for r in rows):
         raise ValueError('agent tasks require the exact visible TRAIN/DEV field allowlist')
     if len({r['instance_id'] for r in rows})!=len(rows):
         raise ValueError('duplicate visible task IDs')
-    if external is not None:
+    if confirmation is not None:
+        if rows!=confirmation.rows:
+            raise ValueError('agent tasks differ from the complete locked confirmation panel')
+    elif external is not None:
         if rows!=external.rows:
             raise ValueError('agent tasks differ from the frozen supplementary DEV cohort')
     elif any(REPO_SPLITS.get(r['repo'])!=r['split'] for r in rows):

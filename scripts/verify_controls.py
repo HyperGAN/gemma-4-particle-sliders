@@ -19,6 +19,8 @@ from swegemma.harness.verification import verify_task
 from swegemma.sandbox import ContainerConfig, ContainerManager
 from gemma_particle.sandbox import isolate_sandbox_cache,SourceBoundManager
 from gemma_particle.data import VISIBLE_FIELDS,digest,read_jsonl
+from gemma_particle.confirmation import load_confirmation_access
+from gemma_particle.harness_identity import sha256_file
 
 
 async def main():
@@ -27,15 +29,29 @@ async def main():
     parser.add_argument('--inputs', type=Path, default=Path('data/control-inputs/root/.cache/kagglehub/competitions/gemma-4-developer-agent'))
     parser.add_argument('--task-id', default='requests_6757')
     parser.add_argument('--image', default='gemma-particle-sandbox:mirror-v30')
-    parser.add_argument('--split', choices=['train','dev'], default='dev')
+    parser.add_argument('--split', choices=['train','dev','holdout'], default='dev')
+    parser.add_argument('--confirmation-access',type=Path)
     parser.add_argument('--wheels',type=Path)
     parser.add_argument('--external-dev-manifest',type=Path)
     parser.add_argument('--out', type=Path, default=Path('runs/verifier-controls-v1'))
     args = parser.parse_args()
     if args.out.exists():
         raise FileExistsError('control run is immutable')
+    confirmation=None
+    if args.split=='holdout':
+        if args.confirmation_access is None or args.external_dev_manifest:
+            raise ValueError('holdout controls require explicit post-selection confirmation access')
+        confirmation=load_confirmation_access(args.confirmation_access)
+        if sha256_file(args.tasks)!=confirmation.identity['official_tasks_sha256']:
+            raise ValueError('original official references required for confirmation controls')
+    elif args.confirmation_access:
+        raise ValueError('confirmation access cannot relabel TRAIN or DEV controls')
     task = next(row for row in load_tasks(args.tasks) if row.instance_id == args.task_id)
     allowed_repos = {'train':{'fastapi/fastapi'}, 'dev':{'psf/requests'}}
+    if confirmation:
+        visible={key:getattr(task,key) for key in VISIBLE_FIELDS};visible['split']='holdout'
+        if visible not in confirmation.rows:raise ValueError('control task outside the locked confirmation panel')
+        allowed_repos['holdout']={'Textualize/rich','encode/httpx'}
     external=None
     if args.external_dev_manifest:
         external=json.loads(args.external_dev_manifest.read_text())
@@ -65,7 +81,8 @@ async def main():
         'pytest-dev/pluggy':'pluggy','scrapy/parsel':'parsel','urllib3/urllib3':'urllib3','jd/tenacity':'tenacity',
         'python-humanize/humanize':'humanize','python-attrs/attrs':'attrs','Python-Markdown/markdown':'markdown',
         'marshmallow-code/marshmallow':'marshmallow','pallets/flask':'flask',
-        'executablebooks/markdown-it-py':'markdown_it','Delgan/loguru':'loguru'}
+        'executablebooks/markdown-it-py':'markdown_it','Delgan/loguru':'loguru',
+        'Textualize/rich':'rich','encode/httpx':'httpx'}
     package=packages[task.repo]
     manager = SourceBoundManager(ContainerConfig(image=args.image, network_mode='none', mem_limit='4g', cpu_quota=200000),package=package)
     config = EvalConfig(tasks_path=args.tasks, snapshots_dir=args.inputs/'snapshots',
@@ -82,6 +99,7 @@ async def main():
     if external:
         receipt['external_dev_manifest_sha256']=hashlib.sha256(args.external_dev_manifest.read_bytes()).hexdigest()
         receipt['external_inputs_sha256']=hashlib.sha256((args.inputs/'receipt.json').read_bytes()).hexdigest()
+    if confirmation:receipt['confirmation']=confirmation.identity
     for arm, patch in [('empty', ''), ('reference', task.patch)]:
         start = time.perf_counter()
         result = await verify_task(manager, config, task, snapshot, agent_patch=patch, start_time=start)
