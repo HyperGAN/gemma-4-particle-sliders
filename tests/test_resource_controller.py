@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import signal
 import socket
+import shutil
 import subprocess
 import sys
 import time
@@ -29,7 +30,7 @@ from test_learned_effect import protocol_fixture, response
 ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.mark.parametrize('mode', ['complete', 'unqualified', 'no_effect', 'right_no_effect', 'child_failure'])
+@pytest.mark.parametrize('mode', ['complete', 'audit_bridge', 'unqualified', 'no_effect', 'right_no_effect', 'child_failure'])
 def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypatch, mode):
     spec = importlib.util.spec_from_file_location('cpu_resource_controller', ROOT / 'scripts/run_resource_dev_grid.py')
     controller = importlib.util.module_from_spec(spec); spec.loader.exec_module(controller)
@@ -45,6 +46,12 @@ def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypa
         for name in names:
             path = directory / name; path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes((ROOT / name).read_bytes())
+    task_executor=executor
+    if mode=='audit_bridge':
+        task_executor=tmp_path/'task-audit';shutil.copytree(executor,task_executor)
+        corrected=task_executor/'src/gemma_particle/dev_evidence.py'
+        corrected.write_text(corrected.read_text()+'\n# CPU audit-only fixture change\n')
+        (auditor/'src/gemma_particle/dev_evidence.py').write_bytes(corrected.read_bytes())
     monkeypatch.setattr(controller, 'frozen_sources', lambda directory, commit:
         {str(p): sha256_file(p) for p in directory.rglob('*') if p.is_file()})
     monkeypatch.setattr(controller, 'load_selection_plan', lambda path: deepcopy(selection))
@@ -180,10 +187,11 @@ raise SystemExit(payload['exit'])
         '--probe-inputs', str(ROOT / 'research/dev-hardware-probe-inputs-v1.json'),
         '--probe-contexts', str(contexts), '--probe-qualification', str(qualification), '--effect-protocol', str(protocol),
         '--left-port', str(ports[0]), '--right-port', str(ports[1]), '--out', str(out)]
+    if mode=='audit_bridge':argv.extend(['--task-executor',str(task_executor),'--task-executor-commit','CPU'])
     monkeypatch.setattr(sys, 'argv', argv)
     previous_handlers = {sig: signal.getsignal(sig) for sig in [signal.SIGTERM, signal.SIGINT]}
     try:
-        if mode == 'complete': controller.main()
+        if mode in ['complete','audit_bridge']: controller.main()
         else:
             with pytest.raises((ValueError, RuntimeError)): controller.main()
     finally:
@@ -193,10 +201,11 @@ raise SystemExit(payload['exit'])
             child.wait()
     status = json.loads((out / 'progress.json').read_text())
     dev_calls = [call for call in spawned if call[1] == 'scripts/run_dev_condition.py']
-    if mode == 'complete':
+    if mode in ['complete','audit_bridge']:
         assert status['state'] == 'complete_dev_choice'
         assert [r['condition_id'] for r in status['finished']] == [c['id'] for c in learned]
         assert len(dev_calls) == 18 and len(spawned) == 40  # 20 servers,qualifier,18 panels,comparator
+        assert all(call[0]==str(task_executor/'.harness-venv/bin/python') for call in dev_calls)
         assert all(len((out / (c['id'] + '-preflight-http.jsonl')).read_text().splitlines()) == 24 for c in learned)
     elif mode in ['unqualified', 'no_effect', 'right_no_effect']:
         assert status['state'] == 'error' and not status['model_dev_inference'] and not dev_calls

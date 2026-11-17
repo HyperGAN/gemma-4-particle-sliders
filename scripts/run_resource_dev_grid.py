@@ -23,7 +23,7 @@ from gemma_particle.dev_evidence import canonical_contract
 from gemma_particle.dev_selection import load_selection_plan
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.learned_effect import prepare_effect_probes, learned_effect_preflight
-from gemma_particle.resource_dispatch import pending_producers, stopped_prior_grid, observe_slot, slot_record, stop_owned, wait_wave
+from gemma_particle.resource_dispatch import pending_producers, stopped_prior_grid, observe_slot, slot_record, stop_owned, wait_wave,task_audit_bridge
 from gemma_particle.resource_supplement import (validate_resource_declaration, prepare_resource_supplement,
     load_resource_supplement, normalize_qualified_contract, audit_condition_slot)
 
@@ -50,6 +50,8 @@ def main():
         p.add_argument('--' + name + '-commit', required=True)
     p.add_argument('--prior-pid', type=int, required=True)
     p.add_argument('--prior-birth-ticks', required=True)
+    p.add_argument('--task-executor',type=Path,help='separate frozen checkout with only DEV evidence-reader corrections')
+    p.add_argument('--task-executor-commit')
     p.add_argument('--declaration', type=Path, default=Path('research/dev-resource-declaration-v1.json'))
     p.add_argument('--selection-plan', type=Path, default=Path('research/dev-selection-v1.json'))
     p.add_argument('--proposal', type=Path, default=Path('research/dev-hardware-resource-proposal-v1.json'))
@@ -61,6 +63,10 @@ def main():
     p.add_argument('--right-port', type=int, default=8033)
     p.add_argument('--plan-only', action='store_true')
     args = p.parse_args()
+    if bool(args.task_executor)!=bool(args.task_executor_commit):
+        raise ValueError('task audit executor requires its exact commit')
+    args.task_executor=args.task_executor or args.executor
+    args.task_executor_commit=args.task_executor_commit or args.executor_commit
     for key, value in vars(args).items():
         if isinstance(value, Path): setattr(args, key, value.resolve())
     root = Path(__file__).resolve().parents[1]
@@ -94,11 +100,13 @@ def main():
             or conversion_plan['probe_qualification_sha256'] != sha256_file(args.probe_qualification)):
         raise ValueError('same complete core grid,original baseline,native inputs and numerical effect protocol required')
     pins = {}
-    for executor, commit in [(args.executor, args.executor_commit), (args.qualifier, args.qualifier_commit),
+    source_sets={}
+    for executor, commit in [(args.executor, args.executor_commit),(args.task_executor,args.task_executor_commit), (args.qualifier, args.qualifier_commit),
             (args.auditor, args.auditor_commit)]:
-        pins.update(frozen_sources(executor, commit))
+        source_sets[executor]=frozen_sources(executor,commit);pins.update(source_sets[executor])
+    audit_bridge=task_audit_bridge(args.executor,args.task_executor,source_sets[args.executor],source_sets[args.task_executor])
     for name in ['src/gemma_particle/dev_evidence.py', 'src/gemma_particle/dev_selection.py']:
-        if sha256_file(args.executor / name) != sha256_file(args.auditor / name):
+        if sha256_file(args.task_executor / name) != sha256_file(args.auditor / name):
             raise ValueError('original generation task audit,canonicalizer,statistics and selection required')
     for name, value in resource_declaration['qualification_sources_sha256'].items():
         if sha256_file(args.qualifier / name) != value: raise ValueError('original declared hardware qualifier required')
@@ -128,6 +136,8 @@ def main():
         'prospective_resource_declaration': {'path': str(args.declaration), 'sha256': sha256_file(args.declaration)},
         'qualifier': str(args.qualifier), 'qualifier_commit': args.qualifier_commit,
         'offline_auditor': str(args.auditor), 'offline_auditor_commit': args.auditor_commit,
+        'task_evidence_executor':str(args.task_executor),'task_evidence_executor_commit':args.task_executor_commit,
+        'task_audit_bridge':audit_bridge,
         'learned_effect_protocol_sha256': sha256_file(args.effect_protocol),
         'learned_effect_probe_task_ids': effect_protocol['probe_task_ids'],
         'resource_supplement': None, 'activation': 'only after actual numerical qualification and offline audit',
@@ -314,7 +324,7 @@ def main():
             publish('launching_full_dev_wave', wave=wave_index, current_conditions=names, model_dev_inference=True)
             for owner in wave:
                 name = owner['name']; packet = owner['packet']; index = owner['index']; destination = args.out / name
-                command = [str(args.executor / '.harness-venv/bin/python'), 'scripts/run_dev_condition.py',
+                command = [str(args.task_executor / '.harness-venv/bin/python'), 'scripts/run_dev_condition.py',
                     '--selection-plan', str(args.selection_plan), '--condition', name, '--endpoint', owner['root'] + '/v1',
                     '--server-identity', str(owner['identity_path']), '--out', str(destination)]
                 for option in ['adapter', 'conversion_report', 'native', 'cache']:
@@ -322,7 +332,8 @@ def main():
                 write(args.out / (name + '-before-task-slot.json'), slot_record(packet, policy_path, policy,
                     owner['identity_path'], owner['binding'], owner['command'], owner['observations']))
                 with (args.out / 'logs' / (name + '-dev.log')).open('x') as stream:
-                    child = subprocess.Popen(command, cwd=args.executor, env=env, stdout=stream, stderr=subprocess.STDOUT)
+                    child = subprocess.Popen(command, cwd=args.task_executor,
+                        env=dict(env,PYTHONPATH=str(args.task_executor/'src')), stdout=stream, stderr=subprocess.STDOUT)
                 children.append(child); owner['dev_child'] = child
             publish('running_full_dev_wave', wave=wave_index, current_conditions=names, model_dev_inference=True)
             codes = wait_wave([owner['dev_child'] for owner in wave], observe=unchanged)

@@ -19,6 +19,20 @@ from .harness_identity import sha256_file
 from .resource_supplement import normalize_qualified_contract
 
 
+def task_audit_bridge(serving,task_executor,serving_sources,task_sources):
+    """Permit evidence-reader repairs while retaining every generation byte."""
+    serving,task_executor=Path(serving),Path(task_executor)
+    before={str(Path(k).relative_to(serving)):v for k,v in serving_sources.items()}
+    after={str(Path(k).relative_to(task_executor)):v for k,v in task_sources.items()}
+    allowed={'scripts/run_dev_condition.py','src/gemma_particle/dev_evidence.py'}
+    changed=sorted(k for k in before.keys()&after.keys() if before[k]!=after[k])
+    if set(before)!=set(after) or not set(changed)<=allowed:
+        raise ValueError('task executor may change only DEV evidence auditing; generation and verification must match')
+    return {'serving_executor':str(serving),'task_executor':str(task_executor),'audit_only_changes':changed,
+        'unchanged_generation_and_verification':True,
+        'changed_source_sha256':{k:{'before':before[k],'after':after[k]} for k in changed}}
+
+
 def pending_producers(producers):
     pending = []
     for producer in producers:
