@@ -11,3 +11,5 @@ Selection requires the complete declared grid, or an actual model-preflight erro
 `run_dev_controls.py` runs the four complete unadapted conditions. `run_dev_condition.py` runs one full condition and binds its implementation, actual server, request journals, patches, and verification receipts. `compare_dev_conditions.py` reaudits the complete grid offline before writing an immutable learned choice. Internal consistency checks do not authenticate invented JSON as model execution.
 
 The 49-task confirmation set stays locked until that choice. It supplies no targets, conversion activations, or selection feedback. The selected learned candidate and matched OFF are then evaluated once. Only an official learned submission exceeding a freshly verified public leader can satisfy the competition goal. There are currently no model DEV scores or pretrained optimizer updates.
+
+The [training continuation](full-training-continuation.md) preserves the one-update engineering pilot and resumes its full game state through the declared checkpoints before starting the second recipe on the same cache.

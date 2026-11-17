@@ -1,0 +1,7 @@
+# Exact continuation after the engineering update
+
+`continue_full_training.py` waits for the original pilot's verified `completed_one_update` receipt. It never substitutes CPU fixtures or a partial checkpoint. The [CPU preparation receipt](../reports/full-training-continuation-preparation-v1.json) checks the frozen native executor and unchanged configuration without loading a model or accessing a GPU.
+
+The EMPF continuation resumes the full step-1 game state to steps 256, 512, and 1024. Its output directory records an exact copy of the original first metric, leaving all pilot files unchanged. RHBI starts separately from seed 0 on the same admitted TRAIN response cache and reaches the same checkpoints. Its explicit `gpu_native_polar` execution derivative remains recorded in the game signature. Neither run uses EMA, a changed horizon, DEV outcomes, or conversion probes as targets.
+
+Every chunk waits for observed free GPU memory of at least the 50% target plus 8 GiB, and available host memory above the measured full-context RSS bound plus 8 GiB. Exact checkpoint loading is owned by the qualified executor. The controller checks contiguous finite metric steps and the hashes of actual full and raw checkpoints after each chunk. Failed runs preserve their artifacts and require reconciliation. Prepared orchestration is not evidence of an executed update or task improvement.

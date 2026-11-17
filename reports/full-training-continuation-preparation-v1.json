@@ -1,0 +1,33 @@
+{
+  "schema": "gemma4-full-training-continuation-preparation-v1",
+  "status": "prepared",
+  "gpu_used": false,
+  "source_sha256": "9c1daf95fa72d5d1a022c6a5d1a2f42de982274307456c2e22a9d9888a2fc519",
+  "plan_sha256": "164358889c978214aedc9b34b4d788908e04b039196b46ffe802b87666a6c72c",
+  "executor_commit": "293406f8673847ed9f517e7bd636764f49a2e248",
+  "sources": {
+    "scripts/train.py": "0038205da1473d87b1c8de5d75b52988809dbd2a5999e01f87e54da4b6588bfc",
+    "src/gemma_particle/model.py": "4fdb0b890a1e2fa5372b52ff8c261c49d9726208c993396bd762bd6cec04f41d",
+    "src/gemma_particle/runtime.py": "a4e0cadeb6ff50cd0010c2b666432e1ceb7d700b798a95d94bc2f9b5e31b6d84",
+    "src/gemma_particle/checkpoint_inputs.py": "3aadb7fda54c3111b9242cb5e23ea6ddd2d7ee6088099e14dc513575f6a5d94f",
+    "src/gemma_particle/activation_storage.py": "7c9dafd4ce10c1899102afee0bd22e43bce53d199fdfcb736f7458039a78fa5f",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98"
+  },
+  "config_sha256": "52418f9082db0935280c736841b89ec11ec2f3c1cd497a993beef582b4fcc40e",
+  "verified": "actual CPU plan command validates frozen executor, source/config hashes, qualified memory profile and original pilot identity",
+  "continuation": "wait for actual verified EMPF step1, exact resume to256/512/1024, then RHBI with explicit GPU-native-polar derivative on the same admitted cache",
+  "pilot_artifacts": "preserved unchanged; copied actual first metric is explicitly declared",
+  "headroom": "before each model chunk require50% GPU plus8GiB free and the qualified host-RSS bound plus8GiB available",
+  "model_execution": "not run by this preparation control",
+  "training_updates": 0,
+  "scope": "CPU orchestration preparation only; future actual training and quality unmeasured",
+  "existing_native_runtime_controls": {
+    "passed": 5,
+    "log_sha256": "d5329d18a90bb06357954914eb9ded63bd9b7b736936cd75e8f62fc6632fe65d",
+    "test_source_sha256": {
+      "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
+      "tests/test_gemma_binding.py": "b0ba126255bdbf8a019675c953efb8fa7309f1b2cb630edf4e1cf305ff00f583"
+    },
+    "scope": "actual CPU random Gemma tests, including full disk game-state continuation; not31B pretrained execution"
+  }
+}
