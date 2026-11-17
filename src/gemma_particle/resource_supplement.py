@@ -79,6 +79,17 @@ def load_resource_supplement(path):
     return record
 
 
+def bind_resource_choice(choice, grid_plan, path, selection_sha256):
+    """Bind an already-complete choice before any confirmation manifest read."""
+    expected = {'path': str(Path(path).resolve()), 'sha256': sha256_file(path)}
+    if choice.get('resource_supplement') != expected or grid_plan.get('resource_supplement') != expected:
+        raise ValueError('locked choice and explicit dispatcher must bind the same original resource policy')
+    resource = load_resource_supplement(path)
+    if resource['selection_plan_sha256'] != selection_sha256:
+        raise ValueError('qualified resources must preserve the original complete selection plan')
+    return expected
+
+
 def normalize_qualified_contract(contract, condition_id, supplement):
     """Normalize only the assigned physical device after explicit qualification.
 

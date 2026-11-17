@@ -1,0 +1,69 @@
+{
+  "schema": "gemma4-resource-confirmation-access-preparation-v1",
+  "as_of": "2026-11-17T15:53:10.196790+00:00",
+  "status": "cpu_preparation_passed_actual_access_not_released",
+  "source_base_commit": "1ad16363480c7752a7ada8f5610aadb4c141e1ac",
+  "sources_sha256": {
+    "scripts/unlock_resource_confirmation.py": "cf400f8af85ddf00764ade1654dd738e4aa0966d5168f6b148b3b5fba3a61aaa",
+    "src/gemma_particle/resource_supplement.py": "aefdfa4fccf52cadf06624126eba77affd27b6eaec25c349a881b21928520c97",
+    "tests/test_resource_confirmation_access.py": "3e23300ab3d587e277352ae0c724f57645bd25655edfc17d8ab95db9ab3e9451"
+  },
+  "original_generation_executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "frozen_resource_offline_auditor_commit": "1ad16363480c7752a7ada8f5610aadb4c141e1ac",
+  "checks": {
+    "focused_passed": 33,
+    "focused_log_sha256": "1058cd1dec13cd0a5230eae624a7fe59d5e1f5d6c8d22afae5d60c38db228384",
+    "full_public_source_passed": 306,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "8436fe7edef4fa099c2dc2b2c21b6d78e6ce632a4501b0b4cd212a49e0df7f93",
+    "public_python_files_compared": 153,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "isolated choice/dispatch/policy path/hash/plan references;unchanged protected loader accepts distinct original generation and actual offline-auditor labels, rejects wrong auditor;existing access/manifest/claim/profile/CLI controls retained;all synthetic artifacts,not real model outcomes",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "actual_plan_only": {
+    "plan_sha256": "a3d22f7900d035afb45fa49c289d38865b6bd3288652de019c252c3221a6a2c1",
+    "log_sha256": "4f25ac02bbc6427a9d496e7643ee406345bf14cd488eabd9c4212e42b3f2f512",
+    "scope": "actual frozen generation/auditor trees,core plan and manifest hash only;future policy not qualified;no holdout task parsed"
+  },
+  "actual_current_incomplete_guard": {
+    "holdout_parser_calls": 0,
+    "offline_auditor_children": 0,
+    "access_created": false,
+    "actual_current_DEV_incomplete_rejected": true,
+    "receipt_sha256": "2ca4e3224fde3edb9d75d41af94bd3fe8c878cde48530260ee0dd7f01f3051c2",
+    "log_sha256": "752e0ce0c322b71c3d2a0b48070ef311672a195e5afcaebd0082d61792377f71"
+  },
+  "bounded_source_bridge": {
+    "scope": "4 protected execution files unchanged from prior1ad;load_confirmation_access AST unchanged fromf44;existing resource helpers AST unchanged from1ad,new choice binder only;not a full semantic equivalence proof",
+    "protected_file_sha256": {
+      "scripts/run_trajectories.py": "8fa0b19e079d7f6fbac67f98a15685af8f60be27fef61407fcf63586ad1c661b",
+      "scripts/verify_trajectories.py": "d009cb2767601fb44e6ecd4a3363f60c706e315160604e94d916b5314bfb1779",
+      "scripts/verify_controls.py": "1cafd52669a58b2d505d06621b836976d49a0da13b620f6ac7c5eb65482d0df9",
+      "src/gemma_particle/confirmation.py": "c5676d6a85c2902a3f6e01caff931a7d44a82579aa35b2f5cefba50fc69e4a62"
+    },
+    "f44_loader_AST_equal": true,
+    "existing_resource_functions_AST_equal": true,
+    "resource_functions": [
+      "validate_resource_declaration",
+      "prepare_resource_supplement",
+      "load_resource_supplement",
+      "normalize_qualified_contract",
+      "audit_condition_slot"
+    ]
+  },
+  "access_field_semantics": "dev_executor_commit and offline_dev_auditor_executor_commit name the actual offline auditor;generation_executor and generation_executor_commit separately bind original model execution",
+  "policy": "complete original DEV choice and qualified policy bound before independent full raw-evidence reaudit;new choice must be byte-identical;existing selected packet gate precedes49 original sanitized-task reads",
+  "actual_resource_access_releases": 0,
+  "actual_hardware_qualification_completions": 0,
+  "actual_confirmation_attempts": 0,
+  "new_gpu_model_work": false,
+  "official_score": null,
+  "remaining": "explicit recording dispatcher;actual native/conversion/baseline completion and qualified resource measurement;full learned DEV choice;actual independent access release,confirmation and official learned superiority",
+  "scope": "CPU software/binding preparation only;local records cannot authenticate fabricated execution or establish model quality"
+}
