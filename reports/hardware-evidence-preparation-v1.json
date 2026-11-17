@@ -1,0 +1,56 @@
+{
+  "schema": "gemma4-hardware-evidence-preparation-v1",
+  "as_of": "2026-11-17T15:26:36.191008+00:00",
+  "status": "cpu_preparation_passed_no_actual_parity_or_resource_activation",
+  "source_base_commit": "246c72f3ac72fd0efd71005d1a856247bcb0af4b",
+  "sources_sha256": {
+    "scripts/qualify_hardware_pair.py": "e19eeb093a0887fd45ee7d64ac8267a00549f67ce58195ba53d6c25048e1f48d",
+    "scripts/audit_hardware_pair.py": "358406ecf112f9080178c3cc95477293b2413e96e2a5facfc10fda6e9ef67cb0",
+    "src/gemma_particle/hardware_evidence.py": "a1308240100b7587661bc31e6daf242016a78667d6b588865cb8c5e18a2a6f53",
+    "tests/test_hardware_evidence.py": "6fcc877b833dda770487baf9820a5f2bd3e12d24bbb5c8083d0e73a40c69570e"
+  },
+  "checks": {
+    "focused_passed": 44,
+    "focused_log_sha256": "184e8b74f3adbdbb69c5bf73ad9560650d92c55768b6df3de20dbf6b20f86ab3",
+    "full_public_source_passed": 275,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "7799e987b3bfdc1d3fde77d03c7a01c7ccc1eeec3c7f79cded98db29097d590c",
+    "public_python_files_compared": 148,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "explicit synthetic CPU server,source,packet,hardware/process and20-exchange records;all6 paired numerical cases reconstructed;changed source,progress,identity,command,request,response,missing exchange,aggregate,counters,UUID,descendant,packet or grid rejected;ordinary canonical contract still distinguishes GPUs",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "actual_live_waiter_boundary": {
+    "receipt_sha256": "f14b31fc13d738dc38dae098d2863310aa08ae4f6068b52c3f8f2baafb486450",
+    "log_sha256": "cbd01b061d65906e6d1cd9cacfd7deef6b9797e1c8a20c4d6400dc4100cdc810",
+    "driver_queries": 0,
+    "http_clients": 0,
+    "expected_returncode": 2,
+    "actual_waiter_verified_live_and_blocked": true,
+    "resource_supplement_activated": false,
+    "scope": "actual checker prerequisites with instrumented driver/client boundaries;live a3fd059 waiter blocks before either boundary;not a numerical measurement"
+  },
+  "actual_unqualified_offline_audit": {
+    "log_sha256": "c5bbd0ddb09ba87f4f39ba6082a41a67c897f5587808c529bc578f878521be74",
+    "rejected": true,
+    "output_created": false
+  },
+  "actual_plan_only": {
+    "plan_sha256": "2dd105a145459f751de8b1e0d3a636be8a67af20adc496f9d04335ca1b4e082f",
+    "log_sha256": "48d65d02306afc683cbdb3703687765cc2a4a2edaab48d1cf83117b74ead5686",
+    "model_or_http_access": false
+  },
+  "actual_numerical_hardware_completions": 0,
+  "actual_parity_passes": 0,
+  "resource_supplement_activated": false,
+  "new_gpu_model_work": false,
+  "ordinary_DEV_device_normalization": false,
+  "coordinator_resource_question": "pending revision2;no answer claimed",
+  "remaining": "actual full training/conversions and4 baseline controls;coordinated resource decision;actual fixed two-slot measurement if proceeding;explicit versioned resource supplement,comparison/gate support and scheduler before learned DEV;actual choice,confirmation and official learned superiority",
+  "scope": "offline artifact-consistency and CPU boundary preparation only;cannot authenticate invented execution or establish universal numerical equivalence or task quality"
+}

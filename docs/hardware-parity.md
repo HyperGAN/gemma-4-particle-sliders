@@ -10,6 +10,19 @@ For each actual server, the checker binds the frozen serving source, exact adapt
 
 All six paired cases must preserve the generated token ID and the complete top-twenty token-ID set, with maximum absolute log-probability difference at most `1e-5`. Actual HTTP attempts and responses are journaled. Transport errors produce an incomplete observation without a numerical verdict, restart or tolerance change. A passed numerical control still requires an explicit versioned resource supplement and comparison-audit support. The ordinary DEV canonical contract continues to distinguish physical GPU indices.
 
+The checker also records each actual identity file, launcher command, PID/birth binding, observed descendant process IDs, original prerequisite progress hashes and named input roots. Identity files must stay unchanged throughout measurement. These fields let the later offline reader reconstruct the numerical observation after the owned servers have exited.
+
+`scripts/audit_hardware_pair.py` replays all twenty HTTP exchanges, including twelve completions, recomputes all six numerical comparisons, and rechecks the source, prerequisite, packet matrix, identity, command and GPU-process records. It preserves both physical device identities and does not activate a resource supplement:
+
+```bash
+CUDA_VISIBLE_DEVICES='' PYTHONPATH="$PWD/src" .harness-venv/bin/python \
+  scripts/audit_hardware_pair.py \
+  --qualification /path/to/completed/hardware-control \
+  --out runs/hardware-control-offline-audit
+```
+
+This reader verifies consistency of recorded artifacts. It cannot authenticate fabricated records, and six synthetic probes cannot establish equivalence on all possible inputs. The current [offline preparation report](../reports/hardware-evidence-preparation-v1.json) uses explicitly synthetic CPU artifacts. No real two-slot numerical control has passed.
+
 Prepare on CPU without any HTTP request, driver query, model or CUDA access:
 
 ```bash

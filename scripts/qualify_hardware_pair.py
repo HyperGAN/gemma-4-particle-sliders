@@ -123,6 +123,8 @@ def main():
     args.out.mkdir(parents=True)
     declaration = {'schema': 'gemma4-hardware-parity-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
         'executor_commit': args.executor_commit, 'declaration_pins': pins, 'selection_plan_sha256': selection_sha,
+        'inputs': {key: str(getattr(args, key)) for key in ['dev_grid', 'conversion', 'controls',
+            'executor', 'selection_plan', 'proposal', 'probe_inputs']},
         'cases': [{k: c[k] for k in ['length', 'alias', 'request_sha256']} for c in cases], 'endpoints': endpoints,
         'probe_adapter': resource['probe_adapter'], 'server_mutations': False,
         'scope': 'synthetic numerical qualification only; no resource activation or DEV/holdout task'}
@@ -165,7 +167,7 @@ def main():
         identities = [read(args.left_identity), read(args.right_identity)]
         baseline = read(controls_plan['server_identity'])
         receipt['qualification_contract_sha256'] = qualify_server_contracts(identities, baseline, spec['adapters'])
-        bindings = []
+        bindings = []; commands = []
         for index, (pid, identity_path, endpoint) in enumerate(zip([args.left_pid, args.right_pid],
                 [args.left_identity, args.right_identity], endpoints)):
             if not pid: raise ValueError('both exact owned serving launcher PIDs required')
@@ -180,13 +182,20 @@ def main():
                 values = [v for k, v in identities[index]['sources'].items() if k == name or k.endswith('/' + name)]
                 if values != [sha256_file(args.executor / name)]: raise ValueError('actual serving source bytes differ')
             bindings.append(binding)
+            commands.append({'cwd': str(proc.joinpath('cwd').resolve()),
+                'argv': [os.fsdecode(a) for a in argv if a], 'endpoint': endpoint,
+                'identity_path': str(identity_path), 'identity_file_sha256': sha256_file(identity_path)})
         receipt.update(server_process_bindings=bindings, server_identity_sha256=[digest(i) for i in identities],
-            selected_packet=packet)
+            server_command_bindings=commands, selected_packet=packet,
+            prerequisite_progress_sha256={str(path): sha256_file(path) for path in [args.dev_grid / 'progress.json',
+                *[Path(p['directory']) / 'progress.json' for p in grid_plan['producers']]]},
+            stopped_dispatcher={'pid': args.dev_dispatch_pid, 'birth_ticks': args.dev_dispatch_birth_ticks})
         save()
         clients = [httpx.Client(timeout=600, headers={'X-Gemma-Identity': digest(i)}) for i in identities]
         try:
             def call(side, path, payload=None):
-                if any(sha256_file(p) != value for p, value in pins.items()) or not all(live(b) for b in bindings):
+                if (any(sha256_file(p) != value for p, value in pins.items()) or not all(live(b) for b in bindings)
+                        or any(sha256_file(c['identity_path']) != c['identity_file_sha256'] for c in commands)):
                     raise ValueError('pinned qualification sources/declarations or owned servers changed')
                 index = receipt['requests_attempted']; receipt['requests_attempted'] += 1
                 if path == '/v1/completions': receipt['completion_requests_attempted'] += 1
@@ -211,11 +220,13 @@ def main():
                         raise ValueError('actual fixed seed tokenization differs')
             facts, owned_apps = observe_hardware(bindings)
             validate_device_facts(facts, owned_apps, resource)
-            receipt.update(hardware=facts, owned_gpu_applications=owned_apps); save()
+            receipt.update(hardware=facts, owned_gpu_applications=owned_apps,
+                server_descendant_pids=[sorted(descendants(b['pid'])) for b in bindings]); save()
             for case in cases:
                 responses = [call(side, '/v1/completions', case['request']) for side in [0, 1]]
                 receipt['pairs'].append(compare_probe_responses(case, *responses)); save()
-            if any(sha256_file(p) != value for p, value in pins.items()) or not all(live(b) for b in bindings):
+            if (any(sha256_file(p) != value for p, value in pins.items()) or not all(live(b) for b in bindings)
+                    or any(sha256_file(c['identity_path']) != c['identity_file_sha256'] for c in commands)):
                 raise ValueError('qualification declarations or owned servers changed before verdict')
             receipt['status'] = 'passed' if all(pair['passed'] for pair in receipt['pairs']) else 'failed'
         finally:

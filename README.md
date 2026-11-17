@@ -20,7 +20,7 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 
 The [conversion handoff](docs/learned-conversion-handoff.md) waits for both actual full native trajectories, validates all six checkpoint receipts, and prepares the eighteen fixed learned packets with shared-resource limits. Its CPU preparation controls pass; no learned conversion has run yet.
 
-The [learned DEV dispatcher](docs/learned-dev-dispatch.md) then waits for all measured packets and baseline controls, runs the eighteen full conditions through the frozen baseline executor on GPU 0, and invokes the complete-grid offline selection. Its preparation does not establish a learned model result.
+The [learned DEV dispatcher](docs/learned-dev-dispatch.md) then waits for all measured packets and baseline controls, requires a repeatable actual learned-versus-base effect on the fixed disjoint TRAIN prefixes, runs the eighteen full conditions through the frozen baseline executor on GPU 0, and invokes the complete-grid offline selection. Its preparation does not establish an actual learned effect or model result.
 
 The [confirmation access gate](docs/confirmation-access.md) independently reaudits that immutable DEV choice and binds the selected packet before parsing the original holdout. CPU preparation passes; current incomplete DEV state keeps the holdout locked, and no confirmation has run.
 
@@ -28,11 +28,13 @@ The [protected confirmation entry points](docs/confirmation-execution.md) requir
 
 The [confirmation asset and environment runner](docs/confirmation-environments.md) fetches the missing snapshot/graph/embedding files only after release, then binds all forty-nine CPU reference controls to explicit immutable inputs. Failures stay in the panel; no actual confirmation download or calibration has run.
 
-The inactive [two-GPU resource proposal and numerical checker](docs/hardware-parity.md) preserve the full study and require actual same-adapter parity before a versioned resource change. CPU preparation leaves the current GPU 0 DEV contract active.
+The [paired confirmation driver and offline audit](docs/confirmation-pair.md) preserve all forty-nine OFF and forty-nine selected-candidate attempts, exclusive reservations and fresh-test evidence. Their CPU preparation passes; no real confirmation pair has run.
+
+The inactive [two-GPU resource proposal, numerical checker and offline reader](docs/hardware-parity.md) preserve the full study and require actual same-adapter parity before a versioned resource change. The reader reconstructs every recorded HTTP exchange and retains physical device identities. CPU preparation leaves the current GPU 0 DEV contract active.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.
 
-The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) preserves exact learned-bundle ZIP bytes beyond the small inline limit and binds native/cache/conversion provenance. Its CPU packaging and official compiler controls pass; no learned candidate has yet been uploaded or scored.
+The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) preserves exact learned-bundle ZIP bytes beyond the small inline limit and binds native/cache/conversion provenance. Its selected-candidate gate requires complete confirmation, replays the selected effect journal and reuses the exact evaluated archive. CPU packaging and official compiler controls pass; no learned candidate has yet been uploaded or scored.
 
 [Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Checkpoint input binding](docs/checkpoint-input-binding.md), CPU packed weights and saved-input storage now pass a full two-sequence, 28,672-token gradient probe at a 50% shared GPU cap. All 4,141 gradient tensors are connected and finite, with about 21.7 GiB peak allocation. This probe performs zero optimizer updates and supplies no targets.
 
