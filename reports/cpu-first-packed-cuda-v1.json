@@ -1,0 +1,21 @@
+{
+  "schema": "gemma4-cpu-first-packed-cuda-control-v1",
+  "status": "passed",
+  "pytest_exit_code": 0,
+  "device": "cuda:1",
+  "allocator_cap_fraction": 0.03,
+  "context_kind": "tiny random Gemma4 CT architecture; forbidden as training targets",
+  "training_updates": 0,
+  "tests": 4,
+  "scope": "CPU-first loader placement and exact GPU output/all-adapter-gradient equality against public dense decompression for device/CPU packed storage and direct/nested checkpoints",
+  "seconds": 6.667778413044289,
+  "peak_allocated_bytes": 10115584,
+  "peak_reserved_bytes": 23068672,
+  "sources": {
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98",
+    "src/gemma_particle/model.py": "5d589fdbf39714816c7d34949312a7d5c695895ca7437647aab18e092cd7fc8c",
+    "src/gemma_particle/runtime.py": "b6f834b88064eb99d83db7bd7515037ae2ff2cd3ca5cf6e3778db558451cf426",
+    "tests/test_ct_linear.py": "e483947f627442568daa3a4702f2c8a92e13f14b05346514a3ded8573a108e59"
+  },
+  "log_sha256": "5bc2b6985fe6e41358b51249f534340f87d86ae25f6b240d4241eb798660d3d9"
+}

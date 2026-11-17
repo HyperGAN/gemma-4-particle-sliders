@@ -1,0 +1,42 @@
+{
+  "schema": "gemma4-cpu-packed-initial-loader-error-v1",
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "device": "cuda:1",
+  "memory_fraction": 0.4,
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "training_updates": 0,
+  "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+  "scope": "pre-forward loading failure; no output, gradient or optimizer update",
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "status": "error",
+  "ct_sources": {
+    "version": "0.15.0.1",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "verified_python_files": 102
+  },
+  "execution_sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "b3c5fee8bcac23cd3f191c07f4ad210a9ea26455f59b5dfbd94afbf136fa9e40",
+    "configs/31b-ct-shared-storage-pilot.json": "7d1763bc093298b314a4b4d2e10a6458dfa300cb53ec8111cfda663dc65455cf",
+    "src/gemma_particle/model.py": "5d589fdbf39714816c7d34949312a7d5c695895ca7437647aab18e092cd7fc8c",
+    "src/gemma_particle/runtime.py": "2a99b9c0a89eb7b264c15f080d4ba0278333b84d5e34fa85c484b8b788573448",
+    "src/gemma_particle/ct_linear.py": "910b3efdc7e716ac6aae6087984396d97c3320b37b75135df1a3d490e8d34511"
+  },
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 19.04 GiB. GPU 1 has a total capacity of 47.40 GiB of which 47.12 GiB is free. Including non-PyTorch memory, this process has 262.00 MiB memory in use. 18.96 GiB allowed; Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated.",
+  "peak_host_rss_bytes": 1342025728,
+  "peak_allocated_bytes": 0,
+  "peak_reserved_bytes": 0,
+  "allocator_backend": "native",
+  "raw_result_sha256": "ae84b5bd717a7878183d195e1a7e70db2437dd1b8ee8b3cb9694fc2c5fa9f93a",
+  "next_delta": "CPU-first compressed loading, then direct-parameter/buffer compute placement while packed constants remain CPU"
+}

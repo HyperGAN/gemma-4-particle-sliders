@@ -127,3 +127,24 @@ def replace_compressed_linears(model,*,packed_storage='device'):
             'modules':{name:[m.out_features,m.in_features] for name,m in replacements},
             'saved_backward_state':'original packed constants only; no dense base weights',
             **({'packed_storage':packed_storage} if packed_storage!='device' else {})}
+
+
+def place_cpu_packed_compute(model,device):
+    """Place ordinary model tensors without staging the full packed GPU model.
+
+    Run once after CPU loading/replacement and before adapters, graphs or an
+    optimizer exist. PyTorch's own module conversion handles direct registered
+    parameters/buffers; recursion is disabled so CPU-packed children stay put.
+    """
+    device=torch.device(device)
+    packed=[m for m in model.modules() if isinstance(m,FrozenCTLinear)]
+    if (not packed or any(m.packed_storage!='cpu' for m in packed)
+            or any(getattr(m,n).device.type!='cpu' for m in packed for n in m._packed_names)):
+        raise ValueError('uniform CPU packed storage required before compute placement')
+    if any(p.grad is not None for p in model.parameters()):
+        raise ValueError('compute placement must precede all model gradients')
+    for module in model.modules():
+        if isinstance(module,FrozenCTLinear):
+            module.weight=module.weight.to(device=device)
+        else:
+            module._apply(lambda tensor:tensor.to(device=device),recurse=False)

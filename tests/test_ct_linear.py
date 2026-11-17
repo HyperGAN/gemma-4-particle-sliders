@@ -54,7 +54,7 @@ def test_exact_derivative_and_no_saved_dense_matrix():
 def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path,checkpoint_profile,packed_storage):
     from copy import deepcopy
     from compressed_tensors.compressors.pack_quantized import PackedQuantizationCompressor
-    from gemma_particle.ct_linear import replace_compressed_linears
+    from gemma_particle.ct_linear import replace_compressed_linears,place_cpu_packed_compute
     from compressed_tensors.quantization import QuantizationConfig
     from transformers import AutoModelForCausalLM,CompressedTensorsConfig
     from gemma_particle.model import Native
@@ -79,15 +79,17 @@ def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decomp
         torch.cuda.set_device(device)
         torch.cuda.set_per_process_memory_fraction(.03,device)
     reference=reference.to(device)
-    model=AutoModelForCausalLM.from_pretrained(checkpoint,dtype=torch.float32,device_map=str(device),
+    model=AutoModelForCausalLM.from_pretrained(checkpoint,dtype=torch.float32,device_map='cpu' if packed_storage=='cpu' else str(device),
         quantization_config=CompressedTensorsConfig(run_compressed=True))
     profile=replace_compressed_linears(model,packed_storage=packed_storage)
+    if packed_storage=='cpu':place_cpu_packed_compute(model,device)
     assert len(profile['modules'])==19 and not hasattr(model,'ct_decompress_hook')
     options={} if checkpoint_profile=='none' else dict(checkpointing=True,activation_storage='cpu',checkpoint_profile=checkpoint_profile)
     a=Native(model,identity={'fixture':'packed-gemma4'},host_profile='frozen-ct-w4g32',**options)
     b=Native(reference,identity={'fixture':'decompressed-gemma4'})
     try:
         assert a.metadata().get('packed_weight_storage','device')==packed_storage
+        assert all(p.device==device for p in model.parameters())
         if packed_storage=='cpu':
             assert all(getattr(m,n).device.type=='cpu' for m in model.modules() if hasattr(m,'_packed_names') for n in m._packed_names)
         with torch.no_grad():

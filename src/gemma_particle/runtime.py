@@ -49,7 +49,7 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
         raise ValueError('CPU packed weight storage requires the frozen CT host')
     quant_options={}
     if quantized:
-        from .ct_linear import verify_ct_sources,replace_compressed_linears
+        from .ct_linear import verify_ct_sources,replace_compressed_linears,place_cpu_packed_compute
         verify_ct_sources()
         quant_options['quantization_config']=CompressedTensorsConfig(run_compressed=True)
     if device.type == 'cuda':
@@ -63,10 +63,12 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
         torch.cuda.set_per_process_memory_fraction(memory_fraction, device)
     elif device.type != 'cpu':
         raise ValueError("CPU or explicitly shared CUDA device required")
+    load_device='cpu' if packed_storage=='cpu' else str(device)
     model = AutoModelForImageTextToText.from_pretrained(identity['repo'], revision=identity['revision'],
-        dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device),**quant_options)
+        dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=load_device,**quant_options)
     if quantized:
         replace_compressed_linears(model,packed_storage=packed_storage)
+        if packed_storage=='cpu':place_cpu_packed_compute(model,device)
     return Native(model, identity=identity, checkpointing=checkpointing, activation_storage=activation_storage,
                   checkpoint_profile=checkpoint_profile,
                   rank=config['rank'], alpha=config['alpha'],

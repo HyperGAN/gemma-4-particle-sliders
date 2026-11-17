@@ -22,7 +22,7 @@
         ".deps/particle-sliders-0101/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "6d1cb2d5d02bd5bf1c2bfa3e90a3b0beda35a6278258c479e462118a97f85e0f"
+      "output_sha256": "0a122dd365c77147f7151789dd9e23c0a3f565ac4ff3e658f718df3b15a8228d"
     },
     {
       "command": [
@@ -47,7 +47,7 @@
     "src/gemma_particle/capture.py": "e47db7ee0d47f5592c18a2cdcafa5204df553ae19b9ab2238a0b6c8ad3536675",
     "src/gemma_particle/context_budget.py": "0811b7326af5a2c931e78f5a21bcff978c59c0afaba510473e5312872f7820b4",
     "src/gemma_particle/conversion_probe.py": "d1d4a0c963959fa6c3a88a1bc1732f69ed98919190aecad379127a434fdbd510",
-    "src/gemma_particle/ct_linear.py": "910b3efdc7e716ac6aae6087984396d97c3320b37b75135df1a3d490e8d34511",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98",
     "src/gemma_particle/curation.py": "d24479d650cced00a8b844c3967c8920f2e1e90bd719087a9bf4d31bbe4e2397",
     "src/gemma_particle/data.py": "a1af2afdeafb0f1407d4ff3cad9bbc069653ff1e9a9221a0829b9a4aca065b4a",
     "src/gemma_particle/decisions.py": "be96f1e1bbe302c5043e3aefbfdd2c11da5e251af42ba4b338e0e7bbacf6cc1d",
@@ -62,7 +62,7 @@
     "src/gemma_particle/prompting.py": "b1186091c67b4c5e922ecaffd05d98b2087ffc02dfa48ba7bac89ab9a13c2aa2",
     "src/gemma_particle/protocol_fixture.py": "49c0b7aaca58966f8e106107363ce0bcbab6b9fb14ae687a271575bc5623f133",
     "src/gemma_particle/remote_zip.py": "6e54c7e88b142f4d85bfd5cb7afa598f9c1f373ee0edf8896dbd9ccc8eba6468",
-    "src/gemma_particle/runtime.py": "2a99b9c0a89eb7b264c15f080d4ba0278333b84d5e34fa85c484b8b788573448",
+    "src/gemma_particle/runtime.py": "b6f834b88064eb99d83db7bd7515037ae2ff2cd3ca5cf6e3778db558451cf426",
     "src/gemma_particle/sandbox.py": "ab2f75707978878d06c88b77a8564f8983760b2ed65befe6908b9bc364d505bc",
     "src/gemma_particle/source_identity.py": "2534ee75814277934108ad7c4e477c836ac2dcee923beea9659aad15340f30b0",
     "src/gemma_particle/transport.py": "4579c90d71d54a78b2928730272acff46773e2a0a1d51e62141e2aa2595002c2",
@@ -74,7 +74,7 @@
     "tests/test_collection_policy.py": "d5cf21767da266a24ff5dd187f32953f19bbf9cf1bd8319f55c11254f65910ee",
     "tests/test_context_budget.py": "1a8ca420f82994c1b82574a56c25782ae123347f567c4974879dc149c4cce2da",
     "tests/test_conversion_probe.py": "05c604d44a38ed6136ee38157ebf8e3fb969585cc2d37b6e71c738de2a3d65a6",
-    "tests/test_ct_linear.py": "08fbad3d1f8bf3c799b76886e3774168a561fb5a18b163cc29727b94fb53b33b",
+    "tests/test_ct_linear.py": "e483947f627442568daa3a4702f2c8a92e13f14b05346514a3ded8573a108e59",
     "tests/test_data.py": "626f7a875dfa72d6213704268545d45de6923ef70e8276f88601f423d3f639fe",
     "tests/test_decisions.py": "a56d9a0a27978b57b1169a80f8d716ac2abf7cad3cd16b49b011ee58aa897d24",
     "tests/test_dev.py": "071f856b56d6ade8896fcb19ff3dec3c26f85f6fe7d1ecf4f6b00159a0ad8f05",
