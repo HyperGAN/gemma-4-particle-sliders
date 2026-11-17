@@ -5,7 +5,6 @@ already stopped before any learned task, complete released input producers,
 the fixed same-adapter numerical control, and an audited resource supplement.
 """
 import argparse
-import ast
 from datetime import datetime, timezone
 import json
 import os
@@ -21,7 +20,7 @@ from gemma_particle.conversion_handoff import read, validate_training_outputs
 from gemma_particle.data import digest
 from gemma_particle.dev_dispatch import load_packets, load_control_results, candidate_preflight, process_binding, live
 from gemma_particle.dev_evidence import canonical_contract
-from gemma_particle.dev_selection import baseline_selection_sha256, load_selection_plan
+from gemma_particle.dev_selection import baseline_selection_sha256, load_selection_plan, scoring_definitions
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.learned_effect import prepare_effect_probes, learned_effect_preflight
 from gemma_particle.resource_dispatch import pending_producers, stopped_prior_grid, observe_slot, slot_record, stop_owned, wait_wave,task_audit_bridge
@@ -41,12 +40,6 @@ def frozen_sources(root, commit):
     names = subprocess.check_output(['git', 'ls-files', 'scripts', 'src', 'configs', 'submission', 'sources.lock.json'],
         cwd=root, text=True).splitlines()
     return {str(root / name): sha256_file(root / name) for name in names}
-
-
-def scoring_source(path):
-    tree = ast.parse(path.read_text())
-    names = {'wilson_interval', 'summarize_verified_panel', '_summarize_rows', 'paired_comparison', 'choose_learned_candidate'}
-    return {node.name: ast.dump(node) for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in names}
 
 
 def input_producer(directory, expected, pid, script):
@@ -137,8 +130,7 @@ def main():
     task_audit = 'src/gemma_particle/dev_evidence.py'
     task_selection = 'src/gemma_particle/dev_selection.py'
     if (sha256_file(args.task_executor / task_audit) != sha256_file(args.auditor / task_audit)
-            or (scope and (len(scoring_source(args.task_executor / task_selection)) != 5
-                           or scoring_source(args.task_executor / task_selection) != scoring_source(args.auditor / task_selection)))
+            or (scope and scoring_definitions(args.task_executor / task_selection) != scoring_definitions(args.auditor / task_selection))
             or (not scope and sha256_file(args.task_executor / task_selection) != sha256_file(args.auditor / task_selection))):
         raise ValueError('original generation task audit,canonicalizer,statistics and selection required')
     for name, value in resource_declaration['qualification_sources_sha256'].items():

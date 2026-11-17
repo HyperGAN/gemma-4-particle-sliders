@@ -10,7 +10,7 @@ from gemma_particle.confirmation_results import compare_confirmation_pair
 from gemma_particle.conversion_handoff import read
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.learned_effect import prepare_effect_probes, audit_learned_effect
-from gemma_particle.selected_candidate import selected_evaluated_archive
+from gemma_particle.selected_candidate import selected_evaluated_archive, stage_handoff_zip
 
 
 def main():
@@ -75,10 +75,13 @@ def main():
     payload = read(args.out / 'payload/preparation.json')
     if payload['artifact_sha256'] != receipt['sha256']:
         raise ValueError('payload differs from evaluated archive')
+    handoff = args.out / 'submission.zip'
+    stage_handoff_zip(artifact / 'submission.zip', handoff, receipt['sha256'])
     result = {'schema': 'gemma4-selected-candidate-ready-v1', 'status': 'prepared',
         'confirmation': scope.identity, 'comparison_sha256': sha256_file(args.comparison),
         'learned_effect_sha256': sha256_file(effect_path), 'evaluated_artifact': str(artifact.resolve()),
         'artifact_sha256': receipt['sha256'], 'sources': sources, 'payload': str((args.out / 'payload').resolve()),
+        'handoff_zip': str(handoff),
         'payload_preparation_sha256': sha256_file(args.out / 'payload/preparation.json'),
         'fixed_dev_choice_retained': True, 'new_candidate_selected': False, 'account_requests': False,
         'model_inference': False, 'official_score': None,

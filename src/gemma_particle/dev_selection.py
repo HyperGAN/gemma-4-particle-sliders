@@ -4,6 +4,7 @@ Inputs must come from the source-bound local runner/verifier. These checks
 validate internal receipt consistency; they do not authenticate invented JSON
 as an actual model or test execution.
 """
+import ast
 from copy import deepcopy
 import json
 import math
@@ -31,6 +32,14 @@ def baseline_selection_sha256(selection, plan_sha256):
     """Return the baseline provenance for a validated selection plan."""
     scope=selection.get('selection_scope')
     return scope['original_plan_sha256'] if scope else plan_sha256
+
+
+def scoring_definitions(path):
+    names={'wilson_interval','summarize_verified_panel','_summarize_rows','paired_comparison','choose_learned_candidate'}
+    tree=ast.parse(Path(path).read_text())
+    definitions={node.name:ast.dump(node) for node in tree.body if isinstance(node,ast.FunctionDef) and node.name in names}
+    if definitions.keys()!=names:raise ValueError('complete DEV scoring implementation required')
+    return definitions
 
 
 def load_selection_plan(path):

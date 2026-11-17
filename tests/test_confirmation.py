@@ -6,6 +6,7 @@ import pytest
 
 import gemma_particle.confirmation as confirmation
 from gemma_particle.data import VISIBLE_FIELDS, write_jsonl
+from gemma_particle.dev_selection import empf_only_selection, load_selection_plan
 from gemma_particle.harness_identity import sha256_file
 from test_conversion_handoff import put
 from test_dev_dispatch import packet_fixture
@@ -74,6 +75,45 @@ def test_exact_choice_and_selected_packet_release_only_sanitized_original_panel(
     assert access['forbidden_training_and_selection'] is True
     assert access['confirmation_results'] is None
     assert access['dev_choice_sha256'] == access['reaudited_dev_choice_sha256']
+
+
+def test_empf_confirmation_keeps_the_original_condition_hashes(tmp_path):
+    grid, original, original_sha, reaudit, manifest, matrix = access_fixture(tmp_path)
+    scoped_plan = tmp_path / 'empf-selection.json'
+    plan = empf_only_selection(original, tmp_path / 'selection-plan.json')
+    put(scoped_plan, plan)
+    assert load_selection_plan(scoped_plan) == plan
+    plan_sha = sha256_file(scoped_plan)
+    assert plan['selection_scope']['original_plan_sha256'] == original_sha
+    choice_path, status_path = grid / 'choice/selection.json', grid / 'progress.json'
+    choice, status = [json.loads(path.read_text()) for path in (choice_path, status_path)]
+    names = {row['id'] for row in plan['conditions']}
+    choice.update(selection_plan_sha256=plan_sha, model_dev_conditions=len(names),
+                  condition_results={name: record for name, record in choice['condition_results'].items() if name in names})
+    put(choice_path, choice)
+    status.update(planned_conditions=9, selection_sha256=sha256_file(choice_path),
+                  finished=[row for row in status['finished'] if row['condition_id'] in names])
+    put(status_path, status)
+    reaudit.write_bytes(choice_path.read_bytes())
+    packet_path, matrix_progress = matrix / 'candidate-packets.json', matrix / 'progress.json'
+    packets, matrix_state = [json.loads(path.read_text()) for path in (packet_path, matrix_progress)]
+    packets.update(selection_plan_sha256=plan_sha, packets=[row for row in packets['packets'] if row['condition']['id'] in names])
+    put(packet_path, packets)
+    matrix_state.update(candidate_packets_sha256=sha256_file(packet_path), completed_unit_conversions=3, candidate_packets=9)
+    put(matrix_progress, matrix_state)
+    access = confirmation.build_confirmation_access(grid, plan, plan_sha, reaudit, manifest, matrix)
+    assert access['count'] == 49 and access['selected_condition']['preset'] == 'empf'
+
+    path = Path(choice['condition_results']['off']['path'])
+    result = json.loads(path.read_text())
+    result['selection_plan_sha256'] = plan_sha
+    put(path, result)
+    choice['condition_results']['off']['sha256'] = sha256_file(path)
+    put(choice_path, choice)
+    status['selection_sha256'] = sha256_file(choice_path)
+    put(status_path, status)
+    with pytest.raises(ValueError, match='actual selected DEV evidence changed'):
+        confirmation.validate_dev_choice(grid, plan, plan_sha)
 
 
 @pytest.mark.parametrize('damage', ['running', 'missing_condition', 'changed_result', 'no_choice',

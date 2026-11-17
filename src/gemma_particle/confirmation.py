@@ -12,6 +12,7 @@ import re
 
 from .conversion_handoff import read
 from .data import VISIBLE_FIELDS, read_jsonl, digest
+from .dev_selection import baseline_selection_sha256
 from .harness_identity import sha256_file
 from .lora_serving import prepare_lora, BASE_REPO, BASE_REVISION
 
@@ -25,14 +26,15 @@ def validate_dev_choice(directory, plan, plan_sha256):
     choice = read(path)
     conditions = {c['id']: c for c in plan['conditions']}
     learned = [c['id'] for c in plan['conditions'] if c['role'] == 'learned']
+    execution_sha = baseline_selection_sha256(plan, plan_sha256)
     if (choice.get('schema') != 'gemma4-locked-dev-selection-v1'
             or status.get('selection_sha256') != sha256_file(path)
             or choice.get('selection_plan_sha256') != plan_sha256
-            or choice.get('model_dev_conditions') != 22 or choice.get('holdout_accessed') is not False
+            or choice.get('model_dev_conditions') != len(conditions) or choice.get('holdout_accessed') is not False
             or set(choice['condition_results']) != set(conditions)
-            or status.get('planned_conditions') != 18
+            or status.get('planned_conditions') != len(learned)
             or [r['condition_id'] for r in status['finished']] != learned):
-        raise ValueError('complete unchanged twenty-two-condition DEV audit required')
+        raise ValueError('complete unchanged declared DEV audit required')
     selected = choice.get('selected')
     if (selected is None or selected not in conditions or conditions[selected]['role'] != 'learned'
             or choice.get('advance_to_locked_confirmation') is not True
@@ -42,7 +44,7 @@ def validate_dev_choice(directory, plan, plan_sha256):
         result_path = Path(record['path'])
         result = read(result_path)
         if (sha256_file(result_path) != record['sha256'] or result.get('condition') != conditions[name]
-                or result.get('selection_plan_sha256') != plan_sha256):
+                or result.get('selection_plan_sha256') != execution_sha):
             raise ValueError('actual selected DEV evidence changed')
     for record in status['finished']:
         if record['result_sha256'] != choice['condition_results'][record['condition_id']]['sha256']:

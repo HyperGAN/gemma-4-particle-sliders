@@ -14,12 +14,29 @@ from gemma_particle.dev_dispatch import candidate_preflight
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.learned_effect import prepare_effect_probes, learned_effect_preflight, audit_learned_effect
 from gemma_particle.lora_serving import BASE_ALIAS
-from gemma_particle.selected_candidate import selected_evaluated_archive
+from gemma_particle.selected_candidate import selected_evaluated_archive, stage_handoff_zip
 from test_conversion_handoff import put
 from test_kaggle_candidate import fixture, module
 from test_learned_effect import protocol_fixture, response
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize('valid', [True, False])
+def test_manual_handoff_exposes_only_verified_zip_bytes(tmp_path, valid):
+    source = tmp_path / 'evaluated.zip'
+    source.write_bytes(b'CPU fixture for byte-exact archive copy')
+    destination = tmp_path / 'submission.zip'
+    expected = sha256_file(source)
+    if valid:
+        stage_handoff_zip(source, destination, expected)
+        assert destination.read_bytes() == source.read_bytes() and sha256_file(destination) == expected
+        with pytest.raises(FileExistsError): stage_handoff_zip(source, destination, expected)
+    else:
+        source.write_bytes(b'bytes changed since evaluation')
+        with pytest.raises(ValueError, match='differs from the evaluated archive'):
+            stage_handoff_zip(source, destination, expected)
+        assert not destination.exists()
 
 
 def archive_fixture(root):

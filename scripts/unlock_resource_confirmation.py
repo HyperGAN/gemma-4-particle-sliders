@@ -12,7 +12,7 @@ import subprocess
 
 from gemma_particle.confirmation import validate_dev_choice, build_confirmation_access
 from gemma_particle.conversion_handoff import read
-from gemma_particle.dev_selection import load_selection_plan
+from gemma_particle.dev_selection import load_selection_plan, scoring_definitions
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.resource_dispatch import task_audit_bridge
 from gemma_particle.resource_supplement import bind_resource_choice
@@ -39,9 +39,8 @@ def main():
     grid_plan = read(args.dev_grid / 'plan.json'); packet_plan = read(args.packets / 'plan.json')
     if (grid_plan['executor_commit'] != args.dev_executor_commit
             or Path(grid_plan['executor']).resolve() != args.dev_executor
-            or grid_plan['selection_plan_sha256'] != plan_sha or packet_plan['selection_plan_sha256'] != plan_sha
-            or sha256_file(args.manifest) != plan['confirmation']['manifest_sha256']):
-        raise ValueError('original generation executor,packets,selection and locked manifest required')
+            or grid_plan['selection_plan_sha256'] != plan_sha or packet_plan['selection_plan_sha256'] != plan_sha):
+        raise ValueError('original generation executor, packets and declared selection required')
     task_executor = Path(grid_plan.get('task_evidence_executor', args.dev_executor)).resolve()
     task_commit = grid_plan.get('task_evidence_executor_commit', args.dev_executor_commit)
     source_sets = {}
@@ -63,16 +62,20 @@ def main():
             raise ValueError('original frozen DEV task and offline audit bindings required')
     elif task_executor != args.dev_executor or task_commit != args.dev_executor_commit:
         raise ValueError('separate task evidence executor requires a declared audit bridge')
-    for name in ['src/gemma_particle/dev_evidence.py', 'src/gemma_particle/dev_selection.py']:
-        if sha256_file(task_executor / name) != sha256_file(args.resource_auditor / name):
-            raise ValueError('offline auditor must match the declared DEV task audit and selection helpers')
+    task_audit = 'src/gemma_particle/dev_evidence.py'
+    selection_source = 'src/gemma_particle/dev_selection.py'
+    scope = plan.get('selection_scope')
+    if (sha256_file(task_executor / task_audit) != sha256_file(args.resource_auditor / task_audit)
+            or (scope and scoring_definitions(task_executor / selection_source) != scoring_definitions(args.resource_auditor / selection_source))
+            or (not scope and sha256_file(task_executor / selection_source) != sha256_file(args.resource_auditor / selection_source))):
+        raise ValueError('offline auditor must match the declared DEV task audit and selection helpers')
     pins = {str(path): sha256_file(path) for path in [args.selection_plan, args.dev_grid / 'plan.json',
         args.packets / 'plan.json']}
     for scope in source_sets.values(): pins.update(scope)
     if args.resource_supplement.exists(): pins[str(args.resource_supplement)] = sha256_file(args.resource_supplement)
     root = Path(__file__).resolve().parents[1]
     sources = {str(root / name): sha256_file(root / name) for name in ['scripts/unlock_resource_confirmation.py',
-        'src/gemma_particle/confirmation.py', 'src/gemma_particle/resource_supplement.py',
+        'src/gemma_particle/confirmation.py', 'src/gemma_particle/resource_supplement.py', 'src/gemma_particle/dev_selection.py',
         'src/gemma_particle/resource_dispatch.py']}
     args.out.mkdir(parents=True)
     declaration = {'schema': 'gemma4-confirmation-access-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
@@ -83,7 +86,7 @@ def main():
         'task_evidence_executor': str(task_executor), 'task_evidence_executor_commit': task_commit,
         'task_audit_bridge': bridge,
         'resource_supplement': str(args.resource_supplement), 'selection_plan_sha256': plan_sha,
-        'holdout_manifest_sha256': sha256_file(args.manifest), 'declaration_pins': pins, 'sources': sources,
+        'holdout_manifest_sha256': plan['confirmation']['manifest_sha256'], 'declaration_pins': pins, 'sources': sources,
         'gpu_used': False, 'model_inference': False, 'holdout_task_contents_parsed': False,
         'executor_field_semantics': 'dev_executor_commit names the actual offline auditor;generation executor recorded separately',
         'scope': 'independent qualified-resource DEV reaudit before confirmation access;no model or task evaluation'}

@@ -1,6 +1,7 @@
 """Bind a production payload to the archive already used in DEV/confirmation."""
 import hashlib
 from pathlib import Path, PurePosixPath
+import shutil
 from zipfile import ZipFile
 
 import yaml
@@ -9,6 +10,19 @@ from .adapters import adapter_identity
 from .budgets import budget_values
 from .conversion_handoff import read
 from .harness_identity import sha256_file
+
+
+def stage_handoff_zip(source, destination, expected_sha256):
+    """Expose the verified archive for the operator's own submission."""
+    destination = Path(destination)
+    if destination.exists():
+        raise FileExistsError('handoff archive is immutable')
+    temporary = destination.with_suffix('.zip.tmp')
+    with Path(source).open('rb') as content, temporary.open('xb') as staged:
+        shutil.copyfileobj(content, staged)
+    if sha256_file(temporary) != expected_sha256:
+        raise ValueError('handoff copy differs from the evaluated archive')
+    temporary.replace(destination)
 
 
 def selected_evaluated_archive(scope, comparison):
