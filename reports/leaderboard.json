@@ -1,10 +1,10 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T05:06:10.318323+00:00",
+  "as_of": "2026-11-17T05:26:25.595285+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
-    "cpu_preflight": "passed; reports/cpu-preflight.json",
+    "cpu_preflight": "57 CPU checks pass under source-pinned ParticleGAN 0.10.1; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
     "real_task_verifier_controls": "initial TRAIN45/67; declared missing-dependency repair13/19. Per-task view qualifies58/67, retaining9failures and all original grades; reports/train-environment-qualification-v2.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
@@ -15,9 +15,9 @@
     "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
     "31b_vllm_collection": "full11194 cohort complete:OFF/localize pass; reproduce/verify fail;0targets. Fresh v4 12942OFF passes and skips teachers. GPU0collects11355; GPU1starts fixed55-task qualified pool. No optimizer updates; reports/train-pool-controls-v1.json",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json",
-    "context_budget_capture": "prospective v4 exact-server token proof qualified,52CPU checks; complete winning teachers required. New11355 conditional trial queued from frozen1d43944; reports/context-budget-controls-v1.json",
+    "context_budget_capture": "prospective v4 exact-server token proof qualified; fresh 11355 OFF fails with verified context exhaustion and teacher arms are running. Complete winning teachers required; reports/context-budget-controls-v1.json",
     "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
-    "latest_upstream_review": "develop53f5ff is0.10.1, changes DEFAULT_RECIPE toEMPF; wheel all87Python files match source. Separate bridge qualification pending; current0.10.0 evidence unchanged; reports/pg0101-wheel-source-check-v1.json"
+    "latest_upstream_review": "0.10.1 source cohort qualified in isolated environment: 57 CPU checks, bit-identical initial/one-update tensors and metrics for both explicit recipes; old full checkpoints rejected transactionally. Historical 0.10.0 evidence unchanged; reports/pg0101-source-qualification-v1.json"
   },
   "task_resolution": [
     {

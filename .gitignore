@@ -1,5 +1,6 @@
 .deps
 .venv
+.train-venv
 .harness-venv
 .kaggle-venv/
 .vllm-venv/

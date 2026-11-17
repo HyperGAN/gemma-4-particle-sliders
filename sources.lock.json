@@ -1,15 +1,17 @@
 {
   "particlegan": {
     "url": "https://github.com/HyperGAN/ParticleGAN.git",
-    "commit": "af0764b144cf81b12117d80deceeae24e8bf45db",
-    "version": "0.10.0"
+    "commit": "53f5ff3757334f02341df66d107d27db900f4a5d",
+    "version": "0.10.1",
+    "directory": "ParticleGAN-latest"
   },
   "particle_sliders": {
     "url": "https://github.com/HyperGAN/particle-sliders.git",
-    "commit": "acbe43fe96e57589b202cb9c1183aec81330d408",
+    "commit": "119d7e0559bacdc49847961c1b243ac08daa013c",
     "version": "0.15.0.dev0",
-    "patch": "patches/particle-sliders-pg0100.patch",
-    "patch_sha256": "42e4b606bb4334e79505e0e8736d9283ccdae2440f1e5b9870f28f50876f1500"
+    "patch": "patches/particle-sliders-pg0101.patch",
+    "patch_sha256": "61fa9163b32ae35ee508e6590c9bcc1085ab847eb3200c5deaefc88fd9dff74b",
+    "directory": "particle-sliders-0101"
   },
   "article_reference": {
     "url": "https://github.com/HyperGAN/tiny-aya-particle-sliders",
@@ -17,11 +19,15 @@
     "code_copied": false
   },
   "bridge_provenance": {
-    "source": "local Anima feat/anima-pg0100-rhbi-empf overlay, 2026-11-17",
-    "original_pg_commit": "952c3b62ba434f7da194067923351ff5748ef8dd",
-    "pg_python_sources_identical_to_latest_develop": true,
-    "description": "Reused conditional engine, tests and build metadata; source manifest rebound to byte-identical latest develop. Released PG09 engine is preserved.",
-    "gemma_host_fix": "Do not forward the BISPF/EMPF input_domain keyword to intrinsically continuous RHBI penalty."
+    "source": "same shared ConditionalPG0100 engine; metadata-only 0.10.1 source cohort",
+    "previous_lock": "research/sources-0.10.0-af0764b1.lock.json",
+    "previous_lock_sha256": "4f28409a42d450186eb0cfad0155e746a1ef9d65042d9efe4e0081abf2ba004d",
+    "engine_sha256": "3ad2a98bb761144eb3d8d4784510e01861f64c4163ba60a5193585a9bb2b087a",
+    "manifest_sha256": "3bcbe4519315d48c122aa73b51e3b5b121c6f9f59edd66cb367290a1fc3a11ed",
+    "numerical_engine_delta": null,
+    "upstream_runtime_delta": "DEFAULT_RECIPE becomes empf; explicit rhbi_optimized and empf preset implementations unchanged",
+    "task_initialization": "explicit rhbi_optimized prior holder; same deterministic R2 locations as previous task architecture",
+    "checkpoint_policy": "fresh source cohort; old full checkpoints rejected rather than migrated"
   },
   "native_thinking_policy": {
     "source": "https://www.kaggle.com/datasets/metric/gemma-4-developer-agent-wheelhouse",

@@ -14,6 +14,7 @@ from particlegan import init, get_recipe
 from particle_sliders.routed_projection import TinyParticleProjection
 from particle_sliders.pg09_backends import AdapterParameters, checkpoint_with_adapter_scale
 from particle_sliders.pg0100 import ConditionalPG0100, validate_pg09_domain
+from .source_identity import require_core_source
 
 
 def text_trunk(model):
@@ -41,7 +42,7 @@ class Slider(nn.Module):
         prefix, trunk = text_trunk(model)
         self.particles = nn.Parameter(torch.randn(particles, particle_width, device=next(trunk.parameters()).device))
         # Public table initializer supplies deterministic R2 particle locations.
-        holder = get_recipe(num_particles=particles, z_dim=particle_width).make_prior()
+        holder = get_recipe('rhbi_optimized', num_particles=particles, z_dim=particle_width).make_prior()
         init.deterministic_orthogonal_(holder, seed=seed)
         with torch.no_grad():
             self.particles.copy_(holder.z.to(self.particles))
@@ -112,6 +113,7 @@ class Native:
     def __init__(self, model, *, identity, checkpointing=False, **slider_options):
         if not identity:
             raise ValueError("pinned pretrained identity or explicit CPU fixture identity required")
+        self.source_cohort=require_core_source()
         self.model, self.identity = model, dict(identity)
         self._flags = [(p, p.requires_grad) for p in model.parameters()]
         self._modes = [(m, m.training) for m in model.modules()]
@@ -158,6 +160,7 @@ class Native:
 
     def metadata(self):
         return {"protocol": "gemma4-matched-assistant-decision-pg0100-v1", "model_identity": self.identity,
+                "source_cohort":self.source_cohort,
                 "response": "full native final hidden state", "adapter_names": list(self.network.names),
                 "host_profile":self.slider.host_profile,
                 "target_convention": "same question and observed history; teacher has selected behavioral system instruction",

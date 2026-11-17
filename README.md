@@ -1,6 +1,6 @@
 # Gemma 4 Particle Sliders
 
-An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.0** and an experimental Particle Sliders core.
+An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
 
 **Work in progress. No SOTA improvement or official Kaggle score has been measured.** Current evidence includes CPU checks, the official compiler, real-task scorer controls, pretrained tool calling, and verified full-budget TRAIN fixes. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
 
@@ -10,8 +10,8 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 
 | Component | Current evidence |
 |---|---|
-| ParticleGAN | `develop` commit `af0764b144cf81b12117d80deceeae24e8bf45db`, package 0.10.0 |
-| Particle Sliders | `acbe43fe…` plus the hash-pinned [0.10 bridge patch](patches/particle-sliders-pg0100.patch) |
+| ParticleGAN | `develop` commit `53f5ff3757334f02341df66d107d27db900f4a5d`, package 0.10.1 |
+| Particle Sliders | `119d7e05…` plus the hash-pinned [0.10.1 bridge patch](patches/particle-sliders-pg0101.patch); [source qualification](docs/source-upgrade-0101.md) |
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
@@ -27,14 +27,14 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 Install PyTorch appropriate to the machine first. The tested training environment uses Python 3.11, Torch 2.14.1, and Transformers 5.13.1. The competition harness requires a separate Python 3.12 environment.
 
 ```bash
-python3.11 -m venv --system-site-packages .venv
-.venv/bin/python -m pip install 'setuptools>=84.2.1' wheel backports.tarfile
-.venv/bin/python scripts/bootstrap.py
-.venv/bin/python -m pip install -r requirements-model.txt pytest
-CUDA_VISIBLE_DEVICES='' .venv/bin/python -m pytest -q tests
+python3.11 -m venv --system-site-packages .train-venv
+.train-venv/bin/python -m pip install 'setuptools>=84.2.1' wheel backports.tarfile
+.train-venv/bin/python scripts/bootstrap.py
+.train-venv/bin/python -m pip install -r requirements-model.txt pytest
+CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q tests
 ```
 
-The bootstrap checks exact commits and the source patch hash. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins.
+The bootstrap checks exact commits and the source patch hash. Native loading also checks the installed engine and ParticleGAN source bytes before loading weights. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins. Existing 0.10.0 collections retain their original environment and frozen checkout.
 
 Official inputs can now be downloaded with Kaggle's CLI authentication. Use an isolated environment with `kaggle==2.2.5` and `six==1.17.0` installed; authentication remains in Kaggle's standard private location. The task file and sandbox setup match the preparation mirror. The current official `swegemma` wheel has five changed Python files despite the same package version, so source hashes are recorded and the official wheel is installed. Raw reference patches stay in ignored `data/`; agent-visible splits remove both `patch` and `test_patch`.
 
@@ -48,12 +48,12 @@ Official inputs can now be downloaded with Kaggle's CLI authentication. Use an i
 The pinned [public mirror](https://huggingface.co/datasets/HanG/gemma-4-developer-agent) remains a reproducible preparation source. ZIP byte ranges are checked exactly and capped at a transfer budget. [Input receipts](reports/input-provenance.json) bind the extracted members.
 
 ```bash
-.venv/bin/python scripts/fetch_public_inputs.py  # list ZIP members, without downloading snapshots
-.venv/bin/python scripts/fetch_public_inputs.py \
+.train-venv/bin/python scripts/fetch_public_inputs.py  # list ZIP members, without downloading snapshots
+.train-venv/bin/python scripts/fetch_public_inputs.py \
   --member root/.cache/kagglehub/competitions/gemma-4-developer-agent/tasks.jsonl
-.venv/bin/python scripts/prepare_tasks.py \
+.train-venv/bin/python scripts/prepare_tasks.py \
   --source data/public-mirror/root/.cache/kagglehub/competitions/gemma-4-developer-agent/tasks.jsonl
-.venv/bin/python scripts/build_submission.py --out dist/baseline-31b
+.train-venv/bin/python scripts/build_submission.py --out dist/baseline-31b
 ```
 
 The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich and HTTPX (49). This repository-disjoint split is a small engineering pilot, not an estimate of hidden competition performance. No holdout supplies targets, conversion activations, or selection feedback. Larger training-data coverage and DEV adequacy remain research work.
@@ -68,16 +68,16 @@ Three official-vLLM 31B short-pilot cohorts completed with zero verified fixes a
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:
-.venv/bin/python scripts/curate.py --outcomes data/train-outcomes.jsonl --out data/contexts.jsonl
+.train-venv/bin/python scripts/curate.py --outcomes data/train-outcomes.jsonl --out data/contexts.jsonl
 # These next commands load pretrained weights and execute model work:
-.venv/bin/python scripts/cache_contexts.py --contexts data/contexts.jsonl --out runs/cache --device cuda:0
-.venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 --chunk-updates 64
+.train-venv/bin/python scripts/cache_contexts.py --contexts data/contexts.jsonl --out runs/cache --device cuda:0
+.train-venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 --chunk-updates 64
 # Continue with the original config, cache and checkpoint; never relabel a new cohort as resume.
-.venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 \
+.train-venv/bin/python scripts/train.py --cache runs/cache --preset empf --out runs/empf --device cuda:0 \
   --resume runs/empf/FULL-0064.pt --chunk-updates 64
-.venv/bin/python scripts/convert_to_peft.py --cache runs/cache --native runs/empf/RAW-1024 \
+.train-venv/bin/python scripts/convert_to_peft.py --cache runs/cache --native runs/empf/RAW-1024 \
   --out runs/empf/peft --device cuda:0
-.venv/bin/python scripts/build_submission.py --model gemma-4-e2b-it-qat-w4a16-ct \
+.train-venv/bin/python scripts/build_submission.py --model gemma-4-e2b-it-qat-w4a16-ct \
   --adapter runs/empf/peft --out dist/empf-e2b
 ```
 
@@ -89,4 +89,4 @@ The [original blocked verifier receipt](reports/verifier-control-v1.json) remain
 
 [Context-budget controls](docs/context-budget-controls.md) describe the new prospective OFF failure proof and conditional TRAIN teacher policy. [Broader TRAIN environment qualification](docs/train-environments.md) records the fixed 67-task sweep and separate missing-dependency repairs.
 
-[Fixed-order TRAIN collection](docs/train-pool-collection.md) is now running on a second shared GPU, preserving failures and capturing exact target tokens before releasing its server. [Upstream 0.10.1 review](reports/upstream0101-initial-review-v1.json) found a new EMPF default; all 87 Python files in the downloaded 0.10.1 wheel match current `develop` ([source check](reports/pg0101-wheel-source-check-v1.json)). Its isolated bridge qualification is required before the first trained cohort; current 0.10.0 evidence retains its original source.
+[Fixed-order TRAIN collection](docs/train-pool-collection.md) is now running on a second shared GPU, preserving failures and capturing exact target tokens before releasing its server. The isolated [0.10.1 source upgrade](docs/source-upgrade-0101.md) passes 57 CPU checks and exact one-update fixture comparisons for both explicit recipes. All 87 Python files in the downloaded 0.10.1 wheel match the pinned source ([source check](reports/pg0101-wheel-source-check-v1.json)). Historical 0.10.0 evidence retains its original source; no pretrained optimizer update has run.

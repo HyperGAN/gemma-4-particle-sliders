@@ -32,6 +32,8 @@ def model_identity(config):
 
 
 def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
+    from .source_identity import require_core_source
+    require_core_source()
     from transformers import AutoModelForImageTextToText,CompressedTensorsConfig
     identity = model_identity(config)
     device = torch.device(device)
