@@ -1,0 +1,26 @@
+{
+  "schema": "gemma4-dev-recovery-live-v2",
+  "as_of": "2026-11-17T11:00:57.301521+00:00",
+  "status": "retained first unresolved outcome and actual next DEV request observed",
+  "executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "selection_plan_file_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "retained_first_task": {
+    "instance_id": "loguru_1508",
+    "panel": "primary",
+    "cohort": "runs/full-dev-controls-v1/off/primary/loguru_1508-agent",
+    "verification": "runs/full-dev-controls-v1/off/primary/loguru_1508-verification",
+    "outcomes_sha256": "27a39be3a443ef92068d9a0e2e5a57710035ee1060131718656ba393971bf189",
+    "resolved": false,
+    "agent_error": null,
+    "capture_complete": true,
+    "model_journal_sha256": "af97339e1ce24bd0f5ad730b4be6775d3c9c1f1adb63825c42aa882bd7559f89",
+    "reused_from": "/ml2/kaggle-hackathon-gemma-4/runs/full-dev-controls-v1/off"
+  },
+  "next_task": "loguru_1504",
+  "next_initial_request_sha256": "99fdae48dbdd8ec49e785a8372db1fc29cdc2804f60a02bc7638d6978b5636b7",
+  "old_and_new_server_contracts": "actual canonical equality checked before continuation",
+  "repeated_inference_on_completed_first_task": false,
+  "complete_tasks_so_far": 1,
+  "planned_per_condition": 55,
+  "scope": "real evidence-preserving DEV continuation; no aggregate or official score"
+}

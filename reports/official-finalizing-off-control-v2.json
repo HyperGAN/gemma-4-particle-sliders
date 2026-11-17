@@ -1,0 +1,32 @@
+{
+  "schema": "gemma4-finalizing-official-control-preparation-v2",
+  "as_of": "2026-11-17T11:00:57.301782+00:00",
+  "kind": "matched finalization-v2 OFF control; no learned adapter",
+  "model": "gemma-4-31b-it-qat-w4a16-ct",
+  "prompt_profile": "repair-finalize-v2",
+  "budget_profile": "official-default-60m-v1",
+  "instruction_protocol": "tools-v2",
+  "common_system_sha256": "f8a4089f2836eea59009a11950ebe5d5759ad2cd12a85574c4cf13908c9dba89",
+  "archive_sha256": "861effffbe39aefd93ec4952b52ff5f773eec5eb96c29fcf530a8370bec8a2f6",
+  "archive_bytes": 1420,
+  "byte_identical_to_first_actual_DEV_OFF": true,
+  "official_compiler": "passed; no inference",
+  "local_notebook_output_and_downloaded_Kaggle_output": "both byte-identical to compiled ZIP",
+  "notebook": "https://www.kaggle.com/code/mikkel255/gemma-4-particle-sliders-finalizing-off-v2",
+  "notebook_version": 1,
+  "notebook_status": "COMPLETE",
+  "notebook_gpu_enabled": false,
+  "notebook_model_inference": false,
+  "submission_id": null,
+  "official_score": null,
+  "submission_request_status": "Kaggle rejected HTTP400 FAILED_PRECONDITION",
+  "verified_gates": {
+    "daily_allowance": 1,
+    "daily_allowance_used": 1,
+    "pending_submissions": 1,
+    "next_daily_window": "2026-11-18T00:00:00Z",
+    "also_requires_prior_pending_submission_to_finish": true
+  },
+  "first_pending_submission_id": 58457991,
+  "scope": "ready matched OFF archive and completed CPU notebook; not an evaluated or accepted competition submission"
+}
