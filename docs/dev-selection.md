@@ -16,4 +16,6 @@ The first actual task exposed a [receipt-audit schema defect](../reports/dev-sch
 
 The 49-task confirmation set stays locked until that choice. It supplies no targets, conversion activations, or selection feedback. The selected learned candidate and matched OFF are then evaluated once. Only an official learned submission exceeding a freshly verified public leader can satisfy the competition goal. There are currently no model DEV scores or pretrained optimizer updates.
 
+The [confirmation access gate](confirmation-access.md) reaudits the actual completed choice through the unchanged baseline comparator and checks the selected model bytes before parsing that panel. Its preparation neither releases the current unfinished run nor performs confirmation inference.
+
 The [training continuation](full-training-continuation.md) preserves the one-update engineering pilot and resumes its full game state through the declared checkpoints before starting the second recipe on the same cache.

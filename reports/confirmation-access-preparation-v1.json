@@ -1,0 +1,56 @@
+{
+  "schema": "gemma4-confirmation-access-preparation-v1",
+  "as_of": "2026-11-17T13:16:53.907503+00:00",
+  "status": "cpu_preparation_passed_holdout_still_locked",
+  "gpu_used": false,
+  "model_inference": false,
+  "real_confirmation_access_issued": false,
+  "real_confirmation_tasks": 0,
+  "source_base_commit": "af28f99d55c70c6d46c4294c451d9417864edf00",
+  "sources_sha256": {
+    "scripts/unlock_confirmation.py": "57c533a5d808df81fd73f61a89eea2f45915ab2a8c0e829119c5c1ee3b4bada9",
+    "src/gemma_particle/confirmation.py": "9956bb27685d7fa97e789696498f23679b644f77c19c4dbbda5209cc4be4dffa",
+    "tests/test_confirmation.py": "fabee8da6fa22e9b9f5da7a48cb00c2d2aab7e06bca01692636d80511e1c6d83"
+  },
+  "offline_dev_auditor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "checks": {
+    "focused_passed": 14,
+    "focused_log_sha256": "25c386a337c7c7addb8db8d40f5c267c031627c8b823db806931fb337af65f2b",
+    "full_public_source_passed": 152,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "4d286815ab8bb4e62ce160947db17497d2f2563827ea1f05d9881557fa6b3979",
+    "public_python_files_compared": 128,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ],
+    "fixture_scope": "synthetic22-result choice/18-packet receipts and49 fake visible tasks; no real model or holdout data",
+    "boundary_cases": [
+      "unfinished/missing/changed DEV evidence",
+      "null or OFF choice",
+      "different reaudit bytes",
+      "packet order/adapter bytes",
+      "changed manifest hash",
+      "reference field/duplicate ID/TRAIN repo/missing field"
+    ]
+  },
+  "actual_live_negative_control": {
+    "receipt_sha256": "9dc297f0f9fd737b72f21720e275c90332de5d1beb718508cd1f007bc993fa5b",
+    "dev_state": "waiting_actual_inputs",
+    "holdout_parser_calls": 0,
+    "access_file_created": false,
+    "implementation": "instrumented manifest parser; actual unfinished dispatcher and real declaration paths"
+  },
+  "actual_plan_only": {
+    "plan_sha256": "0003528b1e23d78da1f4588fb8c06346c85f7fe855cc03f732515fa3a45811b0",
+    "log_sha256": "ded7c77235599da261d3056a490f24805f1f65ea2c6326fb47e8e48ef05ba5b2",
+    "holdout_metadata_hash_only": true,
+    "holdout_task_contents_parsed": false
+  },
+  "prospective_access_rule": "actual full DEV choice, original frozen offline reaudit, exact choice bytes and selected packet bindings before holdout parsing",
+  "remaining": "dedicated paired confirmation execution, qualified environments and single-run bookkeeping; existing TRAIN/DEV entry points still exclude holdout",
+  "scope": "CPU access-gate preparation; no confirmation accuracy or official learned score established"
+}
