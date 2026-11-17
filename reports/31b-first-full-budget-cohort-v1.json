@@ -1,0 +1,49 @@
+{
+  "schema": "gemma4-31b-first-full-budget-cohort-v1",
+  "as_of": "2026-11-17T04:53:09.378087+00:00",
+  "status": "complete",
+  "finished": [
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "off",
+      "resolved": true,
+      "agent_error": "Sandbox execution error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 32768 tokens. However, you requested 4096 output tokens and your prompt contains at least 28673 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=28673) LiteLLM Retried: 5 times",
+      "capture_complete": false,
+      "tool_calls": 45,
+      "elapsed_seconds": 671.3844797129277
+    },
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "reproduce",
+      "resolved": false,
+      "agent_error": "Sandbox execution error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 32768 tokens. However, you requested 4096 output tokens and your prompt contains at least 28673 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=28673) LiteLLM Retried: 5 times",
+      "capture_complete": false,
+      "tool_calls": 39,
+      "elapsed_seconds": 652.06984732009
+    },
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "localize",
+      "resolved": true,
+      "agent_error": null,
+      "capture_complete": true,
+      "tool_calls": 32,
+      "elapsed_seconds": 543.4184361860389
+    },
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "verify",
+      "resolved": false,
+      "agent_error": "Sandbox execution error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 32768 tokens. However, you requested 4096 output tokens and your prompt contains at least 28673 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=28673) LiteLLM Retried: 5 times",
+      "capture_complete": false,
+      "tool_calls": 33,
+      "elapsed_seconds": 653.7679462280357
+    }
+  ],
+  "plan_sha256": "8b0b6928389b68ad9f3ac3dd9714381ae6029975d432d95693c466a8052dd522",
+  "outcomes_sha256": "d7f09b9df58e854232c9e1ec5c2f98db4829378579ef7102d1290ce7c3d6681b",
+  "contexts_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "admitted_contexts": 0,
+  "optimizer_updates": 0,
+  "scope": "One TRAIN task, all four original instruction arms under documented defaults. OFF and complete localize pass; reproduce/verify fail on the fixed context window. No paired task win, trained adapter, DEV/holdout or official score."
+}

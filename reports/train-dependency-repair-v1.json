@@ -1,0 +1,698 @@
+{
+  "schema": "gemma4-train-dependency-repair-result-v1",
+  "as_of": "2026-11-17T04:53:09.371770+00:00",
+  "planned": 19,
+  "qualified": 13,
+  "status": "complete with six failures retained",
+  "controls": [
+    {
+      "instance_id": "fastapi_14258",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/typing-inspection-controls-v1/fastapi_14258/result.json",
+      "receipt_sha256": "03a9fc2e9ca4ffbaa45f2c4bfc04592686b46663f234157dbe59c89fe260f1a1",
+      "wheels": "data/task-wheels/fastapi_14258-typing-v1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.117530163028277
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.175004007061943
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "351ec847826fba8ef8093b8c490fb062ddfda88eac33f6bb894b4687ce7f5d88"
+    },
+    {
+      "instance_id": "fastapi_14851",
+      "status": "failed: negative control did not distinguish a fix",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14851/result.json",
+      "receipt_sha256": "f88c5bb6e5aa22d73145574344175f73d8365aac22731456932252c96d3f236a",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14851",
+      "arms": {
+        "empty": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.635744133964181
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.373456298024394
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "20bae59237e5ba0cb556357787177a781814d293136ce4c10b179d31ebd808a4"
+    },
+    {
+      "instance_id": "fastapi_14616",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14616/result.json",
+      "receipt_sha256": "524ff173e4454edff351b287859ee0b7fbc3c556469971eab2e1a1774dc759de",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14616",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.657559101935476
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.38841911801137
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "3e066bb307f0bdda37ddfab6ad3ba76bf3417b49a552e5bae615badd1bafc592"
+    },
+    {
+      "instance_id": "fastapi_14873",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14873/result.json",
+      "receipt_sha256": "6520cab7ce882a302f9e9b029e7cd2d0fad0daddc0f7bc3d49200c22eb1d548e",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14873",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.572199309011921
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.693473857012577
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "58cf6e48c2e243643ac5c6424902d34781a83f2dff918363f8d152bb60e3c0fb"
+    },
+    {
+      "instance_id": "fastapi_14953",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14953/result.json",
+      "receipt_sha256": "14b07611adc98fd1b09ba12d9d5eb53b40793eb6f93e99c06fa48f64845c704d",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14953",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.511347883031704
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.697217112057842
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "1b8182237dd5583b8f2b80a1ed48e556ac104dc4deb289b848e4b1cbaa616da8"
+    },
+    {
+      "instance_id": "fastapi_14964",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14964/result.json",
+      "receipt_sha256": "e075e0c39593a9f498737ca01f0cb1e896c6a920820e123bd196e52139cfe424",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14964",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.069308449048549
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.694884483003989
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "f09059d29d925ac0b5ed96ddd8ee164e656cdf164d8ae88a53bae3ff783659e8"
+    },
+    {
+      "instance_id": "fastapi_14962",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14962/result.json",
+      "receipt_sha256": "601e31834591adbe35da70afe61467709e65a4a0710d1e9fd86eed4c082e4ef9",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14962",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.988769184914418
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.71074861602392
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b6d6572e9eba6e2696fbd34ec182a6f62760bdb03de4813446d6569b4e6495bb"
+    },
+    {
+      "instance_id": "fastapi_14986",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14986/result.json",
+      "receipt_sha256": "7266b0639ef255546e1242aec8458e508f1c793a72f28c4b602d90cda44627de",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14986",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.515637869946659
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.90257338702213
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "e07c3844a03b26361297e5328e1a89b6bce0dbaa342ae351c549e84d47786f3a"
+    },
+    {
+      "instance_id": "fastapi_14978",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_14978/result.json",
+      "receipt_sha256": "ec794074160cdf7e3fbcad6da77145a29f7919028ec395bf6c2cc842203a0425",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_14978",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 11.564682687981986
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.91589770000428
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b045e8d41b1f921cd79e22f5221bd859ea8835ffabf60dbfeed8eefbbb690149"
+    },
+    {
+      "instance_id": "fastapi_15030",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15030/result.json",
+      "receipt_sha256": "3566fa7d89f9de199d093287acb63141fc6cb226f52844baf9ca6d68170907f6",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15030",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 11.622802342055365
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.716199028072879
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "56e1f1719bb8b5562bafdb114e6b923c9f129adcfae1c99b219a060867b95755"
+    },
+    {
+      "instance_id": "fastapi_15023",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15023/result.json",
+      "receipt_sha256": "194634e77cb9d94137abb6d03b5967085ac287bb92217ce3d50d70536cdd089b",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15023",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.76185384299606
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.577535709948279
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b3873cfe6c959e13ef6d655648ab1cf4931d096af69debf70550ecfdf4146ccf"
+    },
+    {
+      "instance_id": "fastapi_15588",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15588/result.json",
+      "receipt_sha256": "6cf581b7e938866bfd13e1ec9d9f0bf5cfad2264b19874c82ba5bea78a0e540a",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15588",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.207587206969038
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.695276635000482
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b6d6ed611fdbacfd86e99ff4edbdf5f8b0bfe26cd92ed8006958882f518f02d2"
+    },
+    {
+      "instance_id": "fastapi_15280",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15280/result.json",
+      "receipt_sha256": "a3057437496a51cb9bacd9c222f65cbdf2a6f80c07e7e09dcc982746b4d31953",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15280",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.207107414025813
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.717706574941985
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "c001f3d2a361a92ccff0a49993f9a19bf00bc1627d99b74fc234b0a44c235922"
+    },
+    {
+      "instance_id": "fastapi_15661",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15661/result.json",
+      "receipt_sha256": "b112dbf4c02a6cc7adeb8799723cf8d69e7f04c7b067e0a2a701f4c696a83c14",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15661",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 11.497737878002226
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.47195661405567
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "765e6af89ca3388c17d70f6b00edf02598cb708e8f62d6d6d4ef4d6f8bc471e6"
+    },
+    {
+      "instance_id": "fastapi_15589",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15589/result.json",
+      "receipt_sha256": "5342e56ddfe6c6088fff082adf8b7fdc0a64551bb4b99c7275b76b43bd62f50b",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15589",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.557322939042933
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.471668562968262
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "ebaf671c28bccb85aa9d8a85735019b4daa6d78d541a679288c64eed88dc76f0"
+    },
+    {
+      "instance_id": "fastapi_15745",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15745/result.json",
+      "receipt_sha256": "b5899c593e121a3ee2048887b99b94cf40157b23c21af8e78fc482d3e548120a",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15745",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 12.242259838036261
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 18.96635877189692
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "736e233a91f69e293e744af2bd0535bdd57fced9e82a00810d6d80becfea91f1"
+    },
+    {
+      "instance_id": "fastapi_15763",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15763/result.json",
+      "receipt_sha256": "f0adbe4c8df210ce8602ae45cc28af0b3d109627f5491573d88ab898e1b069c1",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15763",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 12.145608798018657
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 18.96247367595788
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "ecb858b814a736995794f0103d052ebde1a76462c73a24e788cf3d2f46b747f8"
+    },
+    {
+      "instance_id": "fastapi_15800",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15800/result.json",
+      "receipt_sha256": "61c6b60904f46e6565a634ad26fb74738c5dd60f50e3dfb66e76eae1a486f09f",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15800",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 16.669844198040664
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.73757716291584
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "39db9ef995f8066b5f3cc70a7d8c54325e7bdc4faa9599e76099b533a4e034c0"
+    },
+    {
+      "instance_id": "fastapi_15785",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/train-typing-repair-v1/fastapi_15785/result.json",
+      "receipt_sha256": "10fd67dbbe62e3d29d730f9312e40064bd7dc026ade582d53f3da21a006689fa",
+      "wheels": "runs/train-typing-repair-v1/wheel-profiles/fastapi_15785",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 16.69183162599802
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.72420906892512
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "527f59a87c692426163f7a1ee3935a28b39df8d766119f4b425b2900a6386863"
+    }
+  ],
+  "selection_sha256": "f25a6a1b9adbe8bbce8abca1f554eeded29abe5454683e3cb60a7aac8b9f25dc",
+  "plan_sha256": "b5330b0463800ccd90105057b67ce403a542c298bbb7c87f742c52a4fa89ea2f",
+  "summary_sha256": "cb4550f9c336f659b3b368b9d793ee665ae3b86bec41df7f4f5b20511f9f7f75",
+  "wheel_source_receipt_sha256": "3b37a9e95bea61dc8cdcd3393cd199f23a496b3298ee34497c1cf108908f9e20",
+  "scope": "CPU environment controls only; one exact declared dependency added. Original failures retained; no tests or repository code changed."
+}

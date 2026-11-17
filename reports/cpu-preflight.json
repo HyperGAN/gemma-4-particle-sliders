@@ -13,7 +13,7 @@
         ".deps/particle-sliders/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "5ea6be3deef36e9d87d9039e2ab98fde9b043d41f66245acc09ed25049673f9c"
+      "output_sha256": "9e676dfc68601b1c253b518893214ae1905b4f3b5c743710a284ff18f5f12f59"
     },
     {
       "command": [
@@ -68,11 +68,13 @@
     "tests/test_prompting.py": "55de9cee02099357adaf2437a47bc366b6a4bacbcaffbc0c1e4546a7247666a0",
     "tests/test_remote_zip.py": "0daff6e1c909661ba6f713a226483301500e6456e2866792799b9385a120b7db",
     "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
+    "tests/test_train_pool.py": "a5b3da5d42f18f216ece36a472605e484d151967185d587e23b5c3fd5abd0123",
     "tests/test_transport.py": "5adabb71043e74f5cee802c6190f45af315c45b0fb85f517b76dc1799c415bfb",
     "scripts/bootstrap.py": "96642d6cadf203f32e9a59d8279f5a4b20d32c40a77321dbf41d1d5caac25463",
     "scripts/build_submission.py": "e551c7146faabf9dc4f102b0fadf7319fc54a6bb365128a534b310b7da26fdd3",
     "scripts/cache_contexts.py": "a74cfeb94caba6ed41df4c1205d82b81cef2d7f77f386b79a261430c900b2f7f",
     "scripts/collect_arms.py": "c3c8b1e68d4e1357fdb57352d7a63ff687bc95f3917e0a31d2e695141ef25f05",
+    "scripts/collect_train_pool.py": "09bc5b1b2fd5985753818b1b3ef1a0c445608b4c681426fe8a5fefeeb9adec96",
     "scripts/convert_to_peft.py": "2684afa2a3448d37ffd368db3e24dad0e4ecb2f20f6477a994230ae2f0b2d117",
     "scripts/curate.py": "bcffd97225bcf7232d8ec04667b81bafdf87e98e2ea9ae8dbc09e3561a8b44bd",
     "scripts/extract_external_dev.py": "be9808f7c07a8d03d0eb1a74a6e8ab719a7738769d5b73303b530baaf5b85da9",

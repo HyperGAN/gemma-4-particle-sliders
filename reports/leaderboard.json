@@ -1,21 +1,23 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T04:41:49.257659+00:00",
+  "as_of": "2026-11-17T05:06:10.318323+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
-    "real_task_verifier_controls": "original TRAIN sweep complete:45/67qualified,22failures retained;19missing-dependency cases in separate repair cohort. Original Requests control remains blocked; reports/train-environment-qualification-v1.json",
+    "real_task_verifier_controls": "initial TRAIN45/67; declared missing-dependency repair13/19. Per-task view qualifies58/67, retaining9failures and all original grades; reports/train-environment-qualification-v2.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
     "native_pretrained_serving": "E2B BF16 SDPA tool calls qualified on shared GPU1, cap0.35; reports/native-serving-calibration.json",
     "first_native_train_pilot": "four E2B TRAIN tasks complete: all four arms unresolved, no admissible contexts; reports/e2b-native-collection-v1.json",
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; reports/vllm-serving-qualification-v1.json",
     "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
-    "31b_vllm_collection": "first full-budget11194 OFF recovered patch passes; complete localize instruction run also passes in543s/32tools/33model calls. Reproduce fails; final arm running. OFF success excludes targets;0updates. reports/31b-first-complete-instructed-result-v1.json",
+    "31b_vllm_collection": "full11194 cohort complete:OFF/localize pass; reproduce/verify fail;0targets. Fresh v4 12942OFF passes and skips teachers. GPU0collects11355; GPU1starts fixed55-task qualified pool. No optimizer updates; reports/train-pool-controls-v1.json",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json",
-    "context_budget_capture": "prospective v4 exact-server token proof qualified,52CPU checks; complete winning teachers required. New11355 conditional trial queued from frozen1d43944; reports/context-budget-controls-v1.json"
+    "context_budget_capture": "prospective v4 exact-server token proof qualified,52CPU checks; complete winning teachers required. New11355 conditional trial queued from frozen1d43944; reports/context-budget-controls-v1.json",
+    "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
+    "latest_upstream_review": "develop53f5ff is0.10.1, changes DEFAULT_RECIPE toEMPF; wheel all87Python files match source. Separate bridge qualification pending; current0.10.0 evidence unchanged; reports/pg0101-wheel-source-check-v1.json"
   },
   "task_resolution": [
     {

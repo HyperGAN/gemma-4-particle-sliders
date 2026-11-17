@@ -1,0 +1,74 @@
+{
+  "schema": "gemma4-train-pool-controls-v1",
+  "as_of": "2026-11-17T05:03:34.642259+00:00",
+  "status": "passed",
+  "pool_plan_sha256": "25639a7f1f68d28fe5f703bf9ef3082cf1f4c240381c2d6b9f5566dfebbb4016",
+  "planned_tasks": 55,
+  "first_task_plan_sha256": "94b5da750f01c2681cc0e640ab7c13825a9eaa906c62c3cc85d3984fb7994d27",
+  "pool_source_sha256": "09bc5b1b2fd5985753818b1b3ef1a0c445608b4c681426fe8a5fefeeb9adec96",
+  "executor_commit": "1d439443297ab3672d5e3305fd121af67bb1be9e",
+  "executor_sources": {
+    "src/gemma_particle/curation.py": "92ba3dcc8222955b593200ef852c0e98fb357e4089bb3b139572c0bd908423e7",
+    "scripts/build_submission.py": "e551c7146faabf9dc4f102b0fadf7319fc54a6bb365128a534b310b7da26fdd3",
+    "scripts/run_trajectories.py": "5df7bce8cd65eace3f9936349abde8b02717c01e9cf18474332ea1e5f4c825aa",
+    "scripts/collect_arms.py": "c3c8b1e68d4e1357fdb57352d7a63ff687bc95f3917e0a31d2e695141ef25f05",
+    "src/gemma_particle/budgets.py": "ac3c8173b0d6eb868c724b277d52253eb73de8fdc0585c30ffb01a0858eaaf47",
+    "src/gemma_particle/capture.py": "5ad5332fc186ab9e705c1ad0f83e1fe73551b70551b9fbbce0a7148f2196d542",
+    "src/gemma_particle/context_budget.py": "0811b7326af5a2c931e78f5a21bcff978c59c0afaba510473e5312872f7820b4",
+    "scripts/verify_trajectories.py": "d16e7cf2492cf8c5bc5e11335fc4798569d0cf2ebac24319ee4857ac97864332"
+  },
+  "qualification_sha256": "17a0d45e1fcb118add886a0e214376dd57e4e1afccb7b424f7b1c19c175aa542",
+  "excluded_tasks": [
+    "fastapi_11194",
+    "fastapi_11355",
+    "fastapi_12942"
+  ],
+  "cpu_preflight_sha256": "41dd20e56bebc2f12a08db2a06449be46bd394ebe5df6a83cf10d020045866f6",
+  "tokenizer_cli_log_sha256": "d3e90eb49deff74dc1ab53aefa75bf7478e233c33552b779b5bf8a39ae8c3e9f",
+  "first_live_v4_baseline": {
+    "instance_id": "fastapi_12942",
+    "resolved": true,
+    "capture_complete": false,
+    "agent_error": "Sandbox execution error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 32768 tokens. However, you requested 4096 output tokens and your prompt contains at least 28673 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=28673) LiteLLM Retried: 5 times",
+    "elapsed_seconds": 467.9493868788704,
+    "tool_calls": 37,
+    "context_budget_proof": {
+      "schema": "gemma4-context-budget-proof-v1",
+      "context_limit": 32768,
+      "prompt_tokens": 28957,
+      "requested_output_tokens": 4096,
+      "token_ids_sha256": "fb617eb480ddf7e27b8b96edb4e60b3c528cd99f9291606d354fa6febc33c122",
+      "tokenize_request_sha256": "e28457972fdd57dc1b300243e11b392fdb921a909430d29cd043cbb2a1a569d7",
+      "server_identity_sha256": "3d63c2a8b3b81667dfccb78a477fb0f94604b4b214387854004ffcf0e8532375",
+      "terminal_request_sha256": "6fefdbd36fe92a6c13f473ac47acdb74e6c03b2b35956ca2a17048b470c9e3d3",
+      "completed_prefix_sha256": "3a3cd7702316e248c4171e631928b8f4fb118bdd2c62fd0002bcbc42d13841d3",
+      "model_calls_completed": 37,
+      "model_calls_attempted": 38
+    }
+  },
+  "first_live_v4_verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_12942",
+    "patch_sha256": "cc1850c2232d9624180e282b84975439ee880cfbe0d71240a07d89d752197c78",
+    "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "resolved": true,
+    "test_exit_code": 0,
+    "first_request_sha256": "4751bc5f60cdfee1ad32443ed4b4caad04538ccc6eec3ba7e902600e8959050d",
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "76c1e51b4bbf8e398fa5f89cc4fd8270346c8ca985fd5c2eb0deae89b9f06cf7",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "66854e00c4f457d12695e8d4939ba23eaddd535f8b47bc4609d689cbe4090a02",
+    "verification_script_sha256": "d16e7cf2492cf8c5bc5e11335fc4798569d0cf2ebac24319ee4857ac97864332",
+    "capture_protocol": "context-budget-off-v1",
+    "context_budget_proof_sha256": "7238ad0b486ba4d0faec461dd46ee82d011fd42771266f21928e824497d74097"
+  },
+  "scope": "54CPU software checks, actual plan/first dispatch and real v4 OFF proof. The passed OFF skips teachers; no admitted targets or learned quality from these controls."
+}
