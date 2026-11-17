@@ -22,7 +22,7 @@
         ".deps/particle-sliders-0101/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "f9adf8ddd042b919da2beff6d2885bb69af3707cf528597dd680096f8deb31b7"
+      "output_sha256": "ef1a2b7910eae7dbf070ec77d672a249d37e95a2284010a8f088cff84d8fd450"
     },
     {
       "command": [
@@ -89,6 +89,7 @@
     "tests/test_ct_linear.py": "478b61b035cafb15cb407c39de342310a44e55e87156b2f7d9df686749eba398",
     "tests/test_data.py": "626f7a875dfa72d6213704268545d45de6923ef70e8276f88601f423d3f639fe",
     "tests/test_decisions.py": "a56d9a0a27978b57b1169a80f8d716ac2abf7cad3cd16b49b011ee58aa897d24",
+    "tests/test_deferred_off_submit.py": "e09930197a124098ca0106058faea5a384d426c9076142afcd91a1bf34129126",
     "tests/test_dev.py": "071f856b56d6ade8896fcb19ff3dec3c26f85f6fe7d1ecf4f6b00159a0ad8f05",
     "tests/test_dev_evidence.py": "4b7507a95c2176ce826386f32d143cf05e02530f928ec36807c25fce89ebb81b",
     "tests/test_dev_selection.py": "068086cdaf8b58bd3f92c2a26ee9302f9d7652e289a732a25845e978f83c19d5",
@@ -103,7 +104,7 @@
     "tests/test_prompt_profiles.py": "766dfcce4137328651a62a09c2f4db7affffd1450beb27a162d9f666a378e9f6",
     "tests/test_prompting.py": "55de9cee02099357adaf2437a47bc366b6a4bacbcaffbc0c1e4546a7247666a0",
     "tests/test_remote_zip.py": "0daff6e1c909661ba6f713a226483301500e6456e2866792799b9385a120b7db",
-    "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
+    "tests/test_runtime.py": "51225008b3b6a6f81702ce18baa93d1cbd849b11ee61cd19c0862770bd47435b",
     "tests/test_source_identity.py": "1eb84670eb405320b3f8d276afb7d756bc3a725e13fa1fce89c5e7ac9cc01082",
     "tests/test_train_pool.py": "a5b3da5d42f18f216ece36a472605e484d151967185d587e23b5c3fd5abd0123",
     "tests/test_transport.py": "5adabb71043e74f5cee802c6190f45af315c45b0fb85f517b76dc1799c415bfb",
@@ -114,7 +115,7 @@
     "scripts/collect_behavior_pool.py": "c380ca6d0ad9f7917777372f0adc65ff14f3815e3eb311cfa239d5b6a823977d",
     "scripts/collect_train_pool.py": "9f356830bba1a104f024958038e8f11a3925339796bdda6b3183c2f58b6be6e5",
     "scripts/compare_dev_conditions.py": "134cc4c7d11568ade318ac97529bef53a47042855ec8d77c6ae4b9b2b3612ff4",
-    "scripts/continue_full_training.py": "9c1daf95fa72d5d1a022c6a5d1a2f42de982274307456c2e22a9d9888a2fc519",
+    "scripts/continue_full_training.py": "01393be217349c48673c38e8450e7aae589980247e41d3c53592c2581898b177",
     "scripts/convert_to_peft.py": "309381675fb29c227c422f9c483b34376af45e0e72283893e31f1703bc417c5c",
     "scripts/curate.py": "bcffd97225bcf7232d8ec04667b81bafdf87e98e2ea9ae8dbc09e3561a8b44bd",
     "scripts/curate_behavior_cohort.py": "324303d43382c1deda19bb2670f0bf64e34fd8710a70491dd67bf6668111fa55",
@@ -149,13 +150,14 @@
     "scripts/serve_vllm.py": "3e01f46718275708ef75110810344199556e16fe944959dc607ab685383ea1b4",
     "scripts/serve_vllm_lora.py": "2ff62e8c45e4b8d62eb1b06a6b0efa7feeb7a8ac714a042af82c7bde1cba41b3",
     "scripts/tokenize_contexts.py": "83501a64769ef4e3f8448a139244939861a942dc66b5ba8eb5a74fb16e19b099",
-    "scripts/train.py": "0038205da1473d87b1c8de5d75b52988809dbd2a5999e01f87e54da4b6588bfc",
+    "scripts/train.py": "657d25e411dd5ae20bade388c7835317be9ac8f911ddd6c041eff494a38f814d",
     "scripts/validate_submission.py": "ec06d576b18fa65046d7d0a80624277211a7cefe856efc50b4da8fc4d536d2be",
     "scripts/verify_controls.py": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
     "scripts/verify_external_dev.py": "ef08f4d47563f14b53db8a899f40fd3a1839941d7918028a2ca338a7c4cb1b00",
     "scripts/verify_original_dev_environments.py": "f414ed7625b220b8bed8588b300b6aff5198813d293f2976e76b5ae8d1539209",
     "scripts/verify_train_environments.py": "8d622ca937201b7a3c19d44ccb2b217a8ada000c806c42803fc64ab1d4d470fb",
     "scripts/verify_trajectories.py": "d8d22ab0c9facc63ce3fab651a78606812ebec50f6124c484fb3042cff0660ff",
+    "scripts/wait_and_submit_off_control.py": "aa70dd7762ef02796fbe3078b9eac1e53fa55d8572314b3882f83b6bfbec1f01",
     "scripts/wait_and_train_pilot.py": "537e7ac2a1958b13ff44607db0ad6f99e38c40f025a62767d04d5e66e67a9bd7",
     "submission/agent.yaml": "49e4c9f5662c83b18d585bd5fb16cb8eef006d46610c13d1f725240d30c883c0",
     "submission/configs/sampling.yaml": "8f0116a1dc4e64b6eb78af99bc675f76030fa262708d7232cd62ecac1bea91f5",

@@ -41,7 +41,9 @@ try:
         pin = json.loads(args.resume.with_suffix('.json').read_text())
         if file_hash(args.resume) != pin['sha256']:
             raise ValueError('checkpoint hash mismatch')
-        game.load_state_dict(torch.load(args.resume, map_location=args.device, weights_only=True))
+        # RNG packets remain CPU ByteTensors even for CUDA generators. The
+        # public game/optimizer loaders own parameter and state placement.
+        game.load_state_dict(torch.load(args.resume, map_location='cpu', weights_only=True))
     target_step = min(game.completed_steps + args.chunk_updates, config['updates'])
     while game.completed_steps < target_step:
         start = time.monotonic()

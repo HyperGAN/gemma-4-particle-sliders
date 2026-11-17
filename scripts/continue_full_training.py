@@ -4,6 +4,7 @@ This CPU supervisor waits for actual pilot completion. Its frozen executor
 owns every model operation and exact-resume check. DEV outcomes are not inputs.
 """
 import argparse
+import ast
 from datetime import datetime,timezone
 import hashlib
 import json
@@ -39,6 +40,7 @@ def main():
     p.add_argument('--pilot-pid',type=int)
     p.add_argument('--executor',type=Path,required=True)
     p.add_argument('--executor-commit',required=True)
+    p.add_argument('--pilot-executor',type=Path,help='original pilot checkout when the sole training-script delta is CPU checkpoint loading')
     p.add_argument('--device',choices=['cuda:0','cuda:1'],required=True)
     p.add_argument('--plan-only',action='store_true')
     p.add_argument('--out',type=Path,required=True)
@@ -58,8 +60,31 @@ def main():
         'src/gemma_particle/runtime.py','src/gemma_particle/checkpoint_inputs.py',
         'src/gemma_particle/activation_storage.py','src/gemma_particle/ct_linear.py']}
     pilot=read(args.pilot/'progress.json')
-    if pilot['executor_commit']!=args.executor_commit or pilot['declared_horizon']!=1024 or pilot['preset']!='empf':
+    pilot_executor=(args.pilot_executor or args.executor).resolve()
+    pilot_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=pilot_executor,text=True).strip()
+    subprocess.run(['git','diff','--quiet','HEAD'],cwd=pilot_executor,check=True)
+    if pilot['executor_commit']!=pilot_commit or pilot['declared_horizon']!=1024 or pilot['preset']!='empf':
         raise ValueError('original qualified EMPF pilot required')
+    loader_delta=None
+    if pilot_commit!=args.executor_commit:
+        math_sources=[k for k in sources if k!='scripts/train.py']+[
+            'src/gemma_particle/source_identity.py','src/gemma_particle/data.py','sources.lock.json',
+            'configs/31b-ct-shared-positional-pilot.json']
+        if any(sha(pilot_executor/k)!=sha(args.executor/k) for k in math_sources):
+            raise ValueError('checkpoint-placement correction cannot change native math/config/source cohort')
+        previous=ast.parse((pilot_executor/'scripts/train.py').read_text())
+        current=ast.parse((args.executor/'scripts/train.py').read_text());changed=0
+        for node in ast.walk(previous):
+            if (isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute)
+                    and isinstance(node.func.value,ast.Name) and node.func.value.id=='torch' and node.func.attr=='load'):
+                for keyword in node.keywords:
+                    if keyword.arg=='map_location':keyword.value=ast.Constant(value='cpu');changed+=1
+        if changed!=1 or ast.dump(previous)!=ast.dump(current):
+            raise ValueError('only CPU checkpoint map_location may differ from the pilot training script')
+        loader_delta={'original_executor_commit':pilot_commit,'original_train_source_sha256':sha(pilot_executor/'scripts/train.py'),
+            'current_train_source_sha256':sources['scripts/train.py'],
+            'semantic_delta':'only torch.load map_location=cpu; public game/optimizer loaders own placement',
+            'native_math_source_comparison':'exact byte equality','training_script_comparison':'AST equality after this one allowed keyword change'}
     birth=None
     if not args.plan_only and pilot['state']!='completed_one_update':
         if not args.pilot_pid:raise ValueError('live pilot PID required while waiting')
@@ -73,7 +98,8 @@ def main():
     args.out.mkdir(parents=True);(args.out/'logs').mkdir()
     declaration={'schema':'gemma4-full-training-continuation-plan-v1','created_at':datetime.now(timezone.utc).isoformat(),
         'pilot':str(args.pilot),'pilot_pid':args.pilot_pid,'pilot_birth_ticks':birth,
-        'executor_commit':args.executor_commit,'sources':sources,'source_sha256':sha(__file__),
+        'executor_commit':args.executor_commit,'pilot_executor_commit':pilot_commit,
+        'checkpoint_loading_delta':loader_delta,'sources':sources,'source_sha256':sha(__file__),
         'config_sha256':sha(config),'device':args.device,'memory_fraction':.5,'startup_headroom_GiB':8,
         'horizon':1024,'checkpoints':[256,512,1024],'presets':['empf','rhbi_optimized'],
         'optimizer_execution':{'empf':'unchanged recipe','rhbi_optimized':'explicit gpu_native_polar derivative'},

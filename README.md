@@ -24,6 +24,8 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 
 [Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Checkpoint input binding](docs/checkpoint-input-binding.md), CPU packed weights and saved-input storage now pass a full two-sequence, 28,672-token gradient probe at a 50% shared GPU cap. All 4,141 gradient tensors are connected and finite, with about 21.7 GiB peak allocation. This probe performs zero optimizer updates and supplies no targets.
 
+[Actual tiny CUDA disk-resume controls](reports/cuda-cpu-loaded-resume-qualification-v1.json) pass for both recipes after preserving serialized RNG bytes on CPU. Pretrained continuation remains gated by a second distinct admitted question and the verified first update.
+
 | Component | Current evidence |
 |---|---|
 | ParticleGAN | `develop` commit `53f5ff3757334f02341df66d107d27db900f4a5d`, package 0.10.1 |

@@ -1,0 +1,41 @@
+{
+  "schema": "gemma4-cpu-loaded-cuda-resume-qualification-v1",
+  "as_of": "2026-11-17T11:30:43.038831+00:00",
+  "status": "passed tiny actual CUDA full-disk controls",
+  "physical_gpu": 1,
+  "allocator_cap_fraction": 0.05,
+  "api_boundary": {
+    "cpu_state": {
+      "accepted": true,
+      "input_device": "cpu"
+    },
+    "cuda_mapped_state": {
+      "accepted": false,
+      "input_device": "cuda:0",
+      "error_type": "TypeError",
+      "error": "RNG state must be a torch.ByteTensor"
+    }
+  },
+  "presets": [
+    "empf",
+    "rhbi_optimized with explicit gpu_native_polar"
+  ],
+  "checks": [
+    "GPU-mapped checkpoint rejects before game mutation",
+    "CPU-loaded packet restores through unmodified public game/optimizer loaders",
+    "resumed next metrics and full game state exactly match uninterrupted CUDA execution for both recipes"
+  ],
+  "actual_cuda_test_log_sha256": "8298a2d56ce9137919024f1b3ea650018a859ee67445d290aefebcdcbb190e27",
+  "sources": {
+    "scripts/train.py": "657d25e411dd5ae20bade388c7835317be9ac8f911ddd6c041eff494a38f814d",
+    "scripts/continue_full_training.py": "01393be217349c48673c38e8450e7aae589980247e41d3c53592c2581898b177",
+    "tests/test_runtime.py": "51225008b3b6a6f81702ce18baa93d1cbd849b11ee61cd19c0862770bd47435b"
+  },
+  "public_engine_changed": false,
+  "rng_state_or_checkpoint_schema_migration": false,
+  "pretrained_models_in_cuda_controls": 0,
+  "pretrained_updates": 0,
+  "original_passive_controller": "3322302 stopped while waiting; observed exited130; no pretrained resume attempted",
+  "original_pilot": "unchanged293406f producer; first update uses no resume path",
+  "scope": "actual tiny CUDA RNG/disk-resume engineering proof, not31B pretrained continuation or model quality"
+}
