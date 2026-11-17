@@ -1,0 +1,205 @@
+{
+  "schema": "gemma4-initial-pool-first-three-quartets-v1",
+  "as_of": "2026-11-17T11:34:17.470177+00:00",
+  "protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "quartets": [
+    {
+      "instance_id": "fastapi_11194",
+      "arms": [
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "off",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 103,
+          "elapsed_seconds": 1154.931874779053
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "reproduce",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 48,
+          "elapsed_seconds": 510.7890155930072
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "localize",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 58,
+          "elapsed_seconds": 621.7134507680312
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "verify",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 44,
+          "elapsed_seconds": 415.7314038230106
+        }
+      ],
+      "grades": [
+        {
+          "arm": "off",
+          "status": "qualified",
+          "normalized_score": 0.4,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        },
+        {
+          "arm": "localize",
+          "status": "qualified",
+          "normalized_score": 0.65,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        },
+        {
+          "arm": "reproduce",
+          "status": "qualified",
+          "normalized_score": 0.7675,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        },
+        {
+          "arm": "verify",
+          "status": "qualified",
+          "normalized_score": 0.99,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        }
+      ],
+      "api_calls_attempted": 4,
+      "admitted_contexts": 1,
+      "contexts_sha256": "4fd8acecf23df2d229242c57c84e31c0492237da64b485f3a743e467b1a3802e",
+      "offline_curator_result_sha256": "901c0e5070435d460b7e96ac0fe5daf742187be5e9d64b2cc0d02ad45423f175"
+    },
+    {
+      "instance_id": "fastapi_11355",
+      "arms": [
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "off",
+          "resolved": false,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 51,
+          "elapsed_seconds": 650.6580840691458
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "reproduce",
+          "resolved": false,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 44,
+          "elapsed_seconds": 413.31702865986153
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "localize",
+          "resolved": false,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 105,
+          "elapsed_seconds": 1535.8097970460076
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "verify",
+          "resolved": false,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 53,
+          "elapsed_seconds": 586.6964039849117
+        }
+      ],
+      "grades": [],
+      "api_calls_attempted": 0,
+      "admitted_contexts": 0,
+      "contexts_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "offline_curator_result_sha256": "42329c0a4d162d1831c9520c9bc7466c9eb02d755c1cc89afa997cb821ec798a"
+    },
+    {
+      "instance_id": "fastapi_12942",
+      "arms": [
+        {
+          "instance_id": "fastapi_12942",
+          "arm": "off",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 50,
+          "elapsed_seconds": 762.5532873538323
+        },
+        {
+          "instance_id": "fastapi_12942",
+          "arm": "reproduce",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 31,
+          "elapsed_seconds": 401.67362047801726
+        },
+        {
+          "instance_id": "fastapi_12942",
+          "arm": "localize",
+          "resolved": true,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 94,
+          "elapsed_seconds": 1257.250239957124
+        },
+        {
+          "instance_id": "fastapi_12942",
+          "arm": "verify",
+          "resolved": false,
+          "agent_error": null,
+          "capture_complete": true,
+          "tool_calls": 103,
+          "elapsed_seconds": 1178.713257618947
+        }
+      ],
+      "grades": [
+        {
+          "arm": "off",
+          "status": "qualified",
+          "normalized_score": 0.75,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        },
+        {
+          "arm": "localize",
+          "status": "qualified",
+          "normalized_score": 0.625,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        },
+        {
+          "arm": "reproduce",
+          "status": "qualified",
+          "normalized_score": 0.75,
+          "response_model": "~typesafe/jev-latest",
+          "api_calls_attempted": 1
+        }
+      ],
+      "api_calls_attempted": 3,
+      "admitted_contexts": 0,
+      "contexts_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "offline_curator_result_sha256": "8d64386eb4004fb545ac722a5bcf1c5aff811870916e65a15332620505f3b27b"
+    }
+  ],
+  "actual_trajectory_grading_calls": 7,
+  "earlier_integration_control_calls": 4,
+  "total_nanogpt_calls": 11,
+  "admitted_initial_contexts": 1,
+  "admission": "fresh resolved clean teacher,score>=.75 and strictly above clean OFF; one initial question per task",
+  "third_quartet_rejection": "reproduce .75 equals OFF .75; localize .625; verify unresolved. No strict better teacher, no new target.",
+  "additional_paid_rerolls": 0,
+  "pretrained_updates": 0,
+  "scope": "TRAIN collection and one-pass behavior-grade outcomes only; not DEV, holdout or an official score"
+}
