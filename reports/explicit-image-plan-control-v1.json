@@ -1,0 +1,44 @@
+{
+  "schema": "gemma4-explicit-image-plan-control-v1",
+  "status": "passed",
+  "created_at": "2026-11-17T09:22:09.611556+00:00",
+  "source_commit": "7f3691ed99d8e300a689ebad0d0ac5c15ffb8604",
+  "checks": [
+    {
+      "case": "new_image",
+      "passed": true,
+      "returncode": 0,
+      "model_calls": 0,
+      "stdout_sha256": "bf811d5d5c7e83dcfa4a1023993b9ed6dbf8935bd30fbc32be3fc66a896c7770",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "image": "gemma-particle-sandbox:fastapi-json-deps-v3",
+      "image_id": "sha256:f21c58368d30b6485b6bf5fb7138561b7115ce5893d24cda23b3ed93b200e66c",
+      "visible_tasks_sha256": "53ebb2575192e8cc7e5f6dec115293c01008d8484d393eeb2fa51c7996676c88",
+      "sourcepins": 12
+    },
+    {
+      "case": "wrong_image",
+      "passed": true,
+      "returncode": 1,
+      "model_calls": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "10480acf73daa89aabb95122f40e843cb225924447b87894eee99f33d3914fdc"
+    },
+    {
+      "case": "historical_default",
+      "passed": true,
+      "returncode": 0,
+      "model_calls": 0,
+      "stdout_sha256": "9b2701ea15c6aeb903493a64db87b0eed4cdd910b192f3309576ee471904dfde",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "image": "gemma-particle-sandbox:fastapi-deps-v2",
+      "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+      "visible_tasks_sha256": "0c0ff460b133e9666a77b43d1b605331dc6aa3aaaf416fa9ee2f8efc37ad8d2c",
+      "sourcepins": 12
+    }
+  ],
+  "gpu_model_calls": 0,
+  "decision_api_calls": 0,
+  "training_updates": 0,
+  "scope": "actual CPU collection-plan validation and image binding only; no new agent episode or target"
+}
