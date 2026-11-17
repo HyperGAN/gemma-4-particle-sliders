@@ -8,7 +8,7 @@ The intended behavior is systematic repository repair: reproduce a failure, loca
 
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
 
-[Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Lossless CPU activation storage](docs/activation-storage.md) passes CPU gradient and continuation controls; its long-history GPU cost remains unmeasured.
+[Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Lossless CPU activation storage](docs/activation-storage.md) passes CPU gradient and continuation controls; the first long-history GPU backward exceeded its shared memory cap, and a separate allocator profile is being tested.
 
 | Component | Current evidence |
 |---|---|

@@ -1,6 +1,6 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T06:07:41.180223+00:00",
+  "as_of": "2026-11-17T06:14:06.512480+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
@@ -13,14 +13,14 @@
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; reports/vllm-serving-qualification-v1.json",
     "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
-    "31b_vllm_collection": "uncompacted11355 all4 unresolved; oldGPU1 pool closed4tasks/0targets,51unattempted withdrawn. v1 compacted13713 capture error/0targets. Fresh corrected v2-profile pool pending. No pretrained optimizer update; reports/uncompacted-train-closure-v1.json",
+    "31b_vllm_collection": "corrected v2 fixed53-task TRAIN pool live on sharedGPU0, first13713OFF running with compaction. Prior no-compaction cohorts closed0targets; earlier v1 capture error retained. No optimizer update.",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json",
     "context_budget_capture": "prospective v4 exact-server token proof qualified; fresh 11355 OFF fails with verified context exhaustion and teacher arms are running. Complete winning teachers required; reports/context-budget-controls-v1.json",
     "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
     "latest_upstream_review": "0.10.1 source cohort qualified in isolated environment: 57 CPU checks, bit-identical initial/one-update tensors and metrics for both explicit recipes; old full checkpoints rejected transactionally. Historical 0.10.0 evidence unchanged; reports/pg0101-source-qualification-v1.json",
-    "long_context_activation_storage": "GPU1 owned server/engine release observed; native CPU-offload probe with2x28672tokens is live under0.70 hard cap, zero updates; outcome pending at runs/ct-offload-long-resource-v1/result.json",
+    "long_context_activation_storage": "2x28672-token CPU-offload forward has exact initial ON/OFF; backward OOM at0.70 cap. Fresh allocator-only expandable-segment profile running under same shape/cap. No recipe update; reports/long-offload-resource-error-v1.json",
     "conversion_probe_preparation": "TRAIN13207/13537 initial issue prompts fixed before pretrained updates; exact2884/3199 tokens captured with no inference; full-history conversion sampling and disjointness CPU checks pass. Actual31B conversion/LoRA effect unmeasured; reports/conversion-probe-preparation-v1.json",
-    "history_management": "first v1 actual model attempt had cloned-client capture ERROR, retained with0targets. Corrected v2 uses one journal and actual compiled canonical model; compiler regression and69CPU tests pass; reports/history-compaction-controls-v2.json"
+    "history_management": "compiled canonical v2 capture now observed live: summary request/response hashes match, initial prompt intact and subsequent assistant decision completed;69CPU controls pass. Fresh53-task pool live; reports/compiled-history-pool-live-v1.json"
   },
   "task_resolution": [
     {

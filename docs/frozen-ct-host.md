@@ -30,4 +30,4 @@ Floating hosts retain their .50 maximum process fraction; the explicit CT host p
 
 Longer contexts, actual recipe-update memory, coding outcomes, linear conversion and production serving parity are still required. Native CT generation is expensive, so a separate [official vLLM/Torch 2.10 environment](vllm-collection.md) now collects trajectories. Exact input-token transport keeps that generator's provenance separate from native hidden-state computation; it makes no numerical-equivalence claim about the two backends.
 
-An opt-in [lossless CPU activation storage profile](activation-storage.md) now passes CPU gradient and continuation controls for full-history preparation. Its GPU memory and recipe-update cost remain unmeasured.
+An opt-in [lossless CPU activation storage profile](activation-storage.md) passes CPU gradient and continuation controls. Its first two-sequence 28,672-token forward preserved exact initial ON/OFF, but backward ran out of the .70 allocator cap. An allocator-only expandable-segment profile is being tested at the same full shape and cap. Actual recipe-update qualification remains pending.

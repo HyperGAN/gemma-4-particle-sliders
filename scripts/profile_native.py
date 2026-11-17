@@ -6,6 +6,7 @@ No targets, optimizer, adapter checkpoint or coding score are produced.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import resource
 import time
@@ -39,6 +40,7 @@ def main():
         'memory_fraction':args.memory_fraction,'context_tokens':len(ids),'batch_size':args.batch_size,'training_updates':0,
         'context_kind':'synthetic resource/derivative probe; forbidden as a training target',
         'scope':'memory, finite forward, exact initial OFF and live adapter gradients; not learned quality',
+        'allocator_environment':{key:os.environ.get(key) for key in ('PYTORCH_ALLOC_CONF','PYTORCH_CUDA_ALLOC_CONF')},
         'status':'started'}
     sources=[Path(__file__),args.config,Path('src/gemma_particle/model.py'),Path('src/gemma_particle/runtime.py')]
     if config.get('frozen_quantization'):
@@ -87,6 +89,11 @@ def main():
         receipt.update(status='error',error_type=type(exc).__name__,error=str(exc))
         raise
     finally:
+        receipt['peak_host_rss_bytes']=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
+        if device.type=='cuda' and torch.cuda.is_initialized():
+            receipt['peak_allocated_bytes']=torch.cuda.max_memory_allocated(device)
+            receipt['peak_reserved_bytes']=torch.cuda.max_memory_reserved(device)
+            receipt['allocator_backend']=torch.cuda.memory.get_allocator_backend()
         save()
         if native is not None:native.close()
     print(json.dumps(receipt,indent=2),flush=True)

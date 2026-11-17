@@ -1,0 +1,32 @@
+{
+  "schema": "gemma4-long-offload-resource-error-v1",
+  "as_of": "2026-11-17T06:14:06.512480+00:00",
+  "status": "resource_error",
+  "raw_result_sha256": "f104d12d0cf29148a10906f3fa2ae7fe3a78e7f98436b99692813d6f047b8783",
+  "log_sha256": "1158e1e5703f4b51a6fc9f44f90b744e1c58be72be281fdd5bf1a2245426d98c",
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "memory_fraction": 0.7,
+  "training_updates": 0,
+  "initial_on_equals_off": true,
+  "off_seconds": 112.47575272107497,
+  "activation_storage_forwards": [
+    {
+      "saves": 65,
+      "copies": 64,
+      "deduplicated_saves": 1,
+      "copied_bytes": 19113694208
+    },
+    {
+      "saves": 65,
+      "copies": 64,
+      "deduplicated_saves": 1,
+      "copied_bytes": 19113694208
+    }
+  ],
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 1.75 GiB. GPU 1 has a total capacity of 47.40 GiB of which 14.83 GiB is free. Including non-PyTorch memory, this process has 32.55 GiB memory in use. 33.18 GiB allowed; Of the allocated memory 28.64 GiB is allocated by PyTorch, and 3.59 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+  "gradient_qualification": "not achieved; backward failed during attention query normalization recomputation",
+  "next_delta": "same full contexts, batch and 0.70 cap with PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True; allocator storage only",
+  "scope": "synthetic pretrained resource/derivative probe, no optimizer update or training target; not a numerical recipe failure"
+}

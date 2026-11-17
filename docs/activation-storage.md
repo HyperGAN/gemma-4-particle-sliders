@@ -10,12 +10,15 @@ The storage choice enters native metadata and the full game signature, so full c
 
 The [CPU qualification](../reports/activation-storage-cpu-v1.json) covers direct-versus-checkpointed gradients at nonzero adapter weights, deferred backward under a changed ambient adapter strength, both recipes' exact updates and continuation, mutation detection, weak-reference lifetime and hook cleanup. The complete 63-test CPU suite and official compiler pass; that receipt is archived byte for byte as [activation-storage-preflight-v1.json](../reports/activation-storage-preflight-v1.json). The earlier 57-test source-upgrade receipt is archived as [pg0101-cpu-preflight-v1.json](../reports/pg0101-cpu-preflight-v1.json).
 
-GPU long-history memory, wall time and actual recipe updates remain unmeasured for this profile. Run a zero-update resource probe after an owned collection server has released its GPU, inspect the observed headroom, and then qualify an actual recipe step on admitted data before committing to a longer chunk:
+The first [two-sequence, 28,672-token GPU probe](../reports/long-offload-resource-error-v1.json) preserved exact initial ON/OFF output and copied about 19.1 GB of saved tensors per forward to CPU, but backward ran out of its .70 allocator cap during attention query normalization recomputation. The CUDA error reported 28.64 GiB allocated and 3.59 GiB reserved but unused, with 14.83 GiB physically free. It performed zero optimizer updates. Long-history gradient qualification is therefore not achieved.
+
+A fresh storage-only profile tries expandable allocator segments with the same full contexts, batch size and .70 cap. Its outcome remains pending; no objective, recipe or history is changed. After a successful resource probe, an actual recipe step on admitted data is still required before a longer chunk:
 
 ```bash
-OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 nice -n 10 .train-venv/bin/python scripts/profile_native.py \
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
+  nice -n 10 .train-venv/bin/python scripts/profile_native.py \
   --config configs/31b-ct-offload-pilot.json --device cuda:1 --memory-fraction .70 \
-  --max-tokens 28672 --batch-size 2 --out runs/ct-offload-long-resource-v1
+  --max-tokens 28672 --batch-size 2 --out runs/own-ct-offload-long-resource
 ```
 
 This command is a synthetic derivative/resource probe. It performs zero optimizer updates and cannot supply a training target or a coding score. The current collectors remain in their original frozen checkout and environment.

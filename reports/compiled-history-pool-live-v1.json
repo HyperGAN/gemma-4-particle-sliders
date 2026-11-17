@@ -1,0 +1,17 @@
+{
+  "schema": "gemma4-compiled-history-pool-live-v1",
+  "as_of": "2026-11-17T06:14:06.512480+00:00",
+  "root": "runs/gpu0-compiled-history-train-pool-v1",
+  "scheduler_pid": 2007341,
+  "executor_commit": "aad9284316a6e7e6616302ed42d2aecc45f04c00",
+  "history_profile": "official-compaction-v2",
+  "planned_tasks": 53,
+  "plan_sha256": "2c23e767bc894c91f016858172a08d3cd1bfda9f2371b31c497745830a493d3e",
+  "first_task": "fastapi_13713",
+  "observed_complete_requests": 21,
+  "complete_summary_calls": 2,
+  "first_request_remains_initial_system_prompt": true,
+  "all_observed_complete_request_response_hashes_match": true,
+  "later_assistant_decision_after_summary_completed": true,
+  "scope": "actual pretrained capture continuation control only; first task still active, no task-quality or learned-adapter score"
+}
