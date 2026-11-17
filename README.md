@@ -2,7 +2,7 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.0** and an experimental Particle Sliders core.
 
-**Work in progress. No pretrained Gemma task score or SOTA improvement has been measured.** The current evidence covers CPU engineering checks and compilation with a mirrored competition compiler. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
+**Work in progress. No pretrained Gemma task score or SOTA improvement has been measured.** Current evidence covers CPU engineering checks, the authenticated official compiler, two real-task scorer controls, and a scripted agent-to-verifier protocol probe. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
@@ -14,13 +14,14 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Particle Sliders | `acbe43fe…` plus the hash-pinned [0.10 bridge patch](patches/particle-sliders-pg0100.patch) |
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
-| Submission | Prompt baseline compiled by mirrored `adk-submission==0.2.13`; no inference during this check |
-| Real-task scorer control | [Blocked](reports/verifier-control-v1.json): the mirrored environment fails even with the Requests reference patch |
-| Competition | Current account entry, current harness parity, current top score, and scored submission still required |
+| Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
+| Real-task scorer controls | [Passed on two task/environment combinations](reports/verifier-controls-v2.json): empty fails, reference passes, edited workspace import confirmed |
+| Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
+| Competition | [Authenticated downloads and leaderboard verified](reports/official-access.json) on 2026-11-17; leading public score 0.29; no scored submission yet |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
 
-Install PyTorch appropriate to the machine first. The tested training environment uses Python 3.11, Torch 2.14.1, and Transformers 5.13.1. The mirrored compiler requires a separate Python 3.12 environment.
+Install PyTorch appropriate to the machine first. The tested training environment uses Python 3.11, Torch 2.14.1, and Transformers 5.13.1. The competition harness requires a separate Python 3.12 environment.
 
 ```bash
 python3.11 -m venv --system-site-packages .venv
@@ -32,7 +33,16 @@ CUDA_VISIBLE_DEVICES='' .venv/bin/python -m pytest -q tests
 
 The bootstrap checks exact commits and the source patch hash. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins.
 
-Small inputs can be fetched from a pinned [public mirror](https://huggingface.co/datasets/HanG/gemma-4-developer-agent). This enables preparation while Kaggle access is being arranged; it does not establish current competition parity. ZIP byte ranges are checked exactly and capped at a transfer budget. [Input receipts](reports/input-provenance.json) bind the extracted members. Raw reference patches stay in ignored `data/`; agent-visible splits remove both `patch` and `test_patch`.
+Official inputs can now be downloaded with Kaggle's CLI authentication. Use an isolated environment with `kaggle==2.2.5` and `six==1.17.0` installed; authentication remains in Kaggle's standard private location. The task file and sandbox setup match the preparation mirror. The current official `swegemma` wheel has five changed Python files despite the same package version, so source hashes are recorded and the official wheel is installed. Raw reference patches stay in ignored `data/`; agent-visible splits remove both `patch` and `test_patch`.
+
+```bash
+.kaggle-venv/bin/python scripts/fetch_official_inputs.py --wheelhouse
+# After creating the sanitized split below, fetch a selected TRAIN snapshot and code indexes:
+.kaggle-venv/bin/python scripts/fetch_official_inputs.py \
+  --visible-tasks data/splits-v1/train.jsonl --task-id fastapi_11194
+```
+
+The pinned [public mirror](https://huggingface.co/datasets/HanG/gemma-4-developer-agent) remains a reproducible preparation source. ZIP byte ranges are checked exactly and capped at a transfer budget. [Input receipts](reports/input-provenance.json) bind the extracted members.
 
 ```bash
 .venv/bin/python scripts/fetch_public_inputs.py  # list ZIP members, without downloading snapshots
@@ -45,7 +55,9 @@ Small inputs can be fetched from a pinned [public mirror](https://huggingface.co
 
 The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich and HTTPX (49). This repository-disjoint split is a small engineering pilot, not an estimate of hidden competition performance. No holdout supplies targets, conversion activations, or selection feedback. Larger training-data coverage and DEV adequacy remain research work.
 
-[The experiment protocol](docs/protocol.md) describes the remaining work. The scripts for curation, native state caching, bounded training, exact resume, native exports, and PEFT conversion are provided. Cache/training/conversion commands require an explicit device and should only run after CPU preparation. GPU runs share existing workloads, use a memory cap, and leave unrelated jobs running. No GPU work has been started for the current receipt.
+[The experiment protocol](docs/protocol.md) describes the remaining work. `run_trajectories.py` runs sanitized TRAIN/DEV tasks and captures actual model requests. `verify_trajectories.py` is a separate process that alone reads reference-bearing tasks, validates matching environment identities and tests each patch in a fresh container. Curation requires all four declared arms, a failed OFF control and a successful instruction run from the exact pinned BF16 model. It preserves observed history, tools, ADK's appended system text and captured thinking mode. Scripted CPU probes are explicitly rejected as targets.
+
+Cache/training/conversion commands require an explicit device and should only run after CPU preparation. GPU runs share existing workloads, use a memory cap, and leave unrelated jobs running. No GPU work has been started for the current receipt.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:
@@ -66,4 +78,4 @@ RHBI's public recipe uses a CPU polar execution profile. CUDA training requires 
 
 Successful CPU tests do not establish better coding behavior. Genuine task outcomes, conversion loss, wall time, error rates, model/quantization/harness identity, and the official scored submission remain the evidence needed to meet the goal.
 
-The first real-task verifier control ran unchanged `swegemma.verify_task` in two separate air-gapped containers on `requests_6757`. Both the empty patch and reference patch exited 1. The reference run had 134 passing tests, 187 fixture errors due to absent `pytest-httpbin`, and six failures involving offline networking and TLS/certificate behavior. This environment is blocked for scoring; no filters, clock changes, network relaxation, or test bypasses were applied. The next step is to match the current official environment and restore the task's declared dependencies before interpreting model results.
+The [original blocked verifier receipt](reports/verifier-control-v1.json) remains unchanged. Later controls exposed missing test dependencies, imports of an installed package instead of edited workspace code, and an unkeyed shared wheel cache. The declared local images add dependencies and prioritize workspace imports; each run gets a private cache. Tests, air gap, clock, TLS validation and scoring remain unchanged. The calibrated FastAPI and Requests utility tasks now distinguish an empty patch from their reference fixes. This qualifies those exact local task/environments; it does not establish hidden-scorer parity or agent accuracy.

@@ -17,6 +17,7 @@ from swegemma.config import EvalConfig
 from swegemma.models import load_tasks
 from swegemma.harness.verification import verify_task
 from swegemma.sandbox import ContainerConfig, ContainerManager
+from gemma_particle.sandbox import isolate_sandbox_cache,SourceBoundManager
 
 
 async def main():
@@ -25,26 +26,33 @@ async def main():
     parser.add_argument('--inputs', type=Path, default=Path('data/control-inputs/root/.cache/kagglehub/competitions/gemma-4-developer-agent'))
     parser.add_argument('--task-id', default='requests_6757')
     parser.add_argument('--image', default='gemma-particle-sandbox:mirror-v30')
+    parser.add_argument('--split', choices=['train','dev'], default='dev')
+    parser.add_argument('--wheels',type=Path)
     parser.add_argument('--out', type=Path, default=Path('runs/verifier-controls-v1'))
     args = parser.parse_args()
     if args.out.exists():
         raise FileExistsError('control run is immutable')
     task = next(row for row in load_tasks(args.tasks) if row.instance_id == args.task_id)
-    if task.repo != 'psf/requests' or not task.patch.strip() or not task.test_patch.strip():
-        raise ValueError('declared DEV calibration task with nonempty references required')
+    allowed_repos = {'train':{'fastapi/fastapi'}, 'dev':{'psf/requests'}}
+    if task.repo not in allowed_repos[args.split] or not task.patch.strip() or not task.test_patch.strip():
+        raise ValueError('declared TRAIN/DEV calibration task with nonempty references required')
     snapshot = args.inputs/'snapshots'/f'{task.instance_id}.tgz'
     if not snapshot.exists():
         raise FileNotFoundError(snapshot)
     os.environ['KAGGLE_SANDBOX_DIR'] = str((args.inputs/'sandbox').resolve())
     args.out.mkdir(parents=True)
-    manager = ContainerManager(ContainerConfig(image=args.image, network_mode='none', mem_limit='4g', cpu_quota=200000))
+    isolate_sandbox_cache(args.out/'tmp')
+    package={'psf/requests':'requests','fastapi/fastapi':'fastapi'}[task.repo]
+    manager = SourceBoundManager(ContainerConfig(image=args.image, network_mode='none', mem_limit='4g', cpu_quota=200000),package=package)
     config = EvalConfig(tasks_path=args.tasks, snapshots_dir=args.inputs/'snapshots',
                         results_dir=args.out, submission_dir=Path('submission'), models=ModelRegistry(),
-                        wheels_dir=args.inputs/'wheels')
+                        wheels_dir=args.wheels or args.inputs/'wheels')
     receipt = {'schema':'gemma4-real-task-verifier-controls-v1', 'task':task.instance_id,
                'kind':'verifier calibration; reference oracle is not an agent', 'gpu_used':False,
                'image_id':manager.client.images.get(args.image).id,
                'tasks_sha256':hashlib.sha256(args.tasks.read_bytes()).hexdigest(),
+               'split':args.split,
+               'wheel_selection_sha256':hashlib.sha256((args.wheels/'receipt.json').read_bytes()).hexdigest() if args.wheels else None,
                'snapshot_sha256':hashlib.sha256(snapshot.read_bytes()).hexdigest(),
                'execution_script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), 'arms':{}}
     for arm, patch in [('empty', ''), ('reference', task.patch)]:
@@ -56,6 +64,9 @@ async def main():
         (args.out/f'{arm}-test-output.txt').write_text(result.test_output or '')
         print(json.dumps({'arm':arm, **record}), flush=True)
     empty, reference = receipt['arms']['empty'], receipt['arms']['reference']
+    receipt['origin_checks']=manager.origin_checks
+    cache=args.out/'tmp/swegemma_sp_cache_v8/sp_base.tar'
+    receipt['injected_wheel_tar_sha256']=hashlib.sha256(cache.read_bytes()).hexdigest() if cache.exists() else None
     if not reference['resolved']:
         receipt['status'] = 'blocked: reference control did not pass'
     elif empty['resolved'] or empty['test_exit_code'] == 0:

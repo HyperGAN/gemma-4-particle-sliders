@@ -20,26 +20,59 @@ def test_references_removed_and_splits_immutable(tmp_path):
 
 
 def outcome(arm, resolved):
-    messages = [{"role": "system", "content": "base" + ("\n\n"+TARGET_INSTRUCTIONS[arm] if arm != "off" else "")},
-                {"role": "user", "content": "same issue"}, {"role": "assistant", "content": "finished patch"}]
+    messages = [{"role": "system", "content": "base" + ("\n\n"+TARGET_INSTRUCTIONS[arm] if arm != "off" else "")+'\n\nADK agent identity'},
+                {"role": "user", "content": "same issue"}]
+    request={'model':'gemma','messages':messages,'tools':None,'generation':{'seed':0}}
+    requests=[dict(instance_id='task',arm=arm,decision=0,request=request,request_sha256=digest(request))]
     receipt = dict(instance_id="task", resolved=resolved, patch_sha256="a"*64,
-                   trajectory_sha256=digest(messages), stage="fresh-container-tests")
-    return dict(instance_id="task", arm=arm, resolved=resolved, messages=messages,
+                   requests_sha256=digest(requests), stage="fresh-container-tests")
+    return dict(schema='gemma4-verified-trajectory-v2',generator_kind='gemma4',instance_id="task", arm=arm,
+                resolved=resolved,requests=requests,capture_complete=True,evaluation_contract_sha256='matched',
+                model_identity={'repo':'google/gemma-4-E2B-it','revision':'b'*40,'dtype':'bfloat16'},
                 patch_sha256="a"*64, verification=receipt, tool_calls=3, elapsed_seconds=5)
+
+
+def arms(*,off=False):
+    return [outcome('off',off),outcome('verify',True),outcome('reproduce',False),outcome('localize',False)]
 
 
 def test_curation_requires_actual_paired_win_and_train_membership():
     tasks = [dict(instance_id="task", split="train")]
-    assert not select_contexts(tasks, [outcome("off", True), outcome("verify", True)])
-    pairs = select_contexts(tasks, [outcome("off", False), outcome("verify", True)])
+    assert not select_contexts(tasks, arms(off=True))
+    pairs = select_contexts(tasks, arms())
     assert len(pairs) == 1
     pair = pairs[0]
-    assert pair["neutral_messages"][0]["content"] == "base"
+    assert pair["neutral_messages"][0]["content"] == "base\n\nADK agent identity"
     assert pair["positive_messages"][1:] == pair["neutral_messages"][1:]
     assert all(m["role"] != "assistant" for m in pair["neutral_messages"])
     with pytest.raises(ValueError):
         select_contexts([dict(instance_id="task", split="dev")], [outcome("off", False)])
     bad = outcome("verify", True)
-    bad["verification"]["trajectory_sha256"] = "bad"
+    bad["verification"]["requests_sha256"] = "bad"
     with pytest.raises(ValueError):
         select_contexts(tasks, [bad])
+
+
+def test_fixture_incomplete_cohort_and_contract_changes_cannot_supply_targets():
+    tasks=[dict(instance_id='task',split='train')]
+    rows=arms();rows[1]['generator_kind']='cpu_protocol_fixture'
+    with pytest.raises(ValueError,match='CPU protocol'):
+        select_contexts(tasks,rows)
+    with pytest.raises(ValueError,match='four declared'):
+        select_contexts(tasks,arms()[:2])
+    rows=arms();rows[1]['evaluation_contract_sha256']='different'
+    with pytest.raises(ValueError,match='unmatched'):
+        select_contexts(tasks,rows)
+
+
+def test_curation_rejects_different_sampling_and_quantized_teacher():
+    tasks=[dict(instance_id='task',split='train')]
+    rows=arms();winner=rows[1];packet=winner['requests'][0]
+    packet['request']['generation']['seed']=42
+    packet['request_sha256']=digest(packet['request'])
+    winner['verification']['requests_sha256']=digest(winner['requests'])
+    with pytest.raises(ValueError,match='generation differ'):
+        select_contexts(tasks,rows)
+    rows=arms();rows[1]['model_identity']['dtype']='w4a16'
+    with pytest.raises(ValueError,match='BF16'):
+        select_contexts(tasks,rows)

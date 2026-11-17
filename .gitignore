@@ -1,6 +1,7 @@
 .deps/
 .venv/
 .harness-venv/
+.kaggle-venv/
 .babel-reports/
 data/
 runs/

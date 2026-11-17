@@ -1,0 +1,203 @@
+{
+  "schema": "gemma4-official-access-v1",
+  "authenticated_file_listing": true,
+  "authenticated_downloads": {
+    "schema": "gemma4-official-download-v1",
+    "competition": "gemma-4-developer-agent",
+    "wheelhouse": "metric/gemma-4-developer-agent-wheelhouse",
+    "files": {
+      "HARNESS_README.md": {
+        "source": "competition",
+        "bytes": 55940,
+        "sha256": "445000219b803942c469391ec8b69791a31e9cec2f934738c767e34b5ca0aa1f"
+      },
+      "docker/Dockerfile.sandbox": {
+        "source": "competition",
+        "bytes": 773,
+        "sha256": "2fef37c9275522eea4dc3371c60b54d9ba3cfa7871f89f1749aa92f34beff70a"
+      },
+      "docker/imp.py": {
+        "source": "competition",
+        "bytes": 834,
+        "sha256": "9fdd84ba6d52327a3f1a291b90b4babfa1393a693a8f14f589a5ee81ed59afdf"
+      },
+      "docker/telnetlib.py": {
+        "source": "competition",
+        "bytes": 23336,
+        "sha256": "579731aca27a0ddd7b39a8c63f97941b3329ce892142cbd7748c6a09904daedb"
+      },
+      "embeddings/fastapi_a7f2dbe976bf72703376f0cd04487bfc4a849f83.npz": {
+        "source": "competition",
+        "bytes": 4158644,
+        "sha256": "46fb70dc9b0e8370136e7da78be77b04ff9f117af6fd67df0b0cc908a00bcef9"
+      },
+      "graphs/fastapi_a7f2dbe976bf72703376f0cd04487bfc4a849f83.json": {
+        "source": "competition",
+        "bytes": 3787549,
+        "sha256": "7ec16396393fadd398243098622c524f341778151c0455bdfec3ef7b0ff812df"
+      },
+      "sandbox/setup.py": {
+        "source": "competition",
+        "bytes": 13883,
+        "sha256": "0263995ade90f83c8efa0ab5c7c9b7629696f39bc75274d58fc27ab774568409"
+      },
+      "snapshots/fastapi_11194.tgz": {
+        "source": "competition",
+        "bytes": 214241984,
+        "sha256": "21e42341f416904a0e464cac84f227ff8351bb652d522192212737e6dec663d1"
+      },
+      "tasks.jsonl": {
+        "source": "competition",
+        "bytes": 1984455,
+        "sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6"
+      },
+      "wheelhouse/adk_eval_core-0.1.0-py3-none-any.whl": {
+        "source": "wheelhouse",
+        "bytes": 90060,
+        "sha256": "e614e1b2fe8d886a634871e4c57f9887e1cc66e8c27300f8503a43c6e3ca82f3"
+      },
+      "wheelhouse/adk_submission-0.2.13-py3-none-any.whl": {
+        "source": "wheelhouse",
+        "bytes": 66528,
+        "sha256": "f156f0bd84580ccb9334726d114d7a5481f16d3a6e2887cc4d276ced0ef8d99d"
+      },
+      "wheelhouse/swegemma-0.2.11-py3-none-any.whl": {
+        "source": "wheelhouse",
+        "bytes": 119670,
+        "sha256": "9ad876581f3acde8ec3c369858f0834e2b9f41a3cffce3ca42f09cb090aea9d3"
+      }
+    },
+    "fetched_at": "2026-11-17T01:27:26.952420+00:00"
+  },
+  "comparison_with_preparation_mirror": {
+    "HARNESS_README.md": false,
+    "docker/Dockerfile.sandbox": true,
+    "docker/imp.py": true,
+    "docker/telnetlib.py": true,
+    "embeddings/fastapi_a7f2dbe976bf72703376f0cd04487bfc4a849f83.npz": false,
+    "graphs/fastapi_a7f2dbe976bf72703376f0cd04487bfc4a849f83.json": false,
+    "sandbox/setup.py": true,
+    "snapshots/fastapi_11194.tgz": true,
+    "tasks.jsonl": true,
+    "wheelhouse/adk_eval_core-0.1.0-py3-none-any.whl": false,
+    "wheelhouse/adk_submission-0.2.13-py3-none-any.whl": false,
+    "wheelhouse/swegemma-0.2.11-py3-none-any.whl": false
+  },
+  "official_harness_source_changes": [
+    "swegemma/budget.py",
+    "swegemma/cli.py",
+    "swegemma/config.py",
+    "swegemma/context.py",
+    "swegemma/harness/verification.py"
+  ],
+  "adk_submission_and_adk_eval_core_python_sources_unchanged": true,
+  "leaderboard": {
+    "fetched_at": "2026-11-17T01:27:27.231498+00:00",
+    "source": "https://www.kaggle.com/competitions/gemma-4-developer-agent/leaderboard",
+    "entries": [
+      {
+        "team": "Yurnero",
+        "score": "0.29",
+        "submission_date": "2026-10-29 08:07:28.290000"
+      },
+      {
+        "team": "Yike Xu",
+        "score": "0.24",
+        "submission_date": "2026-11-12 03:45:13.570000"
+      },
+      {
+        "team": "MUHAMMED IDRIS BIN YACOOB",
+        "score": "0.24",
+        "submission_date": "2026-11-07 23:49:25"
+      },
+      {
+        "team": "SAVE",
+        "score": "0.24",
+        "submission_date": "2026-11-16 02:01:59.283000"
+      },
+      {
+        "team": "chizhu",
+        "score": "0.24",
+        "submission_date": "2026-11-06 07:28:24.713000"
+      },
+      {
+        "team": "pluris",
+        "score": "0.24",
+        "submission_date": "2026-10-28 10:19:33.710000"
+      },
+      {
+        "team": "Alberth Moreira",
+        "score": "0.24",
+        "submission_date": "2026-11-15 03:37:08.356000"
+      },
+      {
+        "team": "tammam alasha",
+        "score": "0.24",
+        "submission_date": "2026-11-16 00:02:34.923000"
+      },
+      {
+        "team": "P\u0131nar Aksoy",
+        "score": "0.24",
+        "submission_date": "2026-11-15 00:03:42.896000"
+      },
+      {
+        "team": "Takumu Hata",
+        "score": "0.24",
+        "submission_date": "2026-11-14 16:07:14.803000"
+      },
+      {
+        "team": "Serhii Mosiiash",
+        "score": "0.24",
+        "submission_date": "2026-11-15 09:50:47.046000"
+      },
+      {
+        "team": "LuisSpecian",
+        "score": "0.24",
+        "submission_date": "2026-11-16 00:42:03.996000"
+      },
+      {
+        "team": "Radek",
+        "score": "0.24",
+        "submission_date": "2026-11-13 06:46:55.060000"
+      },
+      {
+        "team": "Sophia0817",
+        "score": "0.24",
+        "submission_date": "2026-11-13 07:37:57.623000"
+      },
+      {
+        "team": "bgunshui",
+        "score": "0.24",
+        "submission_date": "2026-11-15 08:49:38.856000"
+      },
+      {
+        "team": "Francis Joseph",
+        "score": "0.22",
+        "submission_date": "2026-11-14 23:15:04.133000"
+      },
+      {
+        "team": "Deepest Mind",
+        "score": "0.22",
+        "submission_date": "2026-11-16 00:26:04.710000"
+      },
+      {
+        "team": "Ayush Barai",
+        "score": "0.22",
+        "submission_date": "2026-11-15 11:17:55.863000"
+      },
+      {
+        "team": "\u5403\u767d\u996d\u7684\u5927\u80a5\u9c7c",
+        "score": "0.22",
+        "submission_date": "2026-11-08 10:49:00.633000"
+      },
+      {
+        "team": "omallo",
+        "score": "0.22",
+        "submission_date": "2026-11-12 08:47:58.646000"
+      }
+    ]
+  },
+  "entry_acceptance": "not independently confirmed by a submission",
+  "submission_id": null,
+  "score": null
+}

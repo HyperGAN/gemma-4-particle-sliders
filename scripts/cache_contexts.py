@@ -11,6 +11,7 @@ from gemma_particle.data import read_jsonl, digest
 from gemma_particle.curation import TARGET_INSTRUCTIONS
 from gemma_particle.model import ContextRow
 from gemma_particle.runtime import load_native, model_identity, save_cache, file_hash
+from gemma_particle.prompting import tokenize_context
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--config', type=Path, default=Path('configs/pilot.json'))
@@ -29,21 +30,23 @@ contexts = read_jsonl(args.contexts)
 if args.out.exists():
     raise FileExistsError('cache already exists')
 for row in contexts:
-    if row['split'] != 'train' or row['instance_id'] not in allowed:
+    if row.get('schema') != 'gemma4-paired-context-v2' or row['split'] != 'train' or row['instance_id'] not in allowed:
         raise ValueError('only TRAIN contexts may supply targets')
     neutral, positive = row['neutral_messages'], row['positive_messages']
-    suffix = '\n\n'+TARGET_INSTRUCTIONS[row['target_arm']]
+    insertion = '\n\n'+TARGET_INSTRUCTIONS[row['target_arm']]
     if (not neutral or neutral[0]['role'] != 'system' or positive[0]['role'] != 'system'
-            or positive[0]['content'] != neutral[0]['content']+suffix or neutral[1:] != positive[1:]):
+            or positive[0]['content'].count(insertion)!=1
+            or positive[0]['content'].replace(insertion,'',1) != neutral[0]['content'] or neutral[1:] != positive[1:]):
         raise ValueError('teacher/student must share question and complete observed history')
 identity = model_identity(config)
+if not contexts or any(row.get('model_identity')!=identity for row in contexts):
+    raise ValueError('target trajectories must use the exact pinned BF16 cache model')
 tok = AutoTokenizer.from_pretrained(identity['repo'], revision=identity['revision'])
 native = load_native(config, device=args.device, memory_fraction=args.memory_fraction, checkpointing=False)
 try:
     prepared = []
     for row in contexts:
-        encoded = [tok.apply_chat_template(row[key], tokenize=True, add_generation_prompt=True,
-                                          tools=row.get('tools')) for key in ('neutral_messages','positive_messages')]
+        encoded = [tokenize_context(tok,row[key],row['tools'],row['generation']) for key in ('neutral_messages','positive_messages')]
         if max(map(len, encoded)) > 32768:
             raise ValueError('context exceeds scorer window; truncation would change the paired question')
         context = ContextRow(tuple(encoded[0]), tuple(encoded[1]), row['instance_id'], row['decision'])

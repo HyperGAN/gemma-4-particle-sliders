@@ -1,0 +1,147 @@
+{
+  "schema": "gemma4-verifier-controls-v2",
+  "gpu_used": false,
+  "kind": "CPU scorer calibration, not agent accuracy",
+  "harness_receipt": "reports/harness-environment.json",
+  "qualified_controls": [
+    {
+      "run": "verifier-fastapi-official-v1",
+      "result": {
+        "schema": "gemma4-real-task-verifier-controls-v1",
+        "task": "fastapi_11194",
+        "kind": "verifier calibration; reference oracle is not an agent",
+        "gpu_used": false,
+        "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+        "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+        "split": "train",
+        "wheel_selection_sha256": "673726e1ab4c7aefa86bf3fc39e34e16d1a5390829f8662882aa1b400e64ee6e",
+        "snapshot_sha256": "21e42341f416904a0e464cac84f227ff8351bb652d522192212737e6dec663d1",
+        "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+        "arms": {
+          "empty": {
+            "resolved": false,
+            "test_exit_code": 1,
+            "error": null,
+            "wall_seconds": 11.552611441002227
+          },
+          "reference": {
+            "resolved": true,
+            "test_exit_code": 0,
+            "error": null,
+            "wall_seconds": 11.665854429011233
+          }
+        },
+        "origin_checks": [
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          },
+          {
+            "package": "fastapi",
+            "origin": "/workspace/fastapi/__init__.py",
+            "workspace": true
+          }
+        ],
+        "injected_wheel_tar_sha256": "a46c238de92a65abc9bf81d065b6514df3b0ab4245ef5dedebfe042690e92048",
+        "status": "passed"
+      },
+      "result_sha256": "b18aa2674e0fea0b50ea968869db6ef87b16dc8e10603a3baabd72e4fc60fdd3"
+    },
+    {
+      "run": "verifier-requests-utils-official-v1",
+      "result": {
+        "schema": "gemma4-real-task-verifier-controls-v1",
+        "task": "requests_7205",
+        "kind": "verifier calibration; reference oracle is not an agent",
+        "gpu_used": false,
+        "image_id": "sha256:ee75350a7aff28ead52f7574c30a4766b010fef23f8ac1e9c8b663255a602a63",
+        "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+        "split": "dev",
+        "wheel_selection_sha256": null,
+        "snapshot_sha256": "42dc3d360f842a5c7a66d0008ac05447fcd807dc33ee8cc18d2f2d4876283106",
+        "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+        "arms": {
+          "empty": {
+            "resolved": false,
+            "test_exit_code": 1,
+            "error": null,
+            "wall_seconds": 27.15914446802344
+          },
+          "reference": {
+            "resolved": true,
+            "test_exit_code": 0,
+            "error": null,
+            "wall_seconds": 25.616088783019222
+          }
+        },
+        "origin_checks": [
+          {
+            "package": "requests",
+            "origin": "/workspace/src/requests/__init__.py",
+            "workspace": true
+          },
+          {
+            "package": "requests",
+            "origin": "/workspace/src/requests/__init__.py",
+            "workspace": true
+          }
+        ],
+        "injected_wheel_tar_sha256": "4e81a1219fd4de293d03a51df061ea01f56a04ae37e527c42fd481ef766d61c0",
+        "status": "passed"
+      },
+      "result_sha256": "55d1e15aa63a68eefe0f119243b0a75fcce829c7c0f9b7de88d9acca4c77539c"
+    }
+  ],
+  "scope": "Only these two task/environment combinations are calibrated. Public test environment derivatives are not a claim of hidden-scorer parity.",
+  "repairs": [
+    "Add declared public test dependencies in separately named Docker images; preserve tests, network isolation, TLS and clock.",
+    "Import the edited /workspace source before preinstalled distributions, and check its actual import origin before pytest.",
+    "Use a private temporary cache for each run; the official wheel-tar cache name does not include wheel identity.",
+    "For FastAPI, select unmodified wheels satisfying the snapshot core constraints and exclude the workspace distribution."
+  ],
+  "original_blocked_receipt": "reports/verifier-control-v1.json",
+  "remaining_blocked_controls": [
+    {
+      "schema": "gemma4-real-task-verifier-controls-v1",
+      "task": "requests_6757",
+      "kind": "verifier calibration; reference oracle is not an agent",
+      "gpu_used": false,
+      "image_id": "sha256:ee75350a7aff28ead52f7574c30a4766b010fef23f8ac1e9c8b663255a602a63",
+      "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+      "split": "dev",
+      "wheel_selection_sha256": null,
+      "snapshot_sha256": "dd2c178bb35c5aa3ad82ed8b4393fe087da0fa2fe30465bee4a4d3357475a44c",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 26.14291856007185
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 58.645728646893986
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "requests",
+          "origin": "/workspace/src/requests/__init__.py",
+          "workspace": true
+        }
+      ],
+      "injected_wheel_tar_sha256": "808be2a65338fca9c2eaa0df616f42c2923c73a98a9dc000fa49fe08fcf67744",
+      "status": "blocked: reference control did not pass"
+    }
+  ],
+  "remaining_blocker": "Requests6757 reference still has 8 failures (airgap/network expectations and expired TLS certificates), with 319 passed, 1 skipped and 1 xfailed. No assertions or TLS settings were altered."
+}

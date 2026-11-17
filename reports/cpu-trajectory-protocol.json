@@ -1,0 +1,45 @@
+{
+  "schema": "gemma4-cpu-trajectory-protocol-v2",
+  "generator_kind": "cpu_protocol_fixture",
+  "eligible_for_training": false,
+  "gpu_used": false,
+  "pretrained_inference": false,
+  "evaluation_contract_sha256": "8fdf9e316175302f550708041e815b94576e9193c7a53a3d13acebca5a8eb184",
+  "off_model_calls": 3,
+  "positive_model_calls": 3,
+  "off_tool_calls": 2,
+  "same_captured_tools_and_generation": true,
+  "exact_instruction_insertion_preserves_adk_system_suffix": true,
+  "native_tool_argument_json_decoding": "wire strings decoded to mappings on a copy for the native template",
+  "native_tokenizer": {
+    "repo": "google/gemma-4-E2B-it",
+    "revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+    "decision_token_counts": [
+      2751,
+      2817,
+      2862
+    ],
+    "token_ids_sha256": "125ecde47a742724f86e7335748e10d328bd2e27859ab50d42a2123edb9cf94c"
+  },
+  "verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_11194",
+    "patch_sha256": "88a5a7d235b3b2dd815327c5baf2b586bcdc546d13e71aa9f6f661b5b5eeac16",
+    "requests_sha256": "57145e8faa2739890db90714b6f785ca3ca72629cc257ec852846722f54f78bf",
+    "resolved": false,
+    "test_exit_code": 1,
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "8fdf9e316175302f550708041e815b94576e9193c7a53a3d13acebca5a8eb184",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "0fc035ffc1531b3fbfdacbd909c01cabec32309605f43b93dc533581127f95cd"
+  },
+  "scope": "Official agent loop and fresh-container verifier handoff with scripted tool calls; not Gemma inference, accuracy, or a training target."
+}

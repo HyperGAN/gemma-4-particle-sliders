@@ -1,4 +1,4 @@
-"""Compile a bundle with the mirrored official compiler, without inference.
+"""Compile a bundle with the installed competition compiler, without inference.
 
 Runs under Python 3.12 in the separate harness environment. Tool signatures and
 model routing are real declarations; tool bodies are inert during compilation.
@@ -47,7 +47,7 @@ def main():
         skill_registry=SkillRegistry(), callback_registry=CallbackRegistry(), limits=limits,
         generation_constraints=GenerationConstraints(allowed_fields=None, max_output_tokens=NumericRange(1,32768), thinking_budget=NumericRange(0,32768)))
     print(json.dumps({"status": "compiled", "agent": compiled.name, "model": args.model,
-                      "inference_executed": False, "authority": "mirrored adk-submission 0.2.13"}))
+                      "inference_executed": False, "authority": "installed adk-submission; reports/harness-environment.json records source identity"}))
 
 
 if __name__ == "__main__":

@@ -26,13 +26,22 @@ def select_contexts(tasks, outcomes):
         task_id = row["instance_id"]
         if task_id not in allowed:
             raise ValueError("non-TRAIN outcome")
+        if row.get('schema') != 'gemma4-verified-trajectory-v2' or row.get('generator_kind') != 'gemma4':
+            raise ValueError('only verified Gemma model runs may supply targets; CPU protocol probes are forbidden')
         if type(row.get("resolved")) is not bool:
             raise ValueError("resolved must be a boolean, not a string or score")
         if row["arm"] != "off" and row["arm"] not in TARGET_INSTRUCTIONS:
             raise ValueError("unknown target-instruction arm")
+        identity=row.get('model_identity',{})
+        if not identity or identity.get('dtype')!='bfloat16' or len(identity.get('revision',''))!=40:
+            raise ValueError('target collection requires a pinned BF16 native Gemma model')
+        for decision,packet in enumerate(row['requests']):
+            if (packet.get('instance_id')!=task_id or packet.get('arm')!=row['arm']
+                    or packet['decision']!=decision or packet['request_sha256']!=digest(packet['request'])):
+                raise ValueError('captured request task, arm, order or bytes changed')
         receipt = row["verification"]
         if (receipt["instance_id"] != task_id or receipt["patch_sha256"] != row["patch_sha256"]
-                or receipt["trajectory_sha256"] != digest(row["messages"])
+                or receipt["requests_sha256"] != digest(row["requests"])
                 or receipt["resolved"] is not row["resolved"] or receipt["stage"] != "fresh-container-tests"):
             raise ValueError("outcome is not bound to the verified patch/trajectory")
         arms = by_task.setdefault(task_id, {})
@@ -41,26 +50,48 @@ def select_contexts(tasks, outcomes):
         arms[row["arm"]] = row
     selected = []
     for task_id, arms in sorted(by_task.items()):
-        if "off" not in arms or arms["off"]["resolved"]:
+        if set(arms) != {'off',*TARGET_INSTRUCTIONS}:
+            raise ValueError('all four declared curation arms must finish before selection')
+        baseline=arms['off']
+        if any(r['evaluation_contract_sha256'] != baseline['evaluation_contract_sha256'] for r in arms.values()):
+            raise ValueError('curation arms have unmatched model/environment/budget contracts')
+        if any(r['model_identity']!=baseline['model_identity'] for r in arms.values()):
+            raise ValueError('curation arms have unmatched model identities')
+        if baseline["resolved"]:
             continue
-        candidates = [row for arm, row in arms.items() if arm != "off" and row["resolved"]]
+        if not baseline.get('capture_complete') or not baseline['requests']:
+            continue
+        candidates = [row for arm, row in arms.items() if arm != "off" and row["resolved"] and row.get('capture_complete')]
         if not candidates:
             continue
         # Fixed tie break, declared before observing results.
         winner = min(candidates, key=lambda r: (r["tool_calls"], r["elapsed_seconds"], r["arm"]))
-        for index, message in enumerate(winner["messages"]):
-            if message["role"] != "assistant":
-                continue
-            history = deepcopy(winner["messages"][:index])
+        off_messages=baseline['requests'][0]['request']['messages']
+        if not off_messages or off_messages[0]['role']!='system':
+            raise ValueError('captured OFF system prompt required')
+        base_system=off_messages[0]['content']
+        off_request=baseline['requests'][0]['request']
+        insertion='\n\n'+TARGET_INSTRUCTIONS[winner['arm']]
+        for packet in winner["requests"]:
+            request=packet['request']
+            if any(request[k]!=off_request[k] for k in ('model','tools','generation')):
+                raise ValueError('teacher tools or generation differ from the OFF control')
+            if packet['request_sha256'] != digest(request):
+                raise ValueError('captured request changed')
+            history = deepcopy(request['messages'])
             if not history or history[0]["role"] != "system":
                 raise ValueError("a paired context requires the base system prompt")
-            suffix = "\n\n" + TARGET_INSTRUCTIONS[winner["arm"]]
-            if not history[0]["content"].endswith(suffix):
-                raise ValueError("teacher context does not contain its declared target instruction")
+            positive_system=history[0]['content']
+            if positive_system.count(insertion)!=1 or positive_system.replace(insertion,'',1)!=base_system:
+                raise ValueError('teacher must differ from actual OFF system bytes by the declared instruction only')
             neutral = deepcopy(history)
-            neutral[0]["content"] = neutral[0]["content"][:-len(suffix)]
-            selected.append({"instance_id": task_id, "split": "train", "decision": index,
+            neutral[0]["content"] = base_system
+            selected.append({"schema":"gemma4-paired-context-v2", "instance_id": task_id, "split": "train", "decision": packet['decision'],
                              "neutral_messages": neutral, "positive_messages": history,
+                             "tools":deepcopy(request['tools']), "generation":deepcopy(request['generation']),
+                             "teacher_request_sha256":packet['request_sha256'],
+                             "evaluation_contract_sha256":winner['evaluation_contract_sha256'],
+                             "model_identity":winner['model_identity'],
                              "target_arm": winner["arm"], "verification": winner["verification"],
                              "quality_rubric": RUBRIC})
     return selected

@@ -5,15 +5,46 @@
   "gpu_used": false,
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
-    "baseline_compiler": "passed against mirrored adk-submission 0.2.13",
-    "real_task_verifier_controls": "mirror-v30 requests_6757 blocked: both empty and reference exit 1; missing pytest-httpbin plus air-gap/TLS failures; reports/verifier-control-v1.json"
+    "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
+    "real_task_verifier_controls": "two local task/environment controls passed, broader Requests control still blocked; reports/verifier-controls-v2.json",
+    "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json"
   },
   "task_resolution": [
-    {"arm": "off", "status": "unmeasured", "score": null},
-    {"arm": "prompt-positive", "status": "unmeasured", "score": null},
-    {"arm": "native-rhbi", "status": "unmeasured", "score": null},
-    {"arm": "native-empf", "status": "unmeasured", "score": null},
-    {"arm": "distilled-peft", "status": "unmeasured", "score": null}
+    {
+      "arm": "off",
+      "status": "unmeasured",
+      "score": null
+    },
+    {
+      "arm": "prompt-positive",
+      "status": "unmeasured",
+      "score": null
+    },
+    {
+      "arm": "native-rhbi",
+      "status": "unmeasured",
+      "score": null
+    },
+    {
+      "arm": "native-empf",
+      "status": "unmeasured",
+      "score": null
+    },
+    {
+      "arm": "distilled-peft",
+      "status": "unmeasured",
+      "score": null
+    }
   ],
-  "kaggle": {"entry": "unverified", "submission_id": null, "score": null, "current_sota": null, "sota_beaten": false}
+  "kaggle": {
+    "entry": "submission acceptance unverified",
+    "submission_id": null,
+    "score": null,
+    "current_sota": 0.29,
+    "sota_beaten": false,
+    "access": "authenticated file listing, downloads and leaderboard verified",
+    "sota_kind": "leading public leaderboard score",
+    "source": "https://www.kaggle.com/competitions/gemma-4-developer-agent/leaderboard",
+    "evidence": "reports/official-access.json"
+  }
 }

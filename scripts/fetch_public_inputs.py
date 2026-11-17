@@ -23,10 +23,15 @@ def main():
     parser.add_argument("--archive", choices=FILES, default="data")
     parser.add_argument("--member", action="append", default=[])
     parser.add_argument("--out", type=Path, default=Path("data/public-mirror"))
+    parser.add_argument("--max-member-mib", type=int, default=64,
+                        help="explicit limit for a selected snapshot; default 64 MiB")
+    parser.add_argument("--transfer-budget-mib", type=int, default=128)
     args = parser.parse_args()
+    if not 1 <= args.max_member_mib <= 512 or not 1 <= args.transfer_budget_mib <= 1024:
+        raise ValueError("bounded member and transfer budgets required")
     filename, size = FILES[args.archive]
     url = f"https://huggingface.co/datasets/HanG/gemma-4-developer-agent/resolve/{REVISION}/{filename}"
-    with RangeFile(url, size) as remote, ZipFile(remote) as archive:
+    with RangeFile(url, size, budget=args.transfer_budget_mib * 1024**2) as remote, ZipFile(remote) as archive:
         if not args.member:
             for member in archive.infolist():
                 print(json.dumps({"member": member.filename, "bytes": member.file_size}))
@@ -34,8 +39,8 @@ def main():
             receipts = []
             for name in args.member:
                 member = archive.getinfo(name)
-                if member.file_size > 64 * 1024**2:
-                    raise ValueError("only small metadata/source members may be fetched")
+                if member.file_size > args.max_member_mib * 1024**2:
+                    raise ValueError("member exceeds the explicitly selected download limit")
                 relative = PurePosixPath(name)
                 if relative.is_absolute() or ".." in relative.parts:
                     raise ValueError("unsafe archive path")

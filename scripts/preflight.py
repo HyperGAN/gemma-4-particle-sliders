@@ -32,5 +32,6 @@ for folder in ('src','tests','scripts','submission','patches','configs'):
 receipt = {'schema':'gemma4-cpu-preflight-v1', 'status':'passed', 'gpu_used':False,
            'checks':checks, 'sources':sources,
            'packages':{p:importlib.metadata.version(p) for p in ['torch','particlegan','particle-sliders-core','transformers','peft','numpy']},
-           'scope':'CPU random Gemma 4 fixture, software checks and mirrored compiler only; no pretrained task accuracy or SOTA claim'}
+           'harness_receipt_sha256':hashlib.sha256((ROOT/'reports/harness-environment.json').read_bytes()).hexdigest(),
+           'scope':'CPU random Gemma 4 fixture, software checks and competition compiler only; no pretrained task accuracy or SOTA claim'}
 (ROOT/'reports/cpu-preflight.json').write_text(json.dumps(receipt,indent=2)+'\n')
