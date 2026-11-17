@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-first-admitted-prompt-transport-v1",
+  "status": "passed",
+  "as_of": "2026-11-17T09:38:42.426741+00:00",
+  "instance_id": "fastapi_11194",
+  "decision": 0,
+  "admitted_contexts": 1,
+  "neutral_tokens": 2904,
+  "positive_tokens": 3026,
+  "neutral_ids_sha256": "4f6a659b656b52a3c11131f7cfdfb672663b79f7b39dedabc8e2138323d5cb66",
+  "positive_ids_sha256": "80ba6798a339fdcafa1c789cd888a4cfb334fcf78a66579f660923584e7480c5",
+  "contexts_sha256": "4fd8acecf23df2d229242c57c84e31c0492237da64b485f3a743e467b1a3802e",
+  "transport_file_sha256": "cb2f32a88424e36b66d84b00fa63a604f817ea729777165c47632eb831fd347f",
+  "server_identity_sha256": "7605bd1c1b555db997da3de0bbd99e792694be9cbdf1c9b96c0a4291879a7f96",
+  "generator_model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "weight_format": "ct-w4g32",
+    "attn_implementation": "vllm:auto"
+  },
+  "response_model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "tokenization_sources": {
+    "/ml2/kaggle-hackathon-gemma-4-finalize-curator-v2/scripts/tokenize_contexts.py": "83501a64769ef4e3f8448a139244939861a942dc66b5ba8eb5a74fb16e19b099",
+    "src/gemma_particle/transport.py": "4579c90d71d54a78b2928730272acff46773e2a0a1d51e62141e2aa2595002c2"
+  },
+  "model_inference_calls": 0,
+  "pretrained_optimizer_updates": 0,
+  "scope": "exact complete initial inputs for one admitted target; no cropping, native hidden cache or cross-backend activation parity claim"
+}
