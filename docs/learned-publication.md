@@ -12,6 +12,8 @@ Before each publishing mutation, the runner checks unchanged experiment and sour
 
 The competition gate checks actual pending submission handles and Kaggle's current server allowance. Unknown states remain pending. A transient status-read failure observes the same handle again; it does not imply terminal failure or restart notebook work. An already matching submission description stops for explicit reconciliation. A created competition ID means queued evaluation, with no score or SOTA claim. Poll that exact ID and compare a completed learned score against a freshly observed leaderboard.
 
+The publisher also records the public best immediately before its competition request and hashes that observation into the intent. The [prepared official-result observer](official-result-verification.md) retains this reference, reads the exact created learned submission and verifies any displayed own entry through its numeric public submission ID. A control, tie, pending evaluation or stronger preceding record cannot become a strict learned-record verdict.
+
 The [runtime declaration](../research/kaggle-publication-runtime-v1.json) pins the tested Kaggle 2.2.5 and kagglesdk 0.1.38 interfaces, including six source files for the API and typed requests, responses and enums. Actual mode rejects an altered interface before publication. This is a bounded compatibility check, not authentication of an entire environment or of invented experiment records.
 
 ```sh

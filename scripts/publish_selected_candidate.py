@@ -70,6 +70,7 @@ def main():
     files = ['scripts/publish_selected_candidate.py', 'scripts/prepare_kaggle_candidate.py',
         'research/kaggle-publication-runtime-v1.json',
         'src/gemma_particle/kaggle_publication.py', 'src/gemma_particle/selected_publication.py',
+        'src/gemma_particle/official_results.py',
         'src/gemma_particle/confirmation.py', 'src/gemma_particle/confirmation_environments.py',
         'src/gemma_particle/confirmation_results.py', 'src/gemma_particle/selected_candidate.py',
         'src/gemma_particle/learned_effect.py']

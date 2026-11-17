@@ -86,6 +86,9 @@ class FakeAPI:
         assert kwargs['competition'] == 'gemma-4-developer-agent'
         if self.mode == 'submit_ambiguous': raise Timeout('CPU submit response unknown')
         return NS(ref=701, message='CPU fixture accepted;not a real submission')
+    def competition_leaderboard_view(self, competition, **kwargs):
+        assert competition == 'gemma-4-developer-agent' and kwargs == {'page_size': 20}
+        return [NS(team_id=99, team_name='CPU reference', score='0.29', submission_date='CPU fixture')]
 
 
 @pytest.mark.parametrize('damage', [None, 'extra_file', 'GPU', 'dataset', 'code', 'envelope', 'provenance'])

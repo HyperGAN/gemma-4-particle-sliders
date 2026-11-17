@@ -17,6 +17,7 @@ from requests.exceptions import ConnectionError, Timeout
 
 from .conversion_handoff import read
 from .harness_identity import sha256_file
+from .official_results import leaderboard_snapshot
 
 COMPETITION = 'gemma-4-developer-agent'
 MAGIC = b'GEMMA4_PARTICLE_AGENT_BUNDLE_V1\n'
@@ -236,11 +237,16 @@ def publish_once(api, candidate, out, verify, sleep=time.sleep, poll_seconds=60,
         verify()
         if sha256_file(archive) != candidate['artifact_sha256']:
             raise ValueError('verified notebook output changed before competition request')
+        started = datetime.now(timezone.utc).isoformat()
+        leaders = observe('public-reference', api.competition_leaderboard_view, COMPETITION, page_size=20)
+        durable_json(out / 'leaderboard-before-submission.json',
+            leaderboard_snapshot(leaders, started, datetime.now(timezone.utc).isoformat()))
         _, submitted = mutate('submission',
             lambda: api.competition_submit_code(file_name='submission.zip', message=message, competition=COMPETITION,
                 kernel=candidate['notebook'], kernel_version=pushed['version'], quiet=True),
             {'competition': COMPETITION, 'kernel': candidate['notebook'], 'version': pushed['version'],
-                'file_name': 'submission.zip', 'artifact_sha256': candidate['artifact_sha256'], 'message': message},
+                'file_name': 'submission.zip', 'artifact_sha256': candidate['artifact_sha256'], 'message': message,
+                'public_reference_sha256': sha256_file(out / 'leaderboard-before-submission.json')},
             lambda r: {'submission_id': r.ref, 'message': r.message})
         if type(submitted['submission_id']) is not int or submitted['submission_id'] <= 0:
             raise MutationUncertain('actual positive submission ID required;retain intent without retry')

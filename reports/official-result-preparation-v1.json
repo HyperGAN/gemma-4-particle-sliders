@@ -1,0 +1,248 @@
+{
+  "schema": "gemma4-official-result-preparation-v1",
+  "created_at": "2026-11-17T16:59:06.737647+00:00",
+  "status": "CPU prepared and actual public read interfaces observed;no learned submission or score",
+  "source_sha256": {
+    "scripts/monitor_selected_submission.py": "6aa3fdbea31c374c1516ce74b47c6d1c391bf97ca90b0a63a1bbf15cf33f9656",
+    "scripts/publish_selected_candidate.py": "0186cb5b7e837311f7922ed150303ef8df9b0b109df9a429f75f39ffbf0a1cd1",
+    "src/gemma_particle/official_results.py": "d3af2f5313a7b5a3d150f2c841bb3cd74a9bb88d14ee4c0a30175d21bfad63de",
+    "src/gemma_particle/kaggle_publication.py": "93da105de80cf9b5f854df6c3d1885d7e80d0fa03bfa4780bb9c3849b7676c23",
+    "tests/test_official_results.py": "d6f94e5c19c6296917933bfe4510beffa256a23f0251b3bc80f87c41dd1b83ba",
+    "tests/test_kaggle_publication.py": "e120505cb3c889aecf181a9c7a65ad7234aba66d543eb7d15c8308cec9f41a1a"
+  },
+  "tests": {
+    "full_public_source_CPU_passed": 391,
+    "skipped": 3,
+    "focused_passed": 64,
+    "public_python_files_equal": 165,
+    "private_inputs_or_dist_present": false,
+    "full_log_sha256": "3aa1721957a66d26ce536395a3a9c0b667f0637998d8f0954c98fea89c7c754d",
+    "focused_log_sha256": "22075ad48e80d1856859fa8c448c45df103205c96db9a74fe3b32363b39f24d2",
+    "cases": "finite decimal strictness,ties,stronger prior/current reference,wrong IDs,OFF/pending/error/unknown states,exact created publication and downloaded archive,prior reference hash andversion1 binding,numeric displayed-candidate identity,readtimeout journal and same ID,locked access/account gate;fake learned scores are not actual model quality"
+  },
+  "actual_locked_input_control": {
+    "status": "expected_rejection",
+    "input": "actual unfinished DEV progress supplied as access;not a released receipt",
+    "counts": {
+      "account_imports": 0,
+      "HTTP_requests": 0,
+      "heldout_parses": 0
+    },
+    "output_created": false,
+    "source_sha256": "6aa3fdbea31c374c1516ce74b47c6d1c391bf97ca90b0a63a1bbf15cf33f9656"
+  },
+  "actual_public_interface_control": {
+    "schema": "gemma4-official-public-interface-control-v1",
+    "status": "observed",
+    "as_of": "2026-11-17T16:52:19.567659+00:00",
+    "leaderboard": {
+      "schema": "gemma4-public-leaderboard-observation-v1",
+      "competition": "gemma-4-developer-agent",
+      "request": {
+        "method": "competition_leaderboard_view",
+        "page_size": 20,
+        "page_token": null
+      },
+      "started_at": "2026-11-17T16:52:19.043559+00:00",
+      "finished_at": "2026-11-17T16:52:19.318879+00:00",
+      "entries": [
+        {
+          "team_id": 16948405,
+          "team": "Yurnero",
+          "score": "0.29",
+          "submission_date": "2026-10-29 08:07:28.290000"
+        },
+        {
+          "team_id": 17019455,
+          "team": "Yike Xu",
+          "score": "0.24",
+          "submission_date": "2026-11-12 03:45:13.570000"
+        },
+        {
+          "team_id": 16972967,
+          "team": "MUHAMMED IDRIS BIN YACOOB",
+          "score": "0.24",
+          "submission_date": "2026-11-07 23:49:25"
+        },
+        {
+          "team_id": 16981897,
+          "team": "SAVE",
+          "score": "0.24",
+          "submission_date": "2026-11-16 02:01:59.283000"
+        },
+        {
+          "team_id": 16950771,
+          "team": "chizhu",
+          "score": "0.24",
+          "submission_date": "2026-11-06 07:28:24.713000"
+        },
+        {
+          "team_id": 17210898,
+          "team": "pluris",
+          "score": "0.24",
+          "submission_date": "2026-10-28 10:19:33.710000"
+        },
+        {
+          "team_id": 17011288,
+          "team": "Alberth Moreira",
+          "score": "0.24",
+          "submission_date": "2026-11-15 03:37:08.356000"
+        },
+        {
+          "team_id": 16974126,
+          "team": "tammam alasha",
+          "score": "0.24",
+          "submission_date": "2026-11-16 00:02:34.923000"
+        },
+        {
+          "team_id": 17146222,
+          "team": "P\u0131nar Aksoy",
+          "score": "0.24",
+          "submission_date": "2026-11-15 00:03:42.896000"
+        },
+        {
+          "team_id": 16976610,
+          "team": "Takumu Hata",
+          "score": "0.24",
+          "submission_date": "2026-11-16 08:09:10.630000"
+        },
+        {
+          "team_id": 16992603,
+          "team": "Serhii Mosiiash",
+          "score": "0.24",
+          "submission_date": "2026-11-16 06:31:35"
+        },
+        {
+          "team_id": 16963238,
+          "team": "LuisSpecian",
+          "score": "0.24",
+          "submission_date": "2026-11-16 00:42:03.996000"
+        },
+        {
+          "team_id": 16949760,
+          "team": "Radek",
+          "score": "0.24",
+          "submission_date": "2026-11-13 06:46:55.060000"
+        },
+        {
+          "team_id": 17058541,
+          "team": "Sophia0817",
+          "score": "0.24",
+          "submission_date": "2026-11-16 08:27:21.930000"
+        },
+        {
+          "team_id": 17241352,
+          "team": "bgunshui",
+          "score": "0.24",
+          "submission_date": "2026-11-16 07:05:32.040000"
+        },
+        {
+          "team_id": 17015790,
+          "team": "Francis Joseph",
+          "score": "0.22",
+          "submission_date": "2026-11-14 23:15:04.133000"
+        },
+        {
+          "team_id": 16955167,
+          "team": "Deepest Mind",
+          "score": "0.22",
+          "submission_date": "2026-11-16 00:26:04.710000"
+        },
+        {
+          "team_id": 16956138,
+          "team": "Ayush Barai",
+          "score": "0.22",
+          "submission_date": "2026-11-16 09:36:01.390000"
+        },
+        {
+          "team_id": 17021119,
+          "team": "\u5403\u767d\u996d\u7684\u5927\u80a5\u9c7c",
+          "score": "0.22",
+          "submission_date": "2026-11-16 21:24:27.706000"
+        },
+        {
+          "team_id": 16948844,
+          "team": "omallo",
+          "score": "0.22",
+          "submission_date": "2026-11-16 13:53:11.326000"
+        }
+      ],
+      "best_score": "0.29",
+      "scope": "fresh first public leaderboard page;not a private score or model selection result"
+    },
+    "leading_team_public_submissions": [
+      {
+        "submission_id": 57764342,
+        "public_score": "0.29"
+      }
+    ],
+    "actual_submission_requests": 0,
+    "actual_model_inference": false,
+    "kind": "existing unrelated public leader;not our learned candidate",
+    "goal_marked_complete": false
+  },
+  "source_bridge": {
+    "schema": "gemma4-official-result-source-bridge-v1",
+    "reference_commit": "d138ff74cc35116bf938b6b305da5791cc208602",
+    "whole_scientific_files_equal": {
+      "scripts/prepare_selected_candidate.py": true,
+      "scripts/prepare_kaggle_candidate.py": true,
+      "scripts/run_resource_dev_grid.py": true,
+      "scripts/collect_behavior_pool.py": true,
+      "scripts/wait_and_train_pilot.py": true,
+      "src/gemma_particle/selected_publication.py": true,
+      "src/gemma_particle/selected_candidate.py": true,
+      "src/gemma_particle/confirmation.py": true,
+      "src/gemma_particle/confirmation_results.py": true,
+      "src/gemma_particle/confirmation_environments.py": true,
+      "src/gemma_particle/learned_effect.py": true,
+      "src/gemma_particle/dev_evidence.py": true,
+      "src/gemma_particle/dev_selection.py": true
+    },
+    "existing_SDK_call_AST_equal": {
+      "dataset_create_new": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "kernels_push": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "competition_submit_code": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "kernels_status": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "kernels_output": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "competition_get_submission_limits": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      },
+      "competition_submissions": {
+        "equal": true,
+        "original_expression_count": 1,
+        "current_expression_count": 1
+      }
+    },
+    "scope": "named scientific files and seven existing SDK direct-call/observe-callback ASTs unchanged;publisher adds a required public read checkpoint and local hash binding before submission;not full semantic equivalence"
+  },
+  "new_actual_GPU_model_work": false,
+  "new_actual_learned_account_mutations": 0,
+  "actual_learned_official_scores": 0,
+  "goal_marked_complete": false,
+  "monitor_policy": "reaudit real selected experiment and publication before account import;fresh read only;never resubmit,reselect or update goal;full objective audit separate",
+  "limits": "compares returned public decimal score strings,not private/unreported precision;CPU fixtures and consistent local files do not authenticate fabricated experiments",
+  "remaining": "actual second TRAIN target/native updates/conversions/full controls/qualified complete learned DEV/fixed eligible choice/locked confirmation;real learned publication;complete official score and fresh public-record verification;full goal completion audit"
+}
