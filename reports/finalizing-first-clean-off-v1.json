@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-finalizing-first-clean-off-v1",
+  "created_at": "2026-11-17T09:04:58.294196+00:00",
+  "instance_id": "fastapi_11194",
+  "arm": "off",
+  "resolved": true,
+  "agent_error": null,
+  "capture_complete": true,
+  "model_calls_attempted": 109,
+  "model_calls_completed": 109,
+  "emitted_tool_call_proposals": 103,
+  "elapsed_seconds": 1154.931874779053,
+  "patch_sha256": "7d3620373f91582d298d1584973bfbfcdefb89b8573b65f490f7918826d96b74",
+  "evaluation_contract_sha256": "57c1f967ead4e357656c3a17d748a58d7be08f70fbef505fd0eb0d93d65477e7",
+  "prompt_profile": "repair-finalize-v2",
+  "fresh_verification": {
+    "stage": "fresh-container-tests",
+    "test_exit_code": 0,
+    "error": null,
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "test_output_sha256": "b6687d06aeffb5206d85d99b630c801074c214ff2bda3805d9be6b77219abbe7"
+  },
+  "outcomes_file_sha256": "87e21a47d9e366a26caa840f65df45ed2100a5488878188b4b27845554810997",
+  "plan_sha256": "461684ef2e3ff29fb507bd6ecf6a2eca35bce79b90d8825227de8699b1617490",
+  "protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "real_behavior_grades": 0,
+  "admitted_contexts": 0,
+  "pretrained_optimizer_updates": 0,
+  "scope": "one actual TRAIN OFF repair under new common prompt; no paired teacher result, causal effect estimate, DEV/holdout or official score"
+}
