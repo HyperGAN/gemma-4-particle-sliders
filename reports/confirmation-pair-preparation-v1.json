@@ -1,0 +1,55 @@
+{
+  "schema": "gemma4-confirmation-pair-preparation-v1",
+  "as_of": "2026-11-17T15:02:01.130150+00:00",
+  "status": "cpu_preparation_passed_real_confirmation_still_locked",
+  "source_base_commit": "f94dbc4404f8bf788315666eed44d7162a1d1253",
+  "sources_sha256": {
+    "src/gemma_particle/confirmation_results.py": "a5972ca6083cb815a91f4446ee0f7f312c1ad04628c24b97c06e34254fa076f3",
+    "src/gemma_particle/confirmation_environments.py": "0e2ae7dba380a49ec833640b5dc62de6f9581bf43c64527bb05fc9ea0d44f2b5",
+    "scripts/run_confirmation_pair.py": "2ac5a045fecd5b0475ac78d994504c2df1308281a5f4e2023e0f6acfece6b2b7",
+    "scripts/compare_confirmation.py": "a4f98df2fc60c664a44fde6dcc3ecdb37d691347184607a4310c495e047bcfa1",
+    "tests/test_confirmation_results.py": "26d250637f7b23886ce5356fb0a9e4194be5651cf51e4eca96e44eab3d210266"
+  },
+  "frozen_generation_verifier_executor_commit": "f44bb601d2e641cd4183ec88e3a8265f8ae15c7a",
+  "checks": {
+    "focused_passed": 10,
+    "focused_log_sha256": "0bdd8af76f3c33953f5d23dd25805aca5f32268ef516f5e6169df32d0d2f43bf",
+    "full_public_source_passed": 222,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "0997b2471bf61d36c7a70623c1ac7f8e3f02b05af72c542209cdcb55a924414c",
+    "public_python_files_compared": 140,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "98 synthetic CPU request/patch/verification/reservation records; exact49-per-condition audit,official error+empty accounting,paired stats,changed artifacts/claim/aggregate rejected;2 actual CLI boundaries reject unreleased access before sentinel environment/task paths",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "actual_plan_only": {
+    "plan_sha256": "4312c8e3244ca1c2621df751dbfdb43a2724c057aee391934ce8e17a87f992e8",
+    "log_sha256": "e28514081fce631ef145838ef61a4c2a3d01f1f5c42995f160cdf7dd2c78dc1d",
+    "scope": "actual fixed executor source and original selection metadata;no access/calibration/holdout task parsing,no GPU driver queries or model launches"
+  },
+  "actual_confirmation_claim_exists": false,
+  "actual_confirmation_agent_attempts": 0,
+  "actual_confirmation_reference_controls": 0,
+  "new_gpu_model_work": false,
+  "execution_policy": {
+    "conditions": 2,
+    "tasks_per_condition": 49,
+    "order": "OFF then fixed DEV-selected candidate,original49 order",
+    "one_owned_gpu0_server": true,
+    "memory_fraction": 0.6,
+    "startup_headroom_GiB": 8,
+    "strict_original_dev_contract": true,
+    "exclusive_pair_and_task_reservations": true,
+    "failed_attempts_preserved": true,
+    "automatic_rerolls": false,
+    "new_candidate_selection": false,
+    "official_score": null
+  },
+  "remaining": "actual full DEV choice and numerical learned-effect qualification;released access;official asset fetch;all49 CPU controls;actual complete paired execution;production candidate and official learned score above fresh SOTA",
+  "scope": "software preparation and artifact-consistency controls only;CPU fixtures cannot authenticate real execution or prove model quality"
+}

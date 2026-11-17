@@ -82,4 +82,5 @@ def load_confirmation_environments(path, scope):
     for record in result['controls']: audit_confirmation_control(record, plan, scope)
     qualified = [r['instance_id'] for r in result['controls'] if r['qualified']]
     if result['qualified'] != len(qualified): raise ValueError('qualified environment count differs')
-    return {'plan': plan, 'qualification': result, 'qualified_task_ids': qualified}
+    return {'plan': plan, 'qualification': result, 'qualified_task_ids': qualified,
+        'qualification_sha256':sha256_file(path)}
