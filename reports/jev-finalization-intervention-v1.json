@@ -1,0 +1,25 @@
+{
+  "schema": "gemma4-finalization-intervention-v1",
+  "status": "old processes observed exited; separate new-profile collection live",
+  "created_at": "2026-11-17T08:43:50.011517+00:00",
+  "old_common_prompt": "repair-v1",
+  "old_completed_model_calls": 264,
+  "old_emitted_tool_proposals": {
+    "write_file": 7,
+    "run_command": 27,
+    "read_file": 20,
+    "get_code_neighbors": 1,
+    "edit_file": 5,
+    "submit_patch": 199,
+    "get_status": 1
+  },
+  "intervention_sha256": "9d58753a997dcbc7fad74a2ed2f0b29d4980dfc6ae0c80acb8c1e88c2fb7aa4d",
+  "exit_observation_sha256": "ab75b0b31f7b4bf4ae9e7afe20d03e7d73a6b22ca32db020873839f41f2c5dd2",
+  "new_common_prompt": "repair-finalize-v2",
+  "new_source_commit": "293406f8673847ed9f517e7bd636764f49a2e248",
+  "new_pool_plan_sha256": "beae44961698be20a4209457abc600b9c7ef40b0af97e14864296c455b7efdd7",
+  "real_trajectory_grades": 0,
+  "admitted_contexts": 0,
+  "training_updates": 0,
+  "scope": "explicit adaptive TRAIN intervention; old incomplete quartet remains unqualified and is not a task score"
+}
