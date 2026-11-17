@@ -1,6 +1,6 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T11:30:43.038831+00:00",
+  "as_of": "2026-11-17T12:02:50.687580+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
@@ -24,15 +24,18 @@
     "actual_lora_loading": "Eight real31B vLLM transport requests pass:exact zero-adapter parity and nonzero synthetic effect. Synthetic weights are ineligible as learned candidates; reports/vllm-lora-effect-control-v1.json",
     "behavior_targets": "One admitted initial target after3 complete TRAIN quartets.12942 has3 clean freshly resolved arms but Jev reproduc .75 ties OFF .75; localization .625; verify unresolved, so0new targets.3 actual one-pass grades,11 total NanoGPT calls including4 earlier controls. No rerolls.",
     "pretrained_optimization": "Zero pretrained updates. Original first EMPF pilot waits for2 distinct initial targets; passive full continuation stopped before execution to correct CPU placement of serialized CUDA RNG state; tiny actual CUDA exact disk resume passes both recipes.",
-    "dev_selection": "Recovery live from frozen5a26151:original loguru_1508 unresolved result retained with0repeated calls; next fixed DEV task issuing requests.22-condition/full42+13 selection plan unchanged; reports/dev-controls-recovery-live-v2.json",
+    "dev_selection": "First actual OFF DEV fix isort_2581 passed fresh tests with workspace import checked.1resolved among4completed; fixed55-task condition incomplete, no aggregate score. Controls continue from5a26151; reports/first-actual-dev-off-fix-v1.json",
     "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json",
     "full_recipe_continuation": "Rearmed from frozen6c45b86 with original293406f pilot preserved. Native math/config/source pins match byte-for-byte; training-script AST differs only byCPU checkpoint loading. Both tiny CUDA exact-resume controls pass; actual121CPU/compiler qualification passes.0pretrained updates; reports/cpu-checkpoint-continuation-bridge-v1.json"
   },
   "task_resolution": [
     {
       "arm": "off",
-      "status": "unmeasured",
-      "score": null
+      "status": "in_progress",
+      "score": null,
+      "completed_dev_tasks": 4,
+      "resolved_dev_tasks": 1,
+      "planned_dev_tasks": 55
     },
     {
       "arm": "prompt-positive",
@@ -69,8 +72,8 @@
     "submission_kind": "frozen OFF baseline, no learned adapter",
     "submission_status": "PENDING",
     "submission_receipt": "reports/official-off-baseline-submission-v1.json",
-    "submission_status_as_of": "2026-11-17T10:34:55.052084+00:00",
-    "current_sota_as_of": "2026-11-17T10:34:55.052084+00:00",
+    "submission_status_as_of": "2026-11-17T11:55:27.275346+00:00",
+    "current_sota_as_of": "2026-11-17T11:55:27.315375+00:00",
     "deadline": "2026-12-02T23:59:00Z",
     "matched_finalizing_off": {
       "status": "CPU notebook complete and exact matched archive ready; submission quota/pending gated",

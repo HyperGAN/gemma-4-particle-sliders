@@ -1,0 +1,38 @@
+{
+  "schema": "gemma4-first-actual-dev-off-fix-v1",
+  "as_of": "2026-11-17T12:02:50.687580+00:00",
+  "kind": "unadapted OFF baseline; not a learned Particle Sliders result",
+  "result": {
+    "instance_id": "isort_2581",
+    "resolved": true,
+    "capture_complete": true,
+    "agent_error": null,
+    "tool_calls": 41,
+    "elapsed_seconds": 592.3014369409066,
+    "patch_sha256": "dcfc06c1c0d751a42d80c8bdb69625c268929957ad5b76c516112b789a09356e"
+  },
+  "model_calls": 43,
+  "verification": {
+    "test_exit_code": 0,
+    "error": null,
+    "test_output_sha256": "e38c548359d757b6b9f5dad1b191b2000d89450cbe4d029439866c59940d77c2",
+    "image_id": "sha256:13e0e36764a6e1b2c052daeb204f8051fe7c9be8bda6716278cfac775de6bfa9",
+    "origin_checks": [
+      {
+        "package": "isort",
+        "origin": "/workspace/isort/__init__.py",
+        "workspace": true
+      }
+    ]
+  },
+  "model_journal_sha256": "629077d8e20b3a90c29d888c76e8bc84d10b35b57d7ccb0033e6ffba05449be1",
+  "outcomes_sha256": "f3ce24263af098f349b9cb5455e0456f096df6005e331f5e67f6f9c843774e7c",
+  "canonical_contract_sha256": "0e5f59e2242508e3d7f7c414d519d175301f53c212ca519b7176d951e4806440",
+  "original_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "complete_cases_observed": 4,
+  "resolved_cases_observed": 1,
+  "fixed_panel_size": 55,
+  "aggregate_panel_score": null,
+  "pretrained_updates": 0,
+  "scope": "one actual freshly verified DEV fix; incomplete full panel, not an official score or SOTA improvement"
+}
