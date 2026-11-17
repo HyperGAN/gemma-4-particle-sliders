@@ -1,0 +1,70 @@
+{
+  "schema": "gemma4-dev-hardware-resource-proposal-v1",
+  "created_at": "2026-11-17T12:20:03.860745+00:00",
+  "status": "inactive proposal; strict GPU0 comparison remains current until a measured resource supplement is qualified",
+  "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "unchanged": [
+    "all22 conditions",
+    "complete42+13 panels",
+    "original primary ranking and secondary floor",
+    "locked49-task confirmation",
+    "all native recipes,checkpoints,strengths,cache,seed,raw weights"
+  ],
+  "observed_slots": [
+    {
+      "physical_index": 0,
+      "name": "NVIDIA RTX A6000",
+      "compute_capability": "8.6",
+      "total_MiB": 49140,
+      "driver": "595.99.02"
+    },
+    {
+      "physical_index": 1,
+      "name": "NVIDIA RTX A6000",
+      "compute_capability": "8.6",
+      "total_MiB": 49140,
+      "driver": "595.99.02"
+    }
+  ],
+  "purpose": "retain the full declared grid while using both otherwise-equivalent shared serving slots after native training",
+  "qualification_gates": [
+    "all native model jobs and current four full DEV controls have released their owned serving allocations",
+    "no learned DEV task has been run before resource qualification",
+    "same pinned serving source,official wheel/package hashes,base weights,engine settings and adapter packet on both slots",
+    "both healthy endpoints bind actual device identities; observed8GiB startup headroom plus .60 engine target per slot"
+  ],
+  "probe_adapter": {
+    "preset": "empf",
+    "completed_steps": 256,
+    "strength": 1,
+    "selection": "fixed for numerical hardware qualification; no DEV quality selection"
+  },
+  "probe_inputs": "fixed synthetic token-ID sequences, never DEV or holdout content; identical IDs sent to both slots",
+  "probe_lengths": [
+    32,
+    4096,
+    28672
+  ],
+  "aliases": [
+    "gemma-4-31b-it-qat-w4a16-ct",
+    "particle_lora"
+  ],
+  "generation": {
+    "temperature": 0,
+    "seed": 0,
+    "max_tokens": 1,
+    "logprobs": 20,
+    "ignore_eos": true,
+    "return_tokens_as_token_ids": true
+  },
+  "acceptance": [
+    "identical requested token IDs and generated token IDs",
+    "identical top-logprob token-ID sets",
+    "maximum absolute paired logprob delta<=1e-5 for every length/alias pair"
+  ],
+  "evidence": "actual server identities,hardware descriptors,launch/package/source hashes and request/response hashes; numerical control is not task quality",
+  "on_failure": "preserve actual failure; strict single-slot contract stays active; no automatic tolerance relaxation",
+  "activation": "requires an explicit versioned resource supplement and audited comparison support; this proposal alone cannot normalize device index",
+  "coordinator_question": "gemma4-dev-grid-resource-budget-question-v1 pending; no reply claimed",
+  "scope": "prospective resource planning only; not an activated protocol change, hardware parity result or model score"
+}
