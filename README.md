@@ -64,7 +64,7 @@ Cache/training/conversion commands require an explicit device and should only ru
 
 The first four E2B TRAIN tasks completed all four arms without a verified fix and supplied zero contexts. This is a result under native HF's five-minute budget. Faster scorer-style serving is being qualified before drawing a model-capacity conclusion. [Collection receipts](reports/e2b-native-collection-v1.json) preserve failures and timeouts.
 
-The separate official-vLLM 31B cohort is now collecting. [Its protocol](docs/vllm-collection.md) preserves the exact official prompt tokens while computing native hidden targets independently. A [supplementary 42-task DEV cohort](docs/supplementary-dev.md) was fixed across 24 repositories before inference; its full negative/reference environment qualification is still running. The original Requests DEV results and Rich/HTTPX holdout remain intact.
+The separate official-vLLM 31B cohort is now collecting. [Its protocol](docs/vllm-collection.md) preserves the exact official prompt tokens while computing native hidden targets independently. A [supplementary 42-task DEV cohort](docs/supplementary-dev.md) was fixed across 24 repositories before inference; all 42 tasks passed independent negative/reference environment controls with workspace imports confirmed ([receipt](reports/supplementary-dev-qualification-v1.json)). No model score has been measured on this cohort. The original Requests DEV results and Rich/HTTPX holdout remain intact.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:

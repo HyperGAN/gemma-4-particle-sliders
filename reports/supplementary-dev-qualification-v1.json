@@ -1,0 +1,1406 @@
+{
+  "schema": "gemma4-supplementary-dev-qualification-v1",
+  "as_of": "2026-11-17T04:01:57.085594+00:00",
+  "status": "passed",
+  "planned": 42,
+  "qualified": 42,
+  "repositories": 24,
+  "selection_manifest_sha256": "af29865da0c00f4a3a58ec7aaf784c17c88e0c3854eb24c57618979c87cdefc3",
+  "visible_sha256": "6082d9ad60f08d06c1db218f046790b582e724f4247752deec0208103aac1087",
+  "source_sha256": "e7316756ab3a459228da55f16268f560ae83f0c5fca570aeed70f8ede861e79b",
+  "input_receipt_sha256": "a33ea21aba22cf83f2205e019aba4439a1a4b9280aec4230f48ad516b66f7c33",
+  "image_id": "sha256:13e0e36764a6e1b2c052daeb204f8051fe7c9be8bda6716278cfac775de6bfa9",
+  "raw_summary_sha256": "352986cd045b2f4d7ad86593ac4f502390a73d5e1fce283ba5599e1d6aa9136a",
+  "prior_partial_report_sha256": "1e6cfa71d068c984ae8ff0c4b4061d4b4f9d6a526adb03ed8641779beaa03ed8",
+  "no_model_inference": true,
+  "forbidden_training": true,
+  "scope": "CPU environment controls only; no model benchmark score. Original Requests DEV failures preserved; Rich/HTTPX holdout untouched.",
+  "controls": [
+    {
+      "task": "loguru_1508",
+      "status": "passed",
+      "snapshot_sha256": "f0b042988b6efbb30a1325c41356f681b7864bd28e0f57335ecc24ac7508935b",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 16.174698719056323
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 19.26027113897726
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "loguru",
+          "origin": "/workspace/loguru/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "loguru",
+          "origin": "/workspace/loguru/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "df945c6085436ccbfae7312668e10cb9f2b0ef7f5070607f05694e33ed2fefb5"
+    },
+    {
+      "task": "loguru_1504",
+      "status": "passed",
+      "snapshot_sha256": "ff7c6e8a8c2a169d7faafc191626f013993ad41f892caea1f7ad68972e674c85",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 48.609764227992855
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 52.14730024896562
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "loguru",
+          "origin": "/workspace/loguru/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "loguru",
+          "origin": "/workspace/loguru/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "e8084efe9e147c2b61209f78e48241d26af678c36e8587b1fd043f933a29edf9"
+    },
+    {
+      "task": "isort_2568",
+      "status": "passed",
+      "snapshot_sha256": "bca410aaa05893b65c8c6aa78ef2998fc5b7d40d1378ea0f0fb522949a13a013",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 99.17676930408925
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 96.67573683103547
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "isort",
+          "origin": "/workspace/isort/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "isort",
+          "origin": "/workspace/isort/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "79461dfca4b4100e251d66cd8f0d8c99b60e07cf646c87d1ffcf44f0b2426d01"
+    },
+    {
+      "task": "isort_2581",
+      "status": "passed",
+      "snapshot_sha256": "250c02c8fba28adc1245be612382e18e72161bcd70aff265c21802a4845261ef",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 99.5943561840104
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 85.73578814591747
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "isort",
+          "origin": "/workspace/isort/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "isort",
+          "origin": "/workspace/isort/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "1991e8b29a74c2c4203c0fe09208e072a2ec66904492e3421f1440087d94f13e"
+    },
+    {
+      "task": "uvicorn_3199",
+      "status": "passed",
+      "snapshot_sha256": "63fee7155a92b6fa883a47ec97b4b0b022a980de2b4118218c3eece2d33d3d04",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 29.67224709398579
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 24.314653198001906
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "uvicorn",
+          "origin": "/workspace/uvicorn/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "uvicorn",
+          "origin": "/workspace/uvicorn/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "4918ee3bd5edc903a6e66e8f2d649abcee8705cebf9d0b3fddae3738d37fec90"
+    },
+    {
+      "task": "markdown_it_py_416",
+      "status": "passed",
+      "snapshot_sha256": "ca1f3240e79e1b18674954f4941cd538b3a6f68e9f61739e40e5e44112ced9d6",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.95517477602698
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 17.81326522596646
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "markdown_it",
+          "origin": "/workspace/markdown_it/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "markdown_it",
+          "origin": "/workspace/markdown_it/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "2278d8d7c499e8a2dad41f10a391b18ea6c268831e61f118f242afbd0c32e2f4"
+    },
+    {
+      "task": "markdown_it_py_425",
+      "status": "passed",
+      "snapshot_sha256": "512d32a3c7ee0fab383f60c10387780f8a7807f5c7acfad5000e266f9fe4e96b",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.886318592936732
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 21.68575655494351
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "markdown_it",
+          "origin": "/workspace/markdown_it/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "markdown_it",
+          "origin": "/workspace/markdown_it/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "c97e3b4770f9f2485ec1b1a265fa31f41ee9251474e651baa792456f4ebed3dc"
+    },
+    {
+      "task": "tenacity_654",
+      "status": "passed",
+      "snapshot_sha256": "3b2431064c772c0b161cca9ec387a81eecb6084472686117e6103366412781a7",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 24.900852360995486
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 19.41390784899704
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "tenacity",
+          "origin": "/workspace/tenacity/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "tenacity",
+          "origin": "/workspace/tenacity/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d79aa90208529e1a88e84d054d77692358b4f4819a2615feecaf7de1d8859667"
+    },
+    {
+      "task": "markdown_1621",
+      "status": "passed",
+      "snapshot_sha256": "5720b768bb43965da863116eadc4f742a8e3cc44df57cf7262673a0402040bad",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 124,
+          "error": null,
+          "wall_seconds": 314.9340601459844
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.595183860044926
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "markdown",
+          "origin": "/workspace/markdown/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "markdown",
+          "origin": "/workspace/markdown/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "49b131afbf4dec2821ab9b8655c7fec222e6a3da6a4c274401b702ce422b5419"
+    },
+    {
+      "task": "tenacity_660",
+      "status": "passed",
+      "snapshot_sha256": "1a65a60853d2a18c2fe695bc9312b5cd605a3bfff4ebed51237752862ddf64b3",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 124,
+          "error": null,
+          "wall_seconds": 316.01039180206135
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 17.940605474053882
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "tenacity",
+          "origin": "/workspace/tenacity/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "tenacity",
+          "origin": "/workspace/tenacity/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d9dc785ff1be9121661fd8947d40d8e33a97ab167b8a2ef041784ea06ba2eb35"
+    },
+    {
+      "task": "litestar_4925",
+      "status": "passed",
+      "snapshot_sha256": "2351ae4130b6fa3af11739ab1350692c0e796211b93e637ad56c14b66d936130",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 141.46430887503084
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 145.66258673998527
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "litestar",
+          "origin": "/workspace/litestar/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "litestar",
+          "origin": "/workspace/litestar/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "8a74412f558ef5e14e13a21d6dfbdd29284097928616e4d43f44ac7f97dd7bb8"
+    },
+    {
+      "task": "marshmallow_2937",
+      "status": "passed",
+      "snapshot_sha256": "0468222235015c3c7cef57a9818bfc2d1fb7e4c1b69c446affc56e557fa2191a",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 42.99984497693367
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 44.506905774003826
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "marshmallow",
+          "origin": "/workspace/src/marshmallow/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "marshmallow",
+          "origin": "/workspace/src/marshmallow/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "7c5deddd67cdaf8316eafdab072eb98ecb7676186eee942cdb37c96cea0ec72c"
+    },
+    {
+      "task": "more_itertools_1193",
+      "status": "passed",
+      "snapshot_sha256": "3d5ceb0bc34d7cea063d2b736bb3e72935ca36332371b5cb2699fd16dc2fbcc9",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 27.195681201061234
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 18.27818401204422
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "more_itertools",
+          "origin": "/workspace/more_itertools/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "more_itertools",
+          "origin": "/workspace/more_itertools/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "593b88ced808ebc63412c9af88620055690f23f47a741862be351be0380db69f"
+    },
+    {
+      "task": "more_itertools_1276",
+      "status": "passed",
+      "snapshot_sha256": "6ca69a42b77370ad0a982b1105204dd75a9e24e1ad8ad93b6f65cf32d502624c",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 18.423422283958644
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 17.693272689939477
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "more_itertools",
+          "origin": "/workspace/more_itertools/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "more_itertools",
+          "origin": "/workspace/more_itertools/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d87d551b0827fd5ce07b65566118db8e1edcf28fa9bca9b32babb51fbcdb90bf"
+    },
+    {
+      "task": "litestar_4669",
+      "status": "passed",
+      "snapshot_sha256": "0705d9b8b7453e4df9774f5e3abb35d27abf7e3b7f59cd485d557da8df4027e6",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 143.87515000195708
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 142.81161367101595
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "litestar",
+          "origin": "/workspace/litestar/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "litestar",
+          "origin": "/workspace/litestar/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "36550e2117362629b1a06bc7c33695999672ecce14505a00d287be9f986ff3a1"
+    },
+    {
+      "task": "click_3208",
+      "status": "passed",
+      "snapshot_sha256": "53e06f63c46d780fd29a5ae4ee4822f8a86c1cb2e43240262076e324e08ef9e6",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 50.64672502898611
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 58.00287653191481
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "click",
+          "origin": "/workspace/src/click/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "click",
+          "origin": "/workspace/src/click/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "925ba28584443cbe47ee2be28e461631d9190ca2048475b35a86eda6b462fc1c"
+    },
+    {
+      "task": "flask_6096",
+      "status": "passed",
+      "snapshot_sha256": "e35f1ff8330508face2c7241d305f696cfd378bb91afda33df4b9d49aea2bba1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 20.099700969993137
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 29.218872910016216
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "flask",
+          "origin": "/workspace/src/flask/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "flask",
+          "origin": "/workspace/src/flask/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "b37493d639e2a775d12f16b7907c26d7576ce25e25cd35da0ff2f3ada611fd95"
+    },
+    {
+      "task": "click_3769",
+      "status": "passed",
+      "snapshot_sha256": "979045bb036fdadbb0ec529a50a1184fb9b4c681b99b38f61aff0ae72ce72a0f",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 53.52127942896914
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 56.652546989033
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "click",
+          "origin": "/workspace/src/click/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "click",
+          "origin": "/workspace/src/click/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "e438a81597cd2f56b391a03d8615ece458fdebc6009c9703b72533a81f32f476"
+    },
+    {
+      "task": "flask_6133",
+      "status": "passed",
+      "snapshot_sha256": "9543cab7837590ae8ea9106d4fdbdc370f5a01387e49714b5e3a83dce5ddc069",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 19.4197563159978
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 26.588292262051255
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "flask",
+          "origin": "/workspace/src/flask/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "flask",
+          "origin": "/workspace/src/flask/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "82026d96a927bea8aa80df7503ff6ec1fcd5e2e671e198c174bfeb1835f957aa"
+    },
+    {
+      "task": "werkzeug_3273",
+      "status": "passed",
+      "snapshot_sha256": "1378474251838d4599b3e372edb684a02a6ebc8547706af3309a721e34963614",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 20.273498376016505
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 20.001451728050597
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "werkzeug",
+          "origin": "/workspace/src/werkzeug/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "werkzeug",
+          "origin": "/workspace/src/werkzeug/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d2aba4329c313ff24f70ecd6ab5078898544f4c23793bfc20a51f67dfac400fd"
+    },
+    {
+      "task": "werkzeug_3147",
+      "status": "passed",
+      "snapshot_sha256": "f05ff496dcc3257822c1eb8055d64048be874f7182d5e2d340caceb70a3340ea",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 58.52660631702747
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 56.45145926706027
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "werkzeug",
+          "origin": "/workspace/src/werkzeug/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "werkzeug",
+          "origin": "/workspace/src/werkzeug/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "f1b9824acf04bda88673ba6b37ba3abaa7b5d4a6d3fbf86e4433d1a479378eeb"
+    },
+    {
+      "task": "black_5499",
+      "status": "passed",
+      "snapshot_sha256": "b8618230d9e16c78b0126d7b50a38d87414f879b8c9adae2649227c80deee57b",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 25.40266962291207
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 20.62760080897715
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "black",
+          "origin": "/workspace/src/black/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "black",
+          "origin": "/workspace/src/black/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "1b8ec9e29b188a57a4dce96ca3c68410a3b2e85d99905bf0068fb93fefc979df"
+    },
+    {
+      "task": "black_5487",
+      "status": "passed",
+      "snapshot_sha256": "cbe3fb1648b0ae7b13b54cbde4dd0fe8c51bc6d6a7efb8175fb299b32218e3f2",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 19.894460496958345
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 20.576201934018172
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "black",
+          "origin": "/workspace/src/black/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "black",
+          "origin": "/workspace/src/black/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "3655058e794c2fa2812bf27d7b08f5b37bcf6ce7bd5bac6dc5bb6e449b3ce848"
+    },
+    {
+      "task": "pydantic_settings_1006",
+      "status": "passed",
+      "snapshot_sha256": "5b11a27581d22915284e6f74292321f3708c7b99d6e99b1eee38069b43e2d810",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 61.98563326499425
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 65.11813145899214
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "pydantic_settings",
+          "origin": "/workspace/pydantic_settings/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "pydantic_settings",
+          "origin": "/workspace/pydantic_settings/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d72daed2c409f229b5c508a51f492ca564e257d5bf7eaac201b867409ff6f1fd"
+    },
+    {
+      "task": "packaging_611",
+      "status": "passed",
+      "snapshot_sha256": "d0aaec2b0e164ad9c337ae7e1034e20519a9c6fe4c4bf8c09f108cbff5e5578e",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 13.452144977985881
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.68809842702467
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "packaging",
+          "origin": "/workspace/src/packaging/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "packaging",
+          "origin": "/workspace/src/packaging/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "159c1078d0a27d37fabb8e9fed98d7f9aff38dc4bbab3533249d3e4dd72d1150"
+    },
+    {
+      "task": "pydantic_settings_1025",
+      "status": "passed",
+      "snapshot_sha256": "06e8f03199b96ab7205e88a3d95060e753197623e2f3a1b015e67b62307364d0",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 64.60992091696244
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 62.45942403411027
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "pydantic_settings",
+          "origin": "/workspace/pydantic_settings/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "pydantic_settings",
+          "origin": "/workspace/pydantic_settings/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "0cad14360ab38d0b431caf721ddc6f69233cc4e6d27a349d9a35e51ee9f15c71"
+    },
+    {
+      "task": "packaging_1346",
+      "status": "passed",
+      "snapshot_sha256": "dbc764a628e18396b92b401c3c91e0bf9cb5595f941e1f9cb48b04b2ea9ec01e",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 16.14857043197844
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 20.460417916998267
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "packaging",
+          "origin": "/workspace/src/packaging/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "packaging",
+          "origin": "/workspace/src/packaging/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "e73b8d842f55af44f930f13389f8ff6f0c2996ffc48bccecc0276ffbf8d2bf0a"
+    },
+    {
+      "task": "pluggy_741",
+      "status": "passed",
+      "snapshot_sha256": "b01f69f17bcc0e62f6be458079089a66b7c114c899677f83f6e7c28a5cd4f815",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 18.023323592962697
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 18.405216392944567
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "pluggy",
+          "origin": "/workspace/src/pluggy/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "pluggy",
+          "origin": "/workspace/src/pluggy/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "f0a76a53f372b48aae6a97df437b984aa01933d4d7222a997563ed2e9b690884"
+    },
+    {
+      "task": "pluggy_799",
+      "status": "passed",
+      "snapshot_sha256": "3a71866a47b011dfa55cc564a489f88ff99a2a057588f4896c30fcd0f36ad2fa",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.327285059029236
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.450221103033982
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "pluggy",
+          "origin": "/workspace/src/pluggy/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "pluggy",
+          "origin": "/workspace/src/pluggy/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "039e9b1f0fbb8a8fb90dc89539c37a806959b98eb7a03e8e61984f3eb875af79"
+    },
+    {
+      "task": "humanize_334",
+      "status": "passed",
+      "snapshot_sha256": "162e4e86ffe5e6455f1efdf4ba679cc4b029a3ffb66a1fc74b492f431f46190c",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.643729334929958
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.043190248077735
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "humanize",
+          "origin": "/workspace/src/humanize/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "humanize",
+          "origin": "/workspace/src/humanize/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "6f9e552ac7b72749e5bfa999482080bb0ef38c715d6098ff0fd7e4f86842d604"
+    },
+    {
+      "task": "parsel_352",
+      "status": "passed",
+      "snapshot_sha256": "88933fc5eb8ef8f70eaa13279105c7b7a42dbe80ea0c279619d8644c40a8c8d9",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 25.899030820000917
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.284175031003542
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "parsel",
+          "origin": "/workspace/parsel/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "parsel",
+          "origin": "/workspace/parsel/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "f9543f9fa29a82ec827d1efcbc9329fdb2d8570df0c5307bbb81b8fcb2cfd28e"
+    },
+    {
+      "task": "attrs_1541",
+      "status": "passed",
+      "snapshot_sha256": "82410ff8753ec39c236614950bf45f7270c2c3f1aa2171b8661417235b39a628",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 60.961152208969
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 66.76094258006196
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "attrs",
+          "origin": "/workspace/src/attrs/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "attrs",
+          "origin": "/workspace/src/attrs/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "da754245ba15144e35c7ec08edf2c1a9cee5f0f01bf86b6ab05271b6e44a9ced"
+    },
+    {
+      "task": "parsel_357",
+      "status": "passed",
+      "snapshot_sha256": "59f6364941f89310a6e90732c3e99713426bb9e8b25edb784fe15b37301beff8",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 11.8845439060824
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.900617364095524
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "parsel",
+          "origin": "/workspace/parsel/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "parsel",
+          "origin": "/workspace/parsel/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "6c400c9b944adbb16e7a4f2b49f9f93f4843b84bac51b2b2dd958a3772401507"
+    },
+    {
+      "task": "w3lib_300",
+      "status": "passed",
+      "snapshot_sha256": "1feedee4931a5b258a9dab00a9e6caf09d2a9368c6c16d8aafdca688828afcc8",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 12.97160885494668
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.947337193996646
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "w3lib",
+          "origin": "/workspace/w3lib/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "w3lib",
+          "origin": "/workspace/w3lib/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "2deb02fbec8ba4a56751faeb0cc31c867e382ac788434ff9389e46b4921c61f2"
+    },
+    {
+      "task": "w3lib_266",
+      "status": "passed",
+      "snapshot_sha256": "1121841582037a76f4cc97cfffa6b9021e12e786474d77488cfe7e82b529aa0f",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 28.342881290009245
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 13.601011983002536
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "w3lib",
+          "origin": "/workspace/w3lib/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "w3lib",
+          "origin": "/workspace/w3lib/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "fe8f402d34c41c5a01b772a91da36f948a77b8b92585a6615e49832304a9cf66"
+    },
+    {
+      "task": "sqlite_utils_719",
+      "status": "passed",
+      "snapshot_sha256": "159303a6e20c32a9a619e3dbe255d499a54ae7e84cfae715eefe087e94a8de2f",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.404796820948832
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 15.40639309992548
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "sqlite_utils",
+          "origin": "/workspace/sqlite_utils/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "sqlite_utils",
+          "origin": "/workspace/sqlite_utils/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "d788a5752f3476495cd12c9b3553ca1d3789155ac3f710066cad234578e54ad7"
+    },
+    {
+      "task": "strawberry_4391",
+      "status": "passed",
+      "snapshot_sha256": "139ceecb031f9a9720a29a5a786cd9b6ad0b5f4983325e486ea4d04366252380",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 132.49486339709256
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 127.06908060191199
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "strawberry",
+          "origin": "/workspace/strawberry/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "strawberry",
+          "origin": "/workspace/strawberry/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "ca1e3454777e3d1700dd6f469b8d5916e0ed3d8d383be530a5e3b175c99ba2f1"
+    },
+    {
+      "task": "strawberry_4654",
+      "status": "passed",
+      "snapshot_sha256": "65ec6f4ff612e0069f1fe6efaab235acc3bff28bf53d8443959f1670e795c944",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 135.4994423330063
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 130.7960164519027
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "strawberry",
+          "origin": "/workspace/strawberry/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "strawberry",
+          "origin": "/workspace/strawberry/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "7df7541454d003cbacfbf407ed99ad1bc46be989de90fa44e3648b53c960ecd1"
+    },
+    {
+      "task": "platformdirs_540",
+      "status": "passed",
+      "snapshot_sha256": "adbffac4b519d9fffe30d888369d193b0f11c7ca8bace15a2117bb6160974bc2",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.709077668958344
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 16.096338240080513
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "platformdirs",
+          "origin": "/workspace/src/platformdirs/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "platformdirs",
+          "origin": "/workspace/src/platformdirs/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "0dbaa6ce9a1062282fa6f34b7115e1965981a44ad325d3f5c0034258aab7876a"
+    },
+    {
+      "task": "platformdirs_561",
+      "status": "passed",
+      "snapshot_sha256": "f3134d6aa241384571097efa0bf0a01eb264c3cb3baca4ddb5f6a97b4b6cd94d",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.703064537025057
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 15.70487774501089
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "platformdirs",
+          "origin": "/workspace/src/platformdirs/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "platformdirs",
+          "origin": "/workspace/src/platformdirs/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "a940109e1aafc4275661fd92c7a01dc568349667992934aa27db7b723caf7267"
+    },
+    {
+      "task": "urllib3_5055",
+      "status": "passed",
+      "snapshot_sha256": "978c6f86443f8c9d90bdfc0fabfcc8aea67bcfc5d0ac1c9ff51587afca596323",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.04623498499859
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 30.548161410959437
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "urllib3",
+          "origin": "/workspace/src/urllib3/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "urllib3",
+          "origin": "/workspace/src/urllib3/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "e1f86d86ba0abaeb9b3b6a6be1d367e7dc9641b80e49797e5a1f5d92903ca435"
+    },
+    {
+      "task": "urllib3_5031",
+      "status": "passed",
+      "snapshot_sha256": "e1d3f9e1c6f336b442d8405397d89bc1bb1fed7ba34d8fcb6434f63c0fe9cd2c",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 32.01254014100414
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 18.329128570039757
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "urllib3",
+          "origin": "/workspace/src/urllib3/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "urllib3",
+          "origin": "/workspace/src/urllib3/__init__.py",
+          "workspace": true
+        }
+      ],
+      "receipt_sha256": "a7453614c6adbed74b597143c7bcdbbb1c198cca3291ae5b755b658b45c19dad"
+    }
+  ]
+}
