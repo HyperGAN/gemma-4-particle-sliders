@@ -22,7 +22,7 @@ from swegemma.models import Task
 from swegemma.sandbox import ContainerConfig, ContainerManager
 
 from gemma_particle.adk_capture import RecordingClient
-from gemma_particle.capture import RequestJournal,load_requests
+from gemma_particle.capture import RequestJournal,load_requests,CAPTURE_PROTOCOLS,LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
 from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,budget_values
 from gemma_particle.data import read_jsonl,digest
@@ -39,6 +39,7 @@ async def main():
     p.add_argument('--arm',choices=['off',*TARGET_INSTRUCTIONS],required=True)
     p.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
     p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
+    p.add_argument('--capture-protocol',choices=CAPTURE_PROTOCOLS,default=CONTEXT_CAPTURE_PROTOCOL)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
@@ -86,6 +87,7 @@ async def main():
         'artifact':artifact,'image_id':None,'runs':[]}
     if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:manifest['instruction_protocol']=args.instruction_protocol
     if args.budget_profile!=PILOT_BUDGET:manifest['budget_profile']=args.budget_profile
+    if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['capture_protocol']=args.capture_protocol
     manager=ContainerManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000))
     manifest['image_id']=manager.client.images.get(args.image).id
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
@@ -126,6 +128,7 @@ async def main():
             manifest['contract'].update(instruction_protocol=args.instruction_protocol,
                 instruction_set_sha256=digest(instruction_set(args.instruction_protocol)))
         if args.budget_profile!=PILOT_BUDGET:manifest['contract']['budget_profile']=args.budget_profile
+        if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['contract']['capture_protocol']=args.capture_protocol
         if external:manifest['contract']['external_dev']=manifest['external_dev']
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
@@ -151,6 +154,7 @@ async def main():
         if external:result['external_dev']=manifest['external_dev']
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=args.instruction_protocol
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
+        if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:result['capture_protocol']=args.capture_protocol
         result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']
         result['capture_complete']=capture_error is None

@@ -17,7 +17,8 @@ from swegemma.models import load_tasks
 from swegemma.sandbox import ContainerConfig
 from swegemma.harness.verification import verify_task
 
-from gemma_particle.capture import load_requests
+from gemma_particle.capture import load_requests,LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
+from gemma_particle.context_budget import prove_context_exhaustion
 from gemma_particle.data import VISIBLE_FIELDS,REPO_SPLITS,digest,write_jsonl
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
 from gemma_particle.dev import load_external_dev,qualified_dev_identity,WORKSPACE_PACKAGES
@@ -33,11 +34,16 @@ async def main():
     p.add_argument('--image',required=True)
     p.add_argument('--external-dev-manifest',type=Path)
     p.add_argument('--external-dev-qualification',type=Path)
+    p.add_argument('--endpoint',help='local bound tokenizer endpoint for declared context-budget OFF proofs')
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('verification cohort is immutable')
     manifest=json.loads((args.cohort/'cohort.json').read_text())
     contract=manifest['contract']
+    capture_protocol=manifest.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)
+    if (capture_protocol not in (LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL)
+            or contract.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)!=capture_protocol):
+        raise ValueError('captured request protocol differs')
     if digest(contract)!=manifest['evaluation_contract_sha256']:
         raise ValueError('evaluation contract changed')
     environment=manifest['environment']
@@ -67,6 +73,8 @@ async def main():
                 or captured['generator_kind']!=manifest['generator_kind'] or captured['arm']!=manifest['arm']
                 or captured['model_identity']!=manifest['server_identity'].get('model_identity')):
             raise ValueError('terminal result differs from the captured evaluation contract')
+        if captured.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)!=capture_protocol:
+            raise ValueError('terminal result differs from the captured request protocol')
         task_id=captured['instance_id'];task=raw[task_id]
         visible={key:getattr(task,key) for key in VISIBLE_FIELDS}
         if external:
@@ -100,6 +108,9 @@ async def main():
                     or first['request_sha256']!=digest(first['request'])):
                 raise ValueError('initial model request identity changed')
             first_request=first['request']
+        context_proof=None
+        if capture_protocol==CONTEXT_CAPTURE_PROTOCOL and captured['arm']=='off':
+            context_proof=prove_context_exhaustion(folder,captured,manifest['server_identity'],args.endpoint)
         destination=args.out/task_id;destination.mkdir(mode=0o700)
         isolate_sandbox_cache(destination/'tmp')
         package=WORKSPACE_PACKAGES[task.repo]
@@ -119,6 +130,10 @@ async def main():
             'evaluation_contract_sha256':manifest['evaluation_contract_sha256'],
             'tasks_sha256':sha256_file(args.tasks),'test_output_sha256':sha256_file(destination/'test-output.txt')}
         receipt['verification_script_sha256']=sha256_file(Path(__file__))
+        if capture_protocol==CONTEXT_CAPTURE_PROTOCOL:
+            receipt.update(capture_protocol=capture_protocol,context_budget_proof_sha256=digest(context_proof))
+            if context_proof is not None:
+                (destination/'context-budget-proof.json').write_text(json.dumps(context_proof,indent=2)+'\n')
         if external:receipt['external_dev']=manifest['external_dev']
         if result.resolved and (not manager.origin_checks or not all(r['workspace'] for r in manager.origin_checks)):
             raise ValueError('passing score must test the edited workspace')
@@ -128,6 +143,8 @@ async def main():
             'requests':requests,'first_request':first_request,'task_budget_exhausted':timeout,'verification':receipt,
             'model_calls_attempted':len(list((folder/'requests').glob('*-request.json'))),
             'model_calls_completed':len(list((folder/'requests').glob('*-response.json')))}
+        if capture_protocol==CONTEXT_CAPTURE_PROTOCOL:
+            outcome.update(schema='gemma4-verified-trajectory-v4',context_budget_proof=context_proof)
         outcomes.append(outcome)
         (destination/'verification.json').write_text(json.dumps(receipt,indent=2)+'\n')
         write_jsonl(args.out/'outcomes.jsonl',outcomes)

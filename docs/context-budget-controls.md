@@ -1,0 +1,11 @@
+# Context-window controls
+
+`context-budget-off-v1` is a new, declared capture/verification protocol. It preserves a failed OFF control whose final request genuinely exceeds the pinned server's 32,768-token window. It never admits an incomplete successful teacher. Earlier v3 grades and eligibility remain unchanged.
+
+The verifier requires the recorded context-window exception and the actual requested output allowance, validates every completed request/response before exactly one unanswered terminal request, checks the live server's immutable identity, and obtains the exact terminal prompt tokens from that server's official `/tokenize` endpoint. The prompt plus requested output must exceed the declared window. It checks the identity again afterward and binds the proof into the fresh-test receipt. A connection failure or an unproven token count cannot supply this control.
+
+The diagnostic control found 29,299 actual input tokens plus 4,096 requested output tokens, exceeding 32,768. The exception's input count was a lower bound rather than the exact count. The original TRAIN baseline's recovered patch passed its tests, so this diagnostic supplies no training target and does not alter its archived outcome.
+
+New v4 cohorts declare the capture protocol and execution-source hashes before inference. Every arm must use the same model, operational budget, sampling, instruction protocol and capture protocol. A target still requires a failed OFF test result, all four completed arms and a verified successful teacher with complete captures. Its positive and neutral contexts differ only by the declared instruction. The [control receipt](../reports/context-budget-controls-v1.json) records the exact-token diagnostic and CPU software checks.
+
+Future single-task TRAIN plans may declare `teacher_policy: failed-off-only`. After fresh OFF verification, this skips teacher calls when OFF already passes or cannot supply an admissible control. The OFF outcome and explicit skip reason remain recorded, with zero targets. Every task that can supply a target still executes all four arms and passes the ordinary curation checks. This policy is for TRAIN data collection; selective teacher execution cannot be presented as a four-arm benchmark comparison. Existing all-four trials continue under their original plans.

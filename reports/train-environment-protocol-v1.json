@@ -1,0 +1,323 @@
+{
+  "schema": "gemma4-train-environment-protocol-v1",
+  "as_of": "2026-11-17T04:38:43.682799+00:00",
+  "planned": 67,
+  "finished_as_of": 66,
+  "qualified_as_of": 44,
+  "plan_sha256": "509acb3f0ea9ce0025ee290cc9fe8612082edb482846c0864a1fbb146160e142",
+  "visible_tasks_sha256": "0c0ff460b133e9666a77b43d1b605331dc6aa3aaaf416fa9ee2f8efc37ad8d2c",
+  "raw_tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+  "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+  "reused_controls": [
+    {
+      "instance_id": "fastapi_11194",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi-official-v1/result.json",
+      "receipt_sha256": "b18aa2674e0fea0b50ea968869db6ef87b16dc8e10603a3baabd72e4fc60fdd3",
+      "wheels": "data/task-wheels/fastapi_11194-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af"
+    },
+    {
+      "instance_id": "fastapi_11355",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi11355-official-v2/result.json",
+      "receipt_sha256": "a4f2b32f9b434e4183b48228f8f031c910d7293cc7fadcd644a2d09e06ca2f46",
+      "wheels": "data/task-wheels/fastapi_11355-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af"
+    },
+    {
+      "instance_id": "fastapi_12942",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi12942-official-v1/result.json",
+      "receipt_sha256": "81e15fc933b969260b2d29e9d9cdd65fea9c1242afd552839b18178edd38db13",
+      "wheels": "data/task-wheels/fastapi_12942-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af"
+    },
+    {
+      "instance_id": "fastapi_13207",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi13207-official-v1/result.json",
+      "receipt_sha256": "3650db1ed79cee23c693494f1e1d37c8eafd11807416863d409bbfc7612be1e7",
+      "wheels": "data/task-wheels/fastapi_13207-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af"
+    },
+    {
+      "instance_id": "fastapi_13537",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/next-train-controls-v1/fastapi_13537/result.json",
+      "receipt_sha256": "f054f08849aa9551dc0cc2589c360244ac9afad92963c23d9fd4c0bef4bb8163",
+      "wheels": "data/task-wheels/fastapi_13537-v1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9"
+    },
+    {
+      "instance_id": "fastapi_13713",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/next-train-controls-v1/fastapi_13713/result.json",
+      "receipt_sha256": "c4ca30169cccb0b45823caba31e094de94d3ec96af52312560dc1345007112af",
+      "wheels": "data/task-wheels/fastapi_13713-v1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9"
+    }
+  ],
+  "accepted_historical_verifier_sources": {
+    "cf4486ba594833a245b5baf1b83d39d0344aa725": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af"
+  },
+  "observed_failures": [
+    {
+      "instance_id": "fastapi_14077",
+      "status": "failed: negative control did not distinguish a fix",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14077/result.json",
+      "receipt_sha256": "d101922e05a5b19eb9d204d2ecd0c6996691c549a5da0eec7662b2c29f29e533",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14077"
+    },
+    {
+      "instance_id": "fastapi_14186",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14186/result.json",
+      "receipt_sha256": "336aa81b2995aeebb38b954ff3028abd1064f3af8f9e890a66e3d8024645997b",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14186"
+    },
+    {
+      "instance_id": "fastapi_14258",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14258"
+    },
+    {
+      "instance_id": "fastapi_14356",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14356/result.json",
+      "receipt_sha256": "410982a1e2187b85b0fd0e130cace1cb9ffe78cf8dca31984ecfe001561d9d4d",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14356"
+    },
+    {
+      "instance_id": "fastapi_14616",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14616"
+    },
+    {
+      "instance_id": "fastapi_14851",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14851"
+    },
+    {
+      "instance_id": "fastapi_14873",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14873"
+    },
+    {
+      "instance_id": "fastapi_14953",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14953"
+    },
+    {
+      "instance_id": "fastapi_14962",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14962"
+    },
+    {
+      "instance_id": "fastapi_14964",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14964"
+    },
+    {
+      "instance_id": "fastapi_14978",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14978"
+    },
+    {
+      "instance_id": "fastapi_14986",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14986"
+    },
+    {
+      "instance_id": "fastapi_15023",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15023"
+    },
+    {
+      "instance_id": "fastapi_15030",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15030"
+    },
+    {
+      "instance_id": "fastapi_15280",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15280"
+    },
+    {
+      "instance_id": "fastapi_15588",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15588"
+    },
+    {
+      "instance_id": "fastapi_15589",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15589"
+    },
+    {
+      "instance_id": "fastapi_15661",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15661"
+    },
+    {
+      "instance_id": "fastapi_15745",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15745"
+    },
+    {
+      "instance_id": "fastapi_15763",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15763"
+    },
+    {
+      "instance_id": "fastapi_15785",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15785"
+    },
+    {
+      "instance_id": "fastapi_15800",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15800"
+    }
+  ],
+  "separate_dependency_repair": {
+    "wheel_source_receipt_sha256": "3b37a9e95bea61dc8cdcd3393cd199f23a496b3298ee34497c1cf108908f9e20",
+    "wheel_addition": {
+      "package": "typing-inspection",
+      "version": "0.4.2",
+      "filename": "typing_inspection-0.4.2-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl",
+      "sha256": "4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7"
+    },
+    "result": {
+      "schema": "gemma4-real-task-verifier-controls-v1",
+      "task": "fastapi_14258",
+      "kind": "verifier calibration; reference oracle is not an agent",
+      "gpu_used": false,
+      "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+      "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+      "split": "train",
+      "wheel_selection_sha256": "a0c42395a46e6e1cee84bbccc43d7bd8878d47f19bf60ac6a27b2553e8b3de8f",
+      "snapshot_sha256": "351ec847826fba8ef8093b8c490fb062ddfda88eac33f6bb894b4687ce7f5d88",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.117530163028277
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.175004007061943
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "injected_wheel_tar_sha256": "826fb3c7130a5fd35a89cb407e78085ecb60c8bc87628eeb4dc027089b85e8d8",
+      "status": "passed"
+    },
+    "raw_receipt_sha256": "03a9fc2e9ca4ffbaa45f2c4bfc04592686b46663f234157dbe59c89fe260f1a1"
+  },
+  "execution_source_sha256": "8d622ca937201b7a3c19d44ccb2b217a8ada000c806c42803fc64ab1d4d470fb",
+  "scope": "CPU environment qualification only. Fixed67-task sweep still running; every failure retained. Separate typing-inspection repair does not relabel original failures. No model accuracy or training target."
+}

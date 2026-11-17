@@ -8,6 +8,9 @@ from .data import digest
 GENERATION_FIELDS = frozenset({'temperature','top_p','top_k','seed','max_tokens','max_completion_tokens',
     'stop','response_format','presence_penalty','frequency_penalty','tool_choice','parallel_tool_calls',
     'extra_body','reasoning_effort','thinking','chat_template_kwargs'})
+LEGACY_CAPTURE_PROTOCOL = 'complete-or-timeout-v3'
+CONTEXT_CAPTURE_PROTOCOL = 'context-budget-off-v1'
+CAPTURE_PROTOCOLS = (LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL)
 
 
 class RequestJournal:
@@ -58,20 +61,48 @@ class RequestJournal:
         path.chmod(0o600)
 
 
+def _request(path,index):
+    packet=json.loads(path.read_text())
+    if packet['decision']!=index or packet['request_sha256']!=digest(packet['request']):
+        raise ValueError('request journal order or identity changed')
+    return packet
+
+
+def _response(path,packet):
+    completed=json.loads(path.read_text())
+    if (completed['request_sha256']!=packet['request_sha256']
+            or completed['response_sha256']!=digest(completed['response'])):
+        raise ValueError('completion journal identity changed')
+
+
 def load_requests(directory):
     result = []
     for path in sorted(Path(directory).glob('*-request.json')):
-        packet = json.loads(path.read_text())
-        if packet['decision'] != len(result) or packet['request_sha256'] != digest(packet['request']):
-            raise ValueError('request journal order or identity changed')
+        packet=_request(path,len(result))
         response = path.with_name(path.name.replace('-request.json','-response.json'))
         if not response.is_file():
             raise ValueError('incomplete model request')
-        completed = json.loads(response.read_text())
-        if (completed['request_sha256'] != packet['request_sha256']
-                or completed['response_sha256'] != digest(completed['response'])):
-            raise ValueError('completion journal identity changed')
+        _response(response,packet)
         result.append(packet)
     if not result:
         raise ValueError('no complete model requests')
     return result
+
+
+def load_terminal_request(directory):
+    """Validate a complete prefix followed by exactly one unanswered request."""
+    directory=Path(directory);paths=sorted(directory.glob('*-request.json'))
+    if not paths:raise ValueError('terminal request required')
+    prefix=[]
+    for index,path in enumerate(paths):
+        packet=_request(path,index)
+        response=path.with_name(path.name.replace('-request.json','-response.json'))
+        if index<len(paths)-1:
+            if not response.exists():raise ValueError('incomplete prefix before terminal request')
+            _response(response,packet);prefix.append(packet)
+        elif response.exists():raise ValueError('terminal request already has a response')
+    if len(list(directory.glob('*-response.json')))!=len(prefix):
+        raise ValueError('unexpected response outside the complete prefix')
+    if any(p['instance_id']!=packet['instance_id'] or p['arm']!=packet['arm'] for p in prefix):
+        raise ValueError('mixed request task or arm')
+    return prefix,packet

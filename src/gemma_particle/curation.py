@@ -1,6 +1,7 @@
 """Admit successful paired contexts selected by real repository-test outcomes."""
 from copy import deepcopy
 from .data import digest
+from .capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 
 RUBRIC = "Resolve the repository issue with a focused patch, demonstrated by the issue validation tests, while using the available tools within budget."
 TARGET_INSTRUCTIONS = {
@@ -38,7 +39,7 @@ def select_contexts(tasks, outcomes):
         task_id = row["instance_id"]
         if task_id not in allowed:
             raise ValueError("non-TRAIN outcome")
-        if row.get('schema') != 'gemma4-verified-trajectory-v3' or row.get('generator_kind') != 'gemma4':
+        if row.get('schema') not in ('gemma4-verified-trajectory-v3','gemma4-verified-trajectory-v4') or row.get('generator_kind') != 'gemma4':
             raise ValueError('only verified Gemma model runs may supply targets; CPU protocol probes are forbidden')
         if not row.get('frozen_base_generator'):
             raise ValueError('curation targets require the frozen base generator')
@@ -54,6 +55,24 @@ def select_contexts(tasks, outcomes):
                     or packet['decision']!=decision or packet['request_sha256']!=digest(packet['request'])):
                 raise ValueError('captured request task, arm, order or bytes changed')
         receipt = row["verification"]
+        capture_protocol=row.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL)
+        if capture_protocol==CONTEXT_CAPTURE_PROTOCOL:
+            proof=row.get('context_budget_proof')
+            if (row['schema']!='gemma4-verified-trajectory-v4'
+                    or receipt.get('capture_protocol')!=capture_protocol
+                    or receipt.get('context_budget_proof_sha256')!=digest(proof)):
+                raise ValueError('context-budget proof is not bound to the declared v4 outcome')
+            if proof is not None:
+                if (row['arm']!='off' or row.get('capture_complete')
+                        or proof.get('schema')!='gemma4-context-budget-proof-v1'
+                        or proof.get('context_limit')!=32768
+                        or type(proof.get('prompt_tokens')) is not int
+                        or type(proof.get('requested_output_tokens')) is not int
+                        or proof['prompt_tokens']<=0 or proof['requested_output_tokens']<=0
+                        or proof['prompt_tokens']+proof['requested_output_tokens']<=32768):
+                    raise ValueError('invalid fixed-context budget proof')
+        elif capture_protocol!=LEGACY_CAPTURE_PROTOCOL or row['schema']!='gemma4-verified-trajectory-v3':
+            raise ValueError('unknown captured request protocol')
         if (receipt["instance_id"] != task_id or receipt["patch_sha256"] != row["patch_sha256"]
                 or receipt["requests_sha256"] != digest(row["requests"])
                 or receipt['first_request_sha256'] != digest(row['first_request'])
@@ -67,6 +86,8 @@ def select_contexts(tasks, outcomes):
     for task_id, arms in sorted(by_task.items()):
         protocols={r.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL) for r in arms.values()}
         if len(protocols)!=1:raise ValueError('curation arms have unmatched instruction protocols')
+        if len({r.get('capture_protocol',LEGACY_CAPTURE_PROTOCOL) for r in arms.values()})!=1:
+            raise ValueError('curation arms have unmatched capture protocols')
         protocol=next(iter(protocols));instructions=instruction_set(protocol)
         if set(arms) != {'off',*instructions}:
             raise ValueError('all four declared curation arms must finish before selection')
@@ -79,7 +100,9 @@ def select_contexts(tasks, outcomes):
             continue
         if not baseline.get('first_request'):
             continue
-        if not baseline.get('capture_complete') and not baseline.get('task_budget_exhausted'):
+        context_exhausted=(baseline.get('capture_protocol')==CONTEXT_CAPTURE_PROTOCOL
+            and baseline.get('context_budget_proof') is not None)
+        if not baseline.get('capture_complete') and not baseline.get('task_budget_exhausted') and not context_exhausted:
             continue
         candidates = [row for arm, row in arms.items() if arm != "off" and row["resolved"] and row.get('capture_complete')]
         if not candidates:
@@ -116,4 +139,5 @@ def select_contexts(tasks, outcomes):
                              "quality_rubric": RUBRIC})
             if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
             if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
+            if 'capture_protocol' in winner:selected[-1]['capture_protocol']=winner['capture_protocol']
     return selected

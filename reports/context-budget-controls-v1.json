@@ -1,0 +1,60 @@
+{
+  "schema": "gemma4-context-budget-controls-v1",
+  "status": "passed",
+  "as_of": "2026-11-17T04:38:43.680465+00:00",
+  "diagnostic": {
+    "proof": {
+      "schema": "gemma4-context-budget-proof-v1",
+      "context_limit": 32768,
+      "prompt_tokens": 29299,
+      "requested_output_tokens": 4096,
+      "token_ids_sha256": "2e761b1fce29c64b30c5339945d67e9c7b8d5d7aacb42a930c08055235b2587d",
+      "tokenize_request_sha256": "801f0dd703575c1e53f050433144254c2ea6e1d8a2ef22faf860bfa18f45bbf4",
+      "server_identity_sha256": "bbcccf813d6a45f906178b4cf309cae3f4122eb2120d7cd69c615999ba0bf9b4",
+      "terminal_request_sha256": "19f5d1364708ca3c4db92bccd4bed815961c970df4e2153e044ae47636a35fa2",
+      "completed_prefix_sha256": "3527e96c3c0548e5886db7653353b5502b490f94fcd676ae310d9a458825c019",
+      "model_calls_completed": 45,
+      "model_calls_attempted": 46
+    },
+    "source_capture_sha256": "3d22fa16d6561edf5ee2885943d0a913e3d542c752fdfc5713fcb3f1cf004aa6",
+    "scope": "diagnostic only; original v3 result and eligibility unchanged"
+  },
+  "actual_v4_cpu_cohort_sha256": "d8e5608fd7b16735c472ee0c51b6edb381c01c1ab1da79a26a8251b70990f006",
+  "actual_v4_cpu_verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_11194",
+    "patch_sha256": "88a5a7d235b3b2dd815327c5baf2b586bcdc546d13e71aa9f6f661b5b5eeac16",
+    "requests_sha256": "f6fc66b72e5e42dd6e3d4cf5c6fa40e37543d15ea74a472e10dbea795ae71408",
+    "resolved": false,
+    "test_exit_code": 1,
+    "first_request_sha256": "65d66b90d23be82edb5b9c8f22dfda46a1b64ae87bd5141d4eb76d237bf14cd0",
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "732dd29629140c7eece6316e9e1c6f6198159e76caa44c1084e968adf3818578",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "5d7d3255f9892ec85f8c0ce99962cd16155c7d2af5eb8c0012c64f4912bde049",
+    "verification_script_sha256": "d16e7cf2492cf8c5bc5e11335fc4798569d0cf2ebac24319ee4857ac97864332",
+    "capture_protocol": "context-budget-off-v1",
+    "context_budget_proof_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  },
+  "cpu_preflight_sha256": "4faaa7fe20a075af1c86763be8cbe39aa71495b6d22097058acd504a85f86efb",
+  "default_artifact_byte_continuity": true,
+  "execution_sources": {
+    "src/gemma_particle/capture.py": "5ad5332fc186ab9e705c1ad0f83e1fe73551b70551b9fbbce0a7148f2196d542",
+    "src/gemma_particle/context_budget.py": "0811b7326af5a2c931e78f5a21bcff978c59c0afaba510473e5312872f7820b4",
+    "src/gemma_particle/curation.py": "92ba3dcc8222955b593200ef852c0e98fb357e4089bb3b139572c0bd908423e7",
+    "scripts/run_trajectories.py": "5df7bce8cd65eace3f9936349abde8b02717c01e9cf18474332ea1e5f4c825aa",
+    "scripts/verify_trajectories.py": "d16e7cf2492cf8c5bc5e11335fc4798569d0cf2ebac24319ee4857ac97864332",
+    "scripts/collect_arms.py": "c3c8b1e68d4e1357fdb57352d7a63ff687bc95f3917e0a31d2e695141ef25f05",
+    "tests/test_context_budget.py": "1a8ca420f82994c1b82574a56c25782ae123347f567c4974879dc149c4cce2da",
+    "tests/test_collection_policy.py": "d5cf21767da266a24ff5dd187f32953f19bbf9cf1bd8319f55c11254f65910ee"
+  },
+  "scope": "Exact live-server input-token diagnostic plus scripted CPU v4 handoff and52CPU checks. No old result promoted, no incomplete teacher admitted, no learned target or accuracy claim."
+}
