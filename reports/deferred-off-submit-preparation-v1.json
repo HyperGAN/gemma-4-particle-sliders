@@ -1,0 +1,22 @@
+{
+  "schema": "gemma4-deferred-off-submit-preparation-v1",
+  "status": "prepared",
+  "gpu_used": false,
+  "source_sha256": "aa70dd7762ef02796fbe3078b9eac1e53fa55d8572314b3882f83b6bfbec1f01",
+  "actual_control_plan_sha256": "8f4611aecbc4ffd10d1eef55c6b58c030f0e1360fb502afe8659f2fdf243334a",
+  "archive_sha256": "861effffbe39aefd93ec4952b52ff5f773eec5eb96c29fcf530a8370bec8a2f6",
+  "earliest_utc": "2026-11-18T00:00:00+00:00",
+  "cpu_fake_service_tests": {
+    "passed": 4,
+    "log_sha256": "cf0c2cc2867610db68ff0a051d55d0e206ddaa505c66c6ee68075be937872047",
+    "cases": [
+      "one exact pinned notebook submission",
+      "existing matching handle produces no new request",
+      "pending gate must clear before attempt",
+      "ambiguous response stops after one request"
+    ]
+  },
+  "actual_plan_only_run": "checks existing completed-notebook control receipt and exact compiled archive without importing Kaggle or sending a request",
+  "mutation_rule": "one request after observed gates; preserve intent and stop for reconciliation on failure; no automatic submission retries",
+  "scope": "CPU boundary/preparation controls only; no new official submission ID or score"
+}
