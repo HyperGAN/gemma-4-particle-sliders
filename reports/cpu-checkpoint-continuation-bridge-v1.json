@@ -1,0 +1,38 @@
+{
+  "schema": "gemma4-cpu-checkpoint-continuation-bridge-v1",
+  "status": "qualified and passive continuation rearmed",
+  "executor_commit": "6c45b86319d5c68ffc7380190a622c8e964dcf38",
+  "pilot_executor_commit": "293406f8673847ed9f517e7bd636764f49a2e248",
+  "checkpoint_loading_delta": {
+    "original_executor_commit": "293406f8673847ed9f517e7bd636764f49a2e248",
+    "original_train_source_sha256": "0038205da1473d87b1c8de5d75b52988809dbd2a5999e01f87e54da4b6588bfc",
+    "current_train_source_sha256": "657d25e411dd5ae20bade388c7835317be9ac8f911ddd6c041eff494a38f814d",
+    "semantic_delta": "only torch.load map_location=cpu; public game/optimizer loaders own placement",
+    "native_math_source_comparison": "exact byte equality",
+    "training_script_comparison": "AST equality after this one allowed keyword change"
+  },
+  "actual_plan_sha256": "ce644d3350be15ba675903397504e55c84cb386015242fd11080bdd4aef760d7",
+  "source_sha256": "01393be217349c48673c38e8450e7aae589980247e41d3c53592c2581898b177",
+  "sources": {
+    "scripts/train.py": "657d25e411dd5ae20bade388c7835317be9ac8f911ddd6c041eff494a38f814d",
+    "src/gemma_particle/model.py": "4fdb0b890a1e2fa5372b52ff8c261c49d9726208c993396bd762bd6cec04f41d",
+    "src/gemma_particle/runtime.py": "a4e0cadeb6ff50cd0010c2b666432e1ceb7d700b798a95d94bc2f9b5e31b6d84",
+    "src/gemma_particle/checkpoint_inputs.py": "3aadb7fda54c3111b9242cb5e23ea6ddd2d7ee6088099e14dc513575f6a5d94f",
+    "src/gemma_particle/activation_storage.py": "7c9dafd4ce10c1899102afee0bd22e43bce53d199fdfcb736f7458039a78fa5f",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98"
+  },
+  "config_sha256": "52418f9082db0935280c736841b89ec11ec2f3c1cd497a993beef582b4fcc40e",
+  "horizon": 1024,
+  "cache_rule": "same exact admitted TRAIN cache for both recipes; no DEV/holdout data",
+  "presets": [
+    "empf",
+    "rhbi_optimized"
+  ],
+  "gpu_used_by_cpu_plan": false,
+  "actual_pretrained_resume": "not attempted; still waits for verified first update",
+  "pretrained_updates": 0,
+  "runtime_proof": "reports/cuda-cpu-loaded-resume-qualification-v1.json",
+  "old_passive_root": "retained with intervention;0updates",
+  "new_root": "runs/jev-finalize-full-native-training-v2",
+  "scope": "actual source/AST bridge qualification; no objective, raw checkpoint, RNG values, public engine or source-cohort migration"
+}

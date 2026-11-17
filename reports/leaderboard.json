@@ -26,7 +26,7 @@
     "pretrained_optimization": "Zero pretrained updates. Original first EMPF pilot waits for2 distinct initial targets; passive full continuation stopped before execution to correct CPU placement of serialized CUDA RNG state; tiny actual CUDA exact disk resume passes both recipes.",
     "dev_selection": "Recovery live from frozen5a26151:original loguru_1508 unresolved result retained with0repeated calls; next fixed DEV task issuing requests.22-condition/full42+13 selection plan unchanged; reports/dev-controls-recovery-live-v2.json",
     "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json",
-    "full_recipe_continuation": "Passive exact continuation armed from frozen bcd2255: wait for verified actual EMPF step1, resume through256/512/1024, then explicit GPU-native-polar RHBI on the same cache.0 pretrained updates currently; reports/full-training-continuation-preparation-v1.json"
+    "full_recipe_continuation": "Rearmed from frozen6c45b86 with original293406f pilot preserved. Native math/config/source pins match byte-for-byte; training-script AST differs only byCPU checkpoint loading. Both tiny CUDA exact-resume controls pass; actual121CPU/compiler qualification passes.0pretrained updates; reports/cpu-checkpoint-continuation-bridge-v1.json"
   },
   "task_resolution": [
     {
