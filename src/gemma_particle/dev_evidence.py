@@ -61,6 +61,34 @@ def journal_digest(cohort,task_id):
     return digest({p.name:sha256_file(p) for p in sorted(directory.glob('*.json'))})
 
 
+def retained_case_paths(previous,panel,task_id,*,seen=()):
+    """Follow hash-bound earlier reuse receipts, preserving their actual paths."""
+    previous=Path(previous).resolve()
+    if previous in seen:raise ValueError('cyclic DEV reuse receipt')
+    cohort=previous/panel/(task_id+'-agent');verification=previous/panel/(task_id+'-verification')
+    if cohort.exists() or verification.exists():return cohort,verification
+    original=json.loads((previous/'plan.json').read_text());reuse=original.get('reused_evidence')
+    if not reuse or task_id not in reuse['task_ids']:return cohort,verification
+    prior=Path(reuse['prior_condition']).resolve();prior_plan=prior/'plan.json'
+    if sha256_file(prior_plan)!=reuse['prior_plan_sha256']:raise ValueError('prior DEV reuse plan changed')
+    before=json.loads(prior_plan.read_text());audit_changes={'scripts/run_dev_condition.py','src/gemma_particle/dev_evidence.py'}
+    if (any(before[k]!=original[k] for k in ['condition','selection_plan_sha256','packet','task_ids'])
+            or set(before['sources'])!=set(original['sources'])
+            or any(before['sources'][k]!=v for k,v in original['sources'].items() if k not in audit_changes)):
+        raise ValueError('prior DEV reuse changes generation,verification or fixed tasks')
+    records=json.loads((previous/'progress.json').read_text())['finished']
+    matches=[r for r in records if r['panel']==panel and r['instance_id']==task_id]
+    if len(matches)!=1 or Path(matches[0]['reused_from']).resolve()!=prior:
+        raise ValueError('actual prior DEV evidence receipt required')
+    cohort,verification=retained_case_paths(prior,panel,task_id,seen=(*seen,previous))
+    record=matches[0]
+    if (Path(record['cohort']).resolve()!=cohort or Path(record['verification']).resolve()!=verification
+            or record['outcomes_sha256']!=sha256_file(verification/'outcomes.jsonl')
+            or record['model_journal_sha256']!=journal_digest(cohort,task_id)):
+        raise ValueError('prior DEV evidence path or raw outcome/journal changed')
+    return cohort,verification
+
+
 def audit_incomplete_requests(directory,captured):
     """Retain a terminal transport retry tail without promoting it to a capture.
 
