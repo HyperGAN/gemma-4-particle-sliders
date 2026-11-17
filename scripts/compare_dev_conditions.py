@@ -8,15 +8,21 @@ from gemma_particle.dev_evidence import audit_verified_task,journal_digest,valid
 from gemma_particle.dev_selection import load_selection_plan,summarize_verified_panel,choose_learned_candidate
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.lora_serving import BASE_ALIAS
+from gemma_particle.resource_supplement import load_resource_supplement, normalize_qualified_contract, audit_condition_slot
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--selection-plan',type=Path,default=Path('research/dev-selection-v1.json'))
     p.add_argument('--condition-result',type=Path,action='append',required=True)
+    p.add_argument('--resource-supplement',type=Path)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();plan=load_selection_plan(args.selection_plan);plan_sha=sha256_file(args.selection_plan)
     if args.out.exists():raise FileExistsError('DEV choice is immutable')
+    resource=None if args.resource_supplement is None else load_resource_supplement(args.resource_supplement)
+    if resource is not None and resource['selection_plan_sha256']!=plan_sha:
+        raise ValueError('resource policy must preserve the exact original selection plan')
+    physical_contracts={};resource_evidence={}
     declarations={c['id']:c for c in plan['conditions']};results={};canonical={};sources=None;cache_hashes=set();files={}
     for path in args.condition_result:
         result=json.loads(path.read_text());condition=result['condition'];name=condition['id']
@@ -42,6 +48,9 @@ def main():
                 if sha256_file(packet[field])!=packet[hash_field]:raise ValueError('learned packet provenance changed')
             cache_hashes.add(packet['cache_index_sha256'])
         elif packet:raise ValueError('unadapted control contains a learned packet')
+        if resource is not None:
+            resource_evidence[name]=audit_condition_slot(path,result,args.resource_supplement,resource)
+            physical_contracts[name]=dict(result['canonical_contracts'])
         expected_alias='particle_lora' if packet else BASE_ALIAS
         for panel in ('primary','secondary'):
             visible=Path(plan[panel]['manifest'])
@@ -57,6 +66,11 @@ def main():
                         expected_arm=condition['arm'],expected_alias=expected_alias)
                     validate_matching_contract(contract,plan);fingerprint=digest(contract)
                     if result['canonical_contracts'][panel]!=fingerprint:raise ValueError('recorded DEV contract differs')
+                    if resource is not None:
+                        server= json.loads((Path(record['cohort'])/'cohort.json').read_text())['server_identity']
+                        if digest(server)!=resource_evidence[name]['server_identity_sha256']:
+                            raise ValueError('task server differs from actual recorded condition slot')
+                        contract=normalize_qualified_contract(contract,name,resource);fingerprint=digest(contract)
                     if panel in canonical and canonical[panel]!=fingerprint:raise ValueError('unmatched DEV condition contracts')
                     canonical[panel]=fingerprint
                     yield row
@@ -70,6 +84,9 @@ def main():
     result={'schema':'gemma4-locked-dev-selection-v1','selection_plan_sha256':plan_sha,
         'condition_results':files,'canonical_contracts':canonical,'cache_index_sha256':next(iter(cache_hashes)),
         **selection,'model_dev_conditions':len(results),'holdout_accessed':False,'official_score':None}
+    if resource is not None:
+        result.update(resource_supplement={'path':str(args.resource_supplement.resolve()),'sha256':sha256_file(args.resource_supplement)},
+            raw_physical_canonical_contracts=physical_contracts,resource_evidence=resource_evidence)
     (args.out/'selection.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'selected':selection['selected'],'advance_to_locked_confirmation':selection['advance_to_locked_confirmation']}))
 

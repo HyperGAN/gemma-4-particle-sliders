@@ -32,6 +32,8 @@ The [paired confirmation driver and offline audit](docs/confirmation-pair.md) pr
 
 The inactive [two-GPU resource proposal, numerical checker and offline reader](docs/hardware-parity.md) preserve the full study and require actual same-adapter parity before a versioned resource change. The reader reconstructs every recorded HTTP exchange and retains physical device identities. CPU preparation leaves the current GPU 0 DEV contract active.
 
+The [explicit resource declaration and comparison support](docs/dev-resource-supplement.md) fix prospective assignments and require raw physical fingerprints and per-condition slot evidence before qualified device normalization. The declaration remains inactive; an explicit dispatcher and independent access-reaudit support are still required.
+
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.
 
 The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) preserves exact learned-bundle ZIP bytes beyond the small inline limit and binds native/cache/conversion provenance. Its selected-candidate gate requires complete confirmation, replays the selected effect journal and reuses the exact evaluated archive. CPU packaging and official compiler controls pass; no learned candidate has yet been uploaded or scored.

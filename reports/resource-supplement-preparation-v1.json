@@ -1,0 +1,75 @@
+{
+  "schema": "gemma4-resource-supplement-preparation-v1",
+  "as_of": "2026-11-17T15:42:09.039943+00:00",
+  "status": "cpu_declaration_and_comparison_prepared_no_actual_resource_qualification_or_activation",
+  "source_base_commit": "a4d6bab6fc8dc39e320e6d72f5924b18af215972",
+  "sources_sha256": {
+    "research/dev-resource-declaration-v1.json": "7eee26b86bc70a11415118065177f418f7e8e532cf1c74e8f618da7fd7db0729",
+    "src/gemma_particle/resource_supplement.py": "9784a30c625c1af7ba0a5ba28959024dcd8a29bc05bf8284789b478c74746458",
+    "scripts/prepare_dev_resource.py": "66734f36930d33398d4baf60a11078a8c74bdb9f19ed900dac8714fad289ef2e",
+    "scripts/compare_dev_conditions.py": "3887cfb6d8dda1772886b6521fc6fb4ea28e467a99abc59d0704aa2c5aebbf0a",
+    "tests/test_resource_supplement.py": "e1bbed92ad2567af1d49bc54204660ba2973d0af707016fd13afadb27378837f"
+  },
+  "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "checks": {
+    "focused_passed": 43,
+    "focused_log_sha256": "5c531c86bb4367369911460fcf5cf5b272f5843e3d472b7caad1e7c99aa3cb1f",
+    "full_public_source_passed": 298,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "726409a98eaf9aeadaba6aa75dc2e4af8acb1496189e053e5c8c495d4756d6a3",
+    "public_python_files_compared": 151,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "synthetic qualification/resource/slot records;all22 prospective assignments and9 waves;device-only normalization with raw contracts unchanged;changed plan/order/waves/resources/confirmation policy,slot/packages/engine/status,UUID/phases/PID/packet/identity/command/policy/priority rejected;actual comparison CLI rejects incomplete policy before sentinel result/task reads with local synthetic panel metadata",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "bounded_original_comparison_bridge": {
+    "scope": "6 named original audit/statistic/panel-read call expressions and2 helper files unchanged;not a full semantic equivalence proof",
+    "original_named_calls_AST_equal": true,
+    "call_counts": {
+      "choose_learned_candidate": 1,
+      "journal_digest": 1,
+      "read_jsonl": 1,
+      "summarize_verified_panel": 1,
+      "audit_verified_task": 1,
+      "validate_matching_contract": 1
+    },
+    "unchanged_helper_sha256": {
+      "src/gemma_particle/dev_evidence.py": "af502d7df563e369520c77994798996c377622262da7ea739528ea58e0df2b44",
+      "src/gemma_particle/dev_selection.py": "1c15287dd33266a1d747cc1e59dfd5276d31e54d95b32e3c3f869e463f150d05"
+    },
+    "device_policy": "ordinary canonicalizer unchanged;new explicit qualified normalization only after original physical-fingerprint check"
+  },
+  "actual_current_unqualified_control": {
+    "log_sha256": "db3cdab2f9ce281d74f110c5c9d71faa721ad8ab17ed264104dab50f5a33d253",
+    "rejected": true,
+    "qualified_resource_record_created": false,
+    "scope": "real current unqualified hardware result only;no model,driver,HTTP or account request"
+  },
+  "policy": {
+    "declaration_state": "inactive_preparation",
+    "conditions": 22,
+    "learned_waves": 9,
+    "learned_device_assignment": "alternating0/1 in original18-condition order",
+    "controls_device": 0,
+    "confirmation_device": 0,
+    "original_selection_helpers_and_math_unchanged": true,
+    "raw_physical_fingerprints_retained": true,
+    "qualified_comparison_requires_per_condition_before_after_slot_evidence": true,
+    "ordinary_canonicalizer_changed": false
+  },
+  "actual_hardware_qualification_completions": 0,
+  "actual_qualified_resource_records": 0,
+  "actual_resource_comparisons": 0,
+  "actual_learned_DEV_conditions": 0,
+  "resource_supplement_activated": false,
+  "new_gpu_model_work": false,
+  "official_score": null,
+  "coordinator_resource_question": "pending revision2;no reply claimed",
+  "remaining": "coordinated resource decision;actual full native/conversion and baseline completion;actual numerical hardware qualification;frozen explicit per-condition recording dispatcher;independent supplement-aware access reaudit;real full learned grid,choice,confirmation and official learned superiority",
+  "scope": "prospective CPU software preparation and artifact consistency only;no genuine numerical parity,model quality,universal equivalence or official SOTA claim"
+}
