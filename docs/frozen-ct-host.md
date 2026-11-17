@@ -29,3 +29,5 @@ OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 nice -n 10 .venv/bin/python scripts/profile_
 Floating hosts retain their .50 maximum process fraction; the explicit CT host permits up to .75 and checks for at least 8 GiB of observed headroom before allocation. The measured profile uses .60, leaving 40% of device capacity for other processes. Existing jobs remain running.
 
 Longer contexts, actual recipe-update memory, coding outcomes, linear conversion and production serving parity are still required. Native CT generation is expensive, so a separate [official vLLM/Torch 2.10 environment](vllm-collection.md) now collects trajectories. Exact input-token transport keeps that generator's provenance separate from native hidden-state computation; it makes no numerical-equivalence claim about the two backends.
+
+An opt-in [lossless CPU activation storage profile](activation-storage.md) now passes CPU gradient and continuation controls for full-history preparation. Its GPU memory and recipe-update cost remain unmeasured.

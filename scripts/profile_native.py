@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import resource
 import time
 
 import torch
@@ -25,13 +26,14 @@ def main():
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('resource profile is immutable')
-    if not 8<=args.max_tokens<=8192:raise ValueError('bounded 8..8192 token resource probe required')
+    if not 8<=args.max_tokens<=32768:raise ValueError('bounded 8..32768 token resource probe required')
     torch.set_num_threads(4)
     config=json.loads(args.config.read_text())
     identity=model_identity(config)
     tokenizer=AutoTokenizer.from_pretrained(identity['repo'],revision=identity['revision'],local_files_only=True)
-    ids=tokenizer.encode('Inspect the repository, reproduce a failure, implement a focused repair, and verify it. '*args.max_tokens,
-        add_special_tokens=True)[:args.max_tokens]
+    seed_ids=tokenizer.encode('Inspect the repository, reproduce a failure, implement a focused repair, and verify it. ',
+        add_special_tokens=False)
+    ids=([tokenizer.bos_token_id]+seed_ids*((args.max_tokens+len(seed_ids)-1)//len(seed_ids)))[:args.max_tokens]
     args.out.mkdir(parents=True,mode=0o700)
     receipt={'schema':'gemma4-native-resource-qualification-v1','model_identity':identity,'device':args.device,
         'memory_fraction':args.memory_fraction,'context_tokens':len(ids),'batch_size':args.batch_size,'training_updates':0,
@@ -48,6 +50,7 @@ def main():
     save();start=time.perf_counter();native=None;device=torch.device(args.device)
     try:
         native=load_native(config,device=args.device,memory_fraction=args.memory_fraction,checkpointing=True)
+        receipt['native_metadata']=native.metadata()
         if device.type=='cuda':torch.cuda.synchronize(device)
         receipt['load_seconds']=time.perf_counter()-start
         before={k:v.detach().cpu().clone() for k,v in native.network.state_dict().items()}
@@ -55,7 +58,14 @@ def main():
         with torch.no_grad():off=native.hidden(ids,strength=0).detach().clone()
         if device.type=='cuda':torch.cuda.synchronize(device)
         receipt['off_seconds']=time.perf_counter()-start
-        start=time.perf_counter();response=torch.cat([native.hidden(ids,strength=1) for _ in range(args.batch_size)],dim=0)
+        storage=[]
+        start=time.perf_counter()
+        outputs=[]
+        for _ in range(args.batch_size):
+            outputs.append(native.hidden(ids,strength=1))
+            storage.append(native.last_activation_storage)
+        response=torch.cat(outputs,dim=0)
+        receipt['activation_storage_forwards']=storage
         receipt['initial_on_equals_off']=torch.equal(response.detach(),off.expand_as(response))
         direction=torch.linspace(.1,1,native.width,device=response.device)
         gradients=torch.autograd.grad((response*direction).sum(),tuple(native.network.parameters()),allow_unused=True)
@@ -69,6 +79,7 @@ def main():
             host_profile=native.slider.host_profile)
         receipt['peak_allocated_bytes']=torch.cuda.max_memory_allocated(device) if device.type=='cuda' else None
         receipt['peak_reserved_bytes']=torch.cuda.max_memory_reserved(device) if device.type=='cuda' else None
+        receipt['peak_host_rss_bytes']=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
         passed=(receipt['initial_on_equals_off'] and receipt['finite_gradients'] and receipt['nonzero_gradient_tensors']>0
             and receipt['connected_gradient_tensors']==receipt['gradient_tensors'] and receipt['adapter_unchanged'] and receipt['frozen_base'])
         receipt['status']='passed' if passed else 'failed'

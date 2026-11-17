@@ -22,7 +22,7 @@
         ".deps/particle-sliders-0101/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "febc2659d446f717adc7ef55d8d2776cdf31ceb10390a05dae0f9574e0f21d52"
+      "output_sha256": "4230704e5473ea18cce86d41e1fd6440efbe950d050c4750e05a79f0ecbe5741"
     },
     {
       "command": [
@@ -41,6 +41,7 @@
     "src/gemma_4_particle_sliders.egg-info/requires.txt": "54cfd0cff2a157f4a88d1d5e69f964e8f954862aab868bca4428115ca3a85014",
     "src/gemma_4_particle_sliders.egg-info/top_level.txt": "786579d9854c98022cd2f7ffe94609f0dbecccd7c9bd68ec242bafd1f62f025c",
     "src/gemma_particle/__init__.py": "e1e74b2b66901e5679012a9b4fde6a5d93543a60a4e606557d45dbe38e7ab544",
+    "src/gemma_particle/activation_storage.py": "7c9dafd4ce10c1899102afee0bd22e43bce53d199fdfcb736f7458039a78fa5f",
     "src/gemma_particle/adk_capture.py": "50cdd3e384adc449f477841a27bea62e7531ce07e77df53f8261e290cbd8ec8c",
     "src/gemma_particle/budgets.py": "ac3c8173b0d6eb868c724b277d52253eb73de8fdc0585c30ffb01a0858eaaf47",
     "src/gemma_particle/capture.py": "5ad5332fc186ab9e705c1ad0f83e1fe73551b70551b9fbbce0a7148f2196d542",
@@ -53,17 +54,18 @@
     "src/gemma_particle/export.py": "d32d92f453d92e528d96ca80b6f98aa9d36203330599facc6c409a71c7ccfa2d",
     "src/gemma_particle/generation.py": "d32bd9339682bc639872cd1338e453653a54fc9966b3a54b5d5fe0f242602a11",
     "src/gemma_particle/harness_identity.py": "48093e67e3e35035fbbd5f105aa8afdd843b64b8005ad9434091e931d174ed27",
-    "src/gemma_particle/model.py": "d3e1daca91bd49cffcffbf58784ba0988c3559b5d84f29e9ec9e7525bb41669b",
+    "src/gemma_particle/model.py": "93aab07f6d70364dc4abc3ccf9b5a0247bbc6d3943178b00c1ed9645c3f376e7",
     "src/gemma_particle/official_thinking.py": "e1a3d2e609c9745a5aea2617e904af489a71b2530306ac87d495748eb9dcbc9c",
     "src/gemma_particle/prompting.py": "b1186091c67b4c5e922ecaffd05d98b2087ffc02dfa48ba7bac89ab9a13c2aa2",
     "src/gemma_particle/protocol_fixture.py": "49c0b7aaca58966f8e106107363ce0bcbab6b9fb14ae687a271575bc5623f133",
     "src/gemma_particle/remote_zip.py": "6e54c7e88b142f4d85bfd5cb7afa598f9c1f373ee0edf8896dbd9ccc8eba6468",
-    "src/gemma_particle/runtime.py": "fc885ca9f284668cfb749b3247db064610163c85415550445b94e800aaaa40cc",
+    "src/gemma_particle/runtime.py": "a129fc1d35423ac826dd514668f73ee23c3b10e4d756bb651b152d1141a2708a",
     "src/gemma_particle/sandbox.py": "ab2f75707978878d06c88b77a8564f8983760b2ed65befe6908b9bc364d505bc",
     "src/gemma_particle/source_identity.py": "2534ee75814277934108ad7c4e477c836ac2dcee923beea9659aad15340f30b0",
     "src/gemma_particle/transport.py": "4579c90d71d54a78b2928730272acff46773e2a0a1d51e62141e2aa2595002c2",
     "src/gemma_particle/vllm_identity.py": "9c762df267351f4bf9a4f42ceb51f58ed9ba7753829b9303636e3cf88221659c",
     "tests/conftest.py": "3111bdd09841be2bcbc7387be5aa801c333f085a668f9726352786eba21ab91d",
+    "tests/test_activation_storage.py": "2717dec4860bad2d57fa5afe6a6f0c4bc8231f764721c4b54e1c353f7fb8cff2",
     "tests/test_budget_artifact.py": "0e5e90cde033b969402f3a8fd3625f5d322ef3ea1d025ebed1b7a6e9f78c4b8e",
     "tests/test_capture.py": "15dc835279d9e83a56f60b52fe80febcb45880a1ed94d1323591ca279f92b85e",
     "tests/test_collection_policy.py": "d5cf21767da266a24ff5dd187f32953f19bbf9cf1bd8319f55c11254f65910ee",
@@ -96,7 +98,7 @@
     "scripts/prepare_external_dev.py": "c472cbb657ad7eac1fc40ff5d5d9ca3d1a20f0cfc5ee67f9954740afc7344081",
     "scripts/prepare_task_wheels.py": "1d8a7bc76d8ea01d6ed3f2f33d9e2418ea4520e2d69309f6293e053ee8d79e82",
     "scripts/prepare_tasks.py": "2b5904af930ba9049702ad8f61e7ca59ec1185190e74e367535cf87e9aa04f46",
-    "scripts/profile_native.py": "546a20399fa51441519f5bbd760fa4723a32301f6f55822a7f735b68eb2fba55",
+    "scripts/profile_native.py": "8e2412dbef4f54060f4a05ddc159a682e1cfee3bb45e19d64858a06de7b986dc",
     "scripts/qualify_source_fixture.py": "306a8dd947ae7dc59ee9ea8165fd84e6beb201052370201a2b316e79f750bff5",
     "scripts/run_trajectories.py": "5df7bce8cd65eace3f9936349abde8b02717c01e9cf18474332ea1e5f4c825aa",
     "scripts/serve_native.py": "97854b7601c56db7270844e49267877efaabc4478ddef8d15a8894d93337e4e6",
@@ -114,6 +116,7 @@
     "submission/prompts/system.md": "a6794476679e0ad6a35b4615355bb9737501bcfc8528b9a16936857cde0df9ea",
     "patches/particle-sliders-pg0100.patch": "42e4b606bb4334e79505e0e8736d9283ccdae2440f1e5b9870f28f50876f1500",
     "patches/particle-sliders-pg0101.patch": "61fa9163b32ae35ee508e6590c9bcc1085ab847eb3200c5deaefc88fd9dff74b",
+    "configs/31b-ct-offload-pilot.json": "51e365b059b4f91eec70114367cbef6df6bc8cac76de22058ae04d3e8e1b1744",
     "configs/31b-ct-pilot.json": "916586bfd032ee1e21835f3867e3e4dfc1fe6ae4b37235fa4306e23036c0cf7c",
     "configs/pilot.json": "ab778d80b834399fe4bee4474fdc91a2a5a19b43ff67c4ee20d44c1f0ccc121d"
   },

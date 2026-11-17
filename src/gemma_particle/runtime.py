@@ -34,6 +34,9 @@ def model_identity(config):
 def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     from .source_identity import require_core_source
     require_core_source()
+    activation_storage=config.get('activation_storage','device') if checkpointing else 'device'
+    if activation_storage not in ('device','cpu'):
+        raise ValueError('unqualified activation storage profile')
     from transformers import AutoModelForImageTextToText,CompressedTensorsConfig
     identity = model_identity(config)
     device = torch.device(device)
@@ -58,7 +61,8 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
         dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device),**quant_options)
     if quantized:
         replace_compressed_linears(model)
-    return Native(model, identity=identity, checkpointing=checkpointing, rank=config['rank'], alpha=config['alpha'],
+    return Native(model, identity=identity, checkpointing=checkpointing, activation_storage=activation_storage,
+                  rank=config['rank'], alpha=config['alpha'],
                   host_profile='frozen-ct-w4g32' if quantized else 'float-linear',
                   particles=config['particles'], particle_width=config['particle_width'], seed=config['seed'])
 

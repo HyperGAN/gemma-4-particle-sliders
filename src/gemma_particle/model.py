@@ -3,7 +3,7 @@
 No loss or optimizer mathematics live here. Gemma 4 omits K/V projections in
 KV-sharing layers; targets follow the actual native module tree.
 """
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
 import hashlib
 import math
@@ -110,10 +110,14 @@ class Prepared:
 
 
 class Native:
-    def __init__(self, model, *, identity, checkpointing=False, **slider_options):
+    def __init__(self, model, *, identity, checkpointing=False, activation_storage='device', **slider_options):
         if not identity:
             raise ValueError("pinned pretrained identity or explicit CPU fixture identity required")
+        if activation_storage not in ('device', 'cpu') or (activation_storage == 'cpu' and not checkpointing):
+            raise ValueError('CPU activation storage requires block checkpointing')
         self.source_cohort=require_core_source()
+        self.activation_storage=activation_storage
+        self.last_activation_storage=None
         self.model, self.identity = model, dict(identity)
         self._flags = [(p, p.requires_grad) for p in model.parameters()]
         self._modes = [(m, m.training) for m in model.modules()]
@@ -141,8 +145,13 @@ class Native:
         if not ids or any(type(token) is not int or token < 0 for token in ids):
             raise ValueError("nonempty nonnegative token IDs required")
         tokens = torch.tensor([ids], device=self.trunk.embed_tokens.weight.device)
-        with self.network.scaled(strength):
+        storage=nullcontext()
+        if self.activation_storage=='cpu' and torch.is_grad_enabled():
+            from .activation_storage import CPUActivationStorage
+            storage=CPUActivationStorage()
+        with storage, self.network.scaled(strength):
             result = self.trunk(input_ids=tokens, attention_mask=torch.ones_like(tokens), use_cache=False, return_dict=True)
+        self.last_activation_storage=dict(storage.stats) if hasattr(storage,'stats') else None
         response = result.last_hidden_state[:, -1, :].float()
         if response.shape != (1, self.width) or not torch.isfinite(response).all():
             raise ValueError("invalid native response")
@@ -161,6 +170,7 @@ class Native:
     def metadata(self):
         return {"protocol": "gemma4-matched-assistant-decision-pg0100-v1", "model_identity": self.identity,
                 "source_cohort":self.source_cohort,
+                "activation_storage":self.activation_storage,
                 "response": "full native final hidden state", "adapter_names": list(self.network.names),
                 "host_profile":self.slider.host_profile,
                 "target_convention": "same question and observed history; teacher has selected behavioral system instruction",
