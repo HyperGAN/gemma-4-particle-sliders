@@ -1,0 +1,62 @@
+{
+  "schema": "gemma4-long-offload-expandable-075-error-v1",
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "device": "cuda:1",
+  "memory_fraction": 0.75,
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "training_updates": 0,
+  "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+  "scope": "memory, finite forward, exact initial OFF and live adapter gradients; not learned quality",
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "status": "resource_error",
+  "ct_sources": {
+    "version": "0.15.0.1",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "verified_python_files": 102
+  },
+  "execution_sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "b3c5fee8bcac23cd3f191c07f4ad210a9ea26455f59b5dfbd94afbf136fa9e40",
+    "configs/31b-ct-offload-pilot.json": "51e365b059b4f91eec70114367cbef6df6bc8cac76de22058ae04d3e8e1b1744",
+    "src/gemma_particle/model.py": "93aab07f6d70364dc4abc3ccf9b5a0247bbc6d3943178b00c1ed9645c3f376e7",
+    "src/gemma_particle/runtime.py": "a129fc1d35423ac826dd514668f73ee23c3b10e4d756bb651b152d1141a2708a",
+    "src/gemma_particle/ct_linear.py": "cb8d51500bd4039e8d06b2b4843e08a20395455a2c5e999131ff8377bd4bff89"
+  },
+  "load_seconds": 7.047403232892975,
+  "off_seconds": 109.91233859700151,
+  "activation_storage_forwards": [
+    {
+      "saves": 65,
+      "copies": 64,
+      "deduplicated_saves": 1,
+      "copied_bytes": 19113694208
+    },
+    {
+      "saves": 65,
+      "copies": 64,
+      "deduplicated_saves": 1,
+      "copied_bytes": 19113694208
+    }
+  ],
+  "initial_on_equals_off": true,
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 1.15 GiB. GPU 1 has a total capacity of 47.40 GiB of which 11.98 GiB is free. Including non-PyTorch memory, this process has 35.40 GiB memory in use. 35.55 GiB allowed; Of the allocated memory 34.94 GiB is allocated by PyTorch, and 152.04 MiB is reserved by PyTorch but unallocated.",
+  "peak_host_rss_bytes": 40448376832,
+  "peak_allocated_bytes": 37749221376,
+  "peak_reserved_bytes": 37971034112,
+  "allocator_backend": "native",
+  "raw_result_sha256": "95f83b16e6aaeccc7fb609f5eb1751ddceb9825885b3a8159f1e310a36e09fcd",
+  "log_sha256": "4cbeee05bd1408a754a20adbf0a529bb29837f20446639934dc7e25edfa9a53f",
+  "as_of": "2026-11-17T06:31:00.723993+00:00",
+  "gradient_qualification": "not achieved; MLP activation allocation failed in decoder-block backward recomputation",
+  "next_delta": "CPU derivative/continuation qualification of explicit nested public checkpoint profile before another GPU allocation"
+}

@@ -13,7 +13,7 @@ import urllib.error
 import urllib.request
 
 ENDPOINT = 'https://api.nano-gpt.com/api/v1/decisions'
-DEFAULT_MODEL = 'typesafe/jev-1.14'
+DEFAULT_MODEL = 'typesafe/jev-latest'
 
 
 def load_key(assignment_file=None):
@@ -77,8 +77,14 @@ def validate_response(payload, response):
     A refusal is an unavailable judgment, never a zero or an inferred success.
     Preserve raw distributions; a Score's number is an ordered level position.
     """
-    if not isinstance(response, dict) or response.get('model') != payload['model']:
-        raise ValueError('decision response model differs from the requested pin')
+    requested = payload['model']
+    accepted = {requested}
+    # NanoGPT's contract also names this exact alias with a leading '~'. The
+    # live latest route returns that spelling. Preserve it in the raw receipt.
+    if requested == 'typesafe/jev-latest':
+        accepted.add('~typesafe/jev-latest')
+    if not isinstance(response, dict) or response.get('model') not in accepted:
+        raise ValueError('decision response model differs from the requested model')
     answers = response.get('answers')
     if not isinstance(answers, dict) or set(answers) != set(payload['questions']):
         raise ValueError('decision response must answer exactly the requested questions')

@@ -1,0 +1,50 @@
+{
+  "schema": "gemma4-decision-model-latest-qualification-v1",
+  "model": "typesafe/jev-latest",
+  "endpoint": "https://api.nano-gpt.com/api/v1/decisions",
+  "created_at": "2026-11-17T06:30:25.954330+00:00",
+  "status": "passed",
+  "training_updates": 0,
+  "scope": "synthetic typed transport/ordering control; no target admission or real-task quality claim",
+  "request_sha256": "e87c98b7812a3f242a5db92bab18c2909e3421d8e0fbb07476749e0db98ce905",
+  "api_calls": 0,
+  "replay_source": "runs/nanogpt-jev-latest-api-control-v1/response.json",
+  "checks": {
+    "observed_above_unverified": true,
+    "observed_test_likely": true,
+    "unsupported_claim_identified": true
+  },
+  "response_sha256": "5daafec826e7a6193f68e1e3cdce0f424f6c6ea60b6286631e19f7e85e597140",
+  "usage": {
+    "input_tokens": 730,
+    "output_tokens": 92,
+    "estimated_cost": 0
+  },
+  "cost": null,
+  "response_model": "~typesafe/jev-latest",
+  "seconds": 0.00014021084643900394,
+  "as_of": "2026-11-17T06:31:00.722152+00:00",
+  "user_selected_model": "jev-latest; Liquid D1 permitted alternative",
+  "authenticated_live_call": {
+    "receipt": "runs/nanogpt-jev-latest-api-control-v1/result.json",
+    "receipt_sha256": "2d309f329f5a40d2749e11434d496e4b7e5e28470f7a9391b097a16f9eb5a55b",
+    "original_client_error": "expected model spelling rather than the documented ~typesafe/jev-latest alias",
+    "http_response_received": true,
+    "seconds": 1.1211631649639457
+  },
+  "latest_api_calls": 1,
+  "all_integration_api_calls": 3,
+  "catalog_sha256": "25496b348d11c802b67819e195bbcc630e251216090c3a3dd7f32283ebd8b3e1",
+  "resolved_checkpoint": null,
+  "sources": {
+    "src/gemma_particle/decisions.py": "be96f1e1bbe302c5043e3aefbfdd2c11da5e251af42ba4b338e0e7bbacf6cc1d",
+    "scripts/qualify_decision_model.py": "6d93b9bef9ad57bba69f5fa5464b58656c217b35c3d3421d5b21ca63f34380fa",
+    "tests/test_decisions.py": "a56d9a0a27978b57b1169a80f8d716ac2abf7cad3cd16b49b011ee58aa897d24"
+  },
+  "cpu_tests": {
+    "passed": 4,
+    "command": "CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q tests/test_decisions.py"
+  },
+  "target_admission": "unchanged",
+  "real_task_judgment_qualification": false
+}

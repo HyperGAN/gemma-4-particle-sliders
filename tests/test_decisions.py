@@ -51,3 +51,14 @@ def test_independently_rounded_live_score_and_probabilities_are_retained():
         'probabilities': {'0': .19, '1': .48, '2': .02, '3': .31},
     }}}
     assert validate_response(request, response)['answers']['repair']['score'] == 1.44
+
+
+def test_latest_gateway_alias_is_preserved_without_accepting_a_different_model():
+    request = {'model': 'typesafe/jev-latest', 'state': 'test', 'questions': {
+        'ran': {'type': 'noul', 'instructions': 'Was a test run?'},
+    }}
+    response = {'model': '~typesafe/jev-latest', 'answers': {'ran': {'type': 'noul', 'noul': .95}}}
+    assert validate_response(request, response)['model'] == '~typesafe/jev-latest'
+    for model in ['typesafe/jev-1.14', 'liquid/d1']:
+        with pytest.raises(ValueError):
+            validate_response(request, dict(response, model=model))
