@@ -4,6 +4,7 @@ Inputs must come from the source-bound local runner/verifier. These checks
 validate internal receipt consistency; they do not authenticate invented JSON
 as an actual model or test execution.
 """
+from copy import deepcopy
 import json
 import math
 from pathlib import Path
@@ -14,19 +15,41 @@ from .harness_identity import sha256_file
 EMPTY_PATCH_SHA256='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
 
 
+def empf_only_selection(base, origin):
+    """Keep the original controls and full EMPF checkpoint/strength grid."""
+    if 'selection_scope' in base or set(base['training']['presets'])!={'empf','rhbi_optimized'}:
+        raise ValueError('an original two-recipe selection plan is required')
+    plan=deepcopy(base)
+    plan['training']['presets']=['empf']
+    plan['conditions']=[row for row in plan['conditions'] if row['role']!='learned' or row['preset']=='empf']
+    plan['expected_conditions']=len(plan['conditions'])
+    plan['selection_scope']={'kind':'empf_only','original_plan':str(origin),'original_plan_sha256':sha256_file(origin)}
+    return plan
+
+
 def load_selection_plan(path):
     plan=json.loads(Path(path).read_text())
     if plan.get('schema')!='gemma4-dev-selection-plan-v1':raise ValueError('explicit DEV selection plan required')
+    training=plan['training']
+    scope=plan.get('selection_scope')
+    if scope is not None:
+        origin=Path(scope['original_plan'])
+        if scope.get('kind')!='empf_only' or sha256_file(origin)!=scope['original_plan_sha256']:
+            raise ValueError('exact original selection scope required')
+        base=json.loads(origin.read_text())
+        if plan!=empf_only_selection(base,origin):
+            raise ValueError('EMPF-only scope may change only the recipe grid')
+    elif set(training['presets'])!={'empf','rhbi_optimized'}:
+        raise ValueError('an explicit user-selected scope revision is required')
     conditions=plan['conditions'];ids=[r['id'] for r in conditions]
     learned=[r for r in conditions if r['role']=='learned']
     expected={(preset,step,strength) for preset in plan['training']['presets']
         for step in plan['training']['checkpoints'] for strength in plan['training']['strengths'] if strength!=0}
     observed={(r['preset'],r['completed_steps'],r['strength']) for r in learned}
-    if (len(ids)!=22 or len(set(ids))!=22 or len(learned)!=18 or observed!=expected
+    if (len(ids)!=len(expected)+4 or len(set(ids))!=len(ids) or len(learned)!=len(expected) or observed!=expected
             or {r['id'] for r in conditions if r['role']!='learned'}!={'off','prompt-reproduce','prompt-localize','prompt-verify'}):
-        raise ValueError('full two-recipe/checkpoint/strength grid and four controls required')
-    training=plan['training']
-    if (set(training['presets'])!={'empf','rhbi_optimized'} or training['horizon']!=1024
+        raise ValueError('complete declared recipe/checkpoint/strength grid and four controls required')
+    if (training['horizon']!=1024
             or training['checkpoints']!=[256,512,1024] or training['strengths']!=[0,.5,1,1.5]
             or training['batch']!=2 or training['response_width']!=5376 or training['weights']!='raw'
             or training['ema_decay'] is not None or plan['promotion']['full_grid_required'] is not True):

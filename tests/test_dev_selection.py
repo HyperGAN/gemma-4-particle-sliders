@@ -7,7 +7,7 @@ import pytest
 
 from gemma_particle.data import digest
 from gemma_particle.harness_identity import sha256_file
-from gemma_particle.dev_selection import (load_selection_plan,summarize_verified_panel,
+from gemma_particle.dev_selection import (empf_only_selection,load_selection_plan,summarize_verified_panel,
     paired_comparison,choose_learned_candidate,wilson_interval,EMPTY_PATCH_SHA256)
 
 
@@ -46,6 +46,23 @@ def fixtures(tmp_path):
         result[panel]=summarize_verified_panel(tasks[panel],[fixture_row(t,i<2) for i,t in enumerate(tasks[panel])],calibrated_ids=calibrated)
     results={c['id']:deepcopy(result) for c in plan['conditions']}
     return plan,tasks,results
+
+
+def test_empf_only_scope_preserves_controls_and_original_policy(tmp_path):
+    original, _, _ = fixtures(tmp_path)
+    origin = tmp_path / 'selection-plan.json'
+    path = tmp_path / 'empf-only.json'
+    selected = empf_only_selection(original, origin)
+    path.write_text(json.dumps(selected))
+    assert load_selection_plan(path) == selected
+    assert len(selected['conditions']) == 13
+    assert sum(row['role']=='learned' for row in selected['conditions']) == 9
+    assert selected['conditions'][:4] == original['conditions'][:4]
+    assert selected['confirmation'] == original['confirmation']
+    selected['promotion']['primary_strict_gain'] = 'changed'
+    path.write_text(json.dumps(selected))
+    with pytest.raises(ValueError, match='may change only the recipe grid'):
+        load_selection_plan(path)
 
 
 def test_complete_denominators_keep_errors_and_reject_grades_training_or_changed_receipts():
