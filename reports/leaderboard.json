@@ -1,6 +1,6 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T10:35:35.146787+00:00",
+  "as_of": "2026-11-17T10:49:23.214949+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
@@ -13,7 +13,7 @@
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; reports/vllm-serving-qualification-v1.json",
     "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
-    "31b_vllm_collection": "GPU1 initial-decision Jev pool:11194 has all4 arms clean/resolved and1 admitted initial target;11355 has all4 arms clean/unresolved and0 targets. Old GPU0 full-history binary pool remains a separate study,0 targets as of this snapshot.",
+    "31b_vllm_collection": "GPU0 separate full-history binary study closed after two complete quartets and0targets;51 unattempted tasks withdrawn without inferred outcomes. API/engine release observed. GPU1 initial-decision Jev study continues; reports/gpu0-binary-collection-closure-v1.json",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json",
     "context_budget_capture": "Full-budget capture, complete/failure journals and exact token transport qualified. First admitted neutral/positive prompts2904/3026 tokens, uncropped; reports/first-admitted-prompt-transport-v1.json",
     "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
@@ -24,8 +24,9 @@
     "actual_lora_loading": "Eight real31B vLLM transport requests pass:exact zero-adapter parity and nonzero synthetic effect. Synthetic weights are ineligible as learned candidates; reports/vllm-lora-effect-control-v1.json",
     "behavior_targets": "One genuine initial TRAIN context independently re-curated offline; Jev verify .99>OFF .40 and fresh teacher tests pass. One-pass paid judging; reports/first-real-behavior-admission-v1.json",
     "pretrained_optimization": "Zero pretrained optimizer updates. First EMPF engineering update waits for2 distinct admitted initial targets and observed shared GPU/host headroom.",
-    "dev_selection": "Prospective22-condition grid:4 unadapted controls+18 learned recipe/checkpoint/strength combinations. All42 fixed supplementary and all13 original DEV tasks reported. Original5/13 environments qualify; blocked8 remain annotated. No model DEV results yet; research/dev-selection-v1.json",
-    "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json"
+    "dev_selection": "First actual DEV inference observed onloguru_1508:bound base alias returned, matching prompt/budget/sampling/history checked. Four full42+13 controls running from frozen479168d; no terminal task score or aggregate yet; reports/dev-controls-actual-launch-v1.json",
+    "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json",
+    "full_recipe_continuation": "Passive exact continuation armed from frozen bcd2255: wait for verified actual EMPF step1, resume through256/512/1024, then explicit GPU-native-polar RHBI on the same cache.0 pretrained updates currently; reports/full-training-continuation-preparation-v1.json"
   },
   "task_resolution": [
     {

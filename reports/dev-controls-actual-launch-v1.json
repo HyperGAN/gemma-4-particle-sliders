@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-dev-controls-actual-launch-v1",
+  "as_of": "2026-11-17T10:49:23.214949+00:00",
+  "status": "actual DEV inference observed; no terminal task score yet",
+  "executor_commit": "479168dba212cc06fa92053929c53847a4fba259",
+  "selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "server_identity_sha256": "13bf439d8e40bf579723ac2ccac77b3997e8c76495b0cbb8b64d13766d7f04f1",
+  "health_identity_matches": true,
+  "base_only": true,
+  "adapter_weights_loaded": false,
+  "lora_engine_enabled": true,
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "weight_format": "ct-w4g32",
+    "attn_implementation": "vllm:auto"
+  },
+  "device": "cuda:0",
+  "memory_fraction": 0.6,
+  "first_task": "loguru_1508",
+  "first_request_sha256": "786dd05b8055d304825a779cec65236e780b1735f3e1ba4cc875b2e2ef2884c4",
+  "first_response_sha256": "93efce3448d018d45e9001296ab09f1852feb869355b5ad3003ff9cbc38b5f0b",
+  "requested_model": "openai/gemma-4-31b-it-qat-w4a16-ct",
+  "returned_model": "gemma-4-31b-it-qat-w4a16-ct",
+  "observed_completed_prefix": 3,
+  "matching_prompt_budget_sampling_history": "passed against frozen selection plan",
+  "planned_conditions": [
+    "off",
+    "prompt-reproduce",
+    "prompt-localize",
+    "prompt-verify"
+  ],
+  "tasks_per_condition": 55,
+  "scope": "real DEV launch and bound model dispatch; no aggregate DEV, confirmation or official model score"
+}

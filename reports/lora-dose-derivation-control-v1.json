@@ -1,0 +1,23 @@
+{
+  "schema": "gemma4-lora-dose-derivation-control-v1",
+  "status": "passed",
+  "gpu_used": false,
+  "controls": [
+    "nonzero CPU random Gemma4 after one actual public EMPF fixture update",
+    "derived .5/1.5 tensors exactly equal separate native exports at each strength",
+    "config bytes unchanged; native/cache/probe provenance and original layer diagnostics retained",
+    "source weights unchanged; duplicate output, derived-source reuse and damaged conversion receipt rejected"
+  ],
+  "source_sha256": {
+    "src/gemma_particle/lora_strengths.py": "75203f48f0e0f71237e5187ddfcbe3c643f1693665995caa37e55a77953e84ff",
+    "scripts/derive_peft_strength.py": "b96fcad7ec26637f47ca9cdec2e6680fd0ad2400ca5730729fe9668d2565489c",
+    "tests/test_lora_strengths.py": "7787fe922c63d1ae577b701bd3564df3922c231cb686118e083663e0ebdd8486",
+    "src/gemma_particle/export.py": "647868e8a021e38aacbfd1f5dce1cb75df89ad3f09d7d5d5fbee165675fc769f"
+  },
+  "test_log_sha256": "8d40b878175eaf599611926f004b6d1a5083efe6248ce689c595434f5696a884",
+  "tests_passed": 2,
+  "work_saved": "one measured unit-strength conversion per checkpoint instead of repeating identical activation fitting for all three strengths",
+  "layer_metrics_scope": "original unscaled native delta diagnostics; derived doses introduce no new fit/probe or model-quality measurement",
+  "pretrained_training_updates": 0,
+  "scope": "CPU fixture numerical and provenance controls; not learned31B conversion fidelity, serving effect or task performance"
+}
