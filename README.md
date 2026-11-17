@@ -10,6 +10,8 @@ The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/je
 
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
 
+The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; actual 31B LoRA serving and effects remain unqualified.
+
 [Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Lossless CPU activation storage](docs/activation-storage.md) passes CPU gradient and continuation controls. Long-history block-checkpoint probes exceeded their shared GPU caps; a separate [CPU packed-weight/nested-checkpoint profile](docs/cpu-packed-weight-storage.md) passes CPU and tiny CUDA controls and is being tested at a 40% cap.
 
 | Component | Current evidence |

@@ -1,0 +1,46 @@
+{
+  "schema": "gemma4-cpu-first-packed-050-forward-error-v1",
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "device": "cuda:1",
+  "memory_fraction": 0.5,
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "training_updates": 0,
+  "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+  "scope": "first gradient-enabled ON forward failed; no completed ON forward or full gradient qualification, zero optimizer updates",
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "status": "error",
+  "phase": "on_forward_0",
+  "on_forwards_completed": 0,
+  "ct_sources": {
+    "version": "0.15.0.1",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "verified_python_files": 102
+  },
+  "execution_sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "f25c791d3dae4f04aa1ec1e012edea75212250d5ed2093d76959956fd2c6a54a",
+    "configs/31b-ct-shared-storage-pilot.json": "7d1763bc093298b314a4b4d2e10a6458dfa300cb53ec8111cfda663dc65455cf",
+    "src/gemma_particle/model.py": "5d589fdbf39714816c7d34949312a7d5c695895ca7437647aab18e092cd7fc8c",
+    "src/gemma_particle/runtime.py": "b6f834b88064eb99d83db7bd7515037ae2ff2cd3ca5cf6e3778db558451cf426",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98"
+  },
+  "load_seconds": 5.0400132718496025,
+  "off_seconds": 111.4720108481124,
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 1.75 GiB. GPU 1 has a total capacity of 47.40 GiB of which 24.20 GiB is free. Including non-PyTorch memory, this process has 23.18 GiB memory in use. 23.70 GiB allowed; Of the allocated memory 22.72 GiB is allocated by PyTorch, and 148.56 MiB is reserved by PyTorch but unallocated.",
+  "peak_host_rss_bytes": 40239296512,
+  "peak_allocated_bytes": 25108088832,
+  "peak_reserved_bytes": 25270681600,
+  "allocator_backend": "native",
+  "raw_result_sha256": "c16b6d1f246a319977205ce9edffbee64754cb0ab97195fbeb43b87fd7722932",
+  "next_delta": "CPU lifetime probe shows public checkpoint retains keyword nonleaf inputs; test positional argument binding around the unchanged public wrapper"
+}

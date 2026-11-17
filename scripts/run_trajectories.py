@@ -14,7 +14,7 @@ import time
 import httpx
 from urllib.parse import urlsplit
 
-from adk_submission import ModelRegistry
+from adk_submission import ModelRegistry,discover_adapters
 from swegemma.config import EvalConfig
 from swegemma.harness.agent_runner import run_agent_sandbox
 from swegemma.models import Task
@@ -29,6 +29,7 @@ from gemma_particle.sandbox import isolate_sandbox_cache
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
 from gemma_particle.dev import load_external_dev,validate_agent_tasks,qualified_dev_identity
 from gemma_particle.history import NO_COMPACTION,OFFICIAL_COMPACTION,HISTORY_PROFILES,history_contract,eval_history_options
+from gemma_particle.adapters import register_packaged_adapter
 from build_submission import build,MODELS
 
 
@@ -42,6 +43,7 @@ async def main():
     p.add_argument('--capture-protocol',choices=CAPTURE_PROTOCOLS,default=CONTEXT_CAPTURE_PROTOCOL)
     p.add_argument('--history-profile',choices=HISTORY_PROFILES,default=OFFICIAL_COMPACTION)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
+    p.add_argument('--adapter',type=Path,help='PEFT candidate for OFF-prompt evaluation; never frozen-base TRAIN targets')
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
     p.add_argument('--cpu-protocol-fixture',action='store_true')
@@ -52,6 +54,8 @@ async def main():
     p.add_argument('--wheels',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
+    if args.adapter and args.arm!='off':
+        raise ValueError('this candidate cohort uses the OFF system prompt; teacher arms remain separate controls')
     if args.out.exists(): raise FileExistsError('trajectory cohort is immutable')
     endpoint=urlsplit(args.endpoint)
     if endpoint.scheme!='http' or endpoint.hostname not in ('localhost','127.0.0.1','::1') or endpoint.username or endpoint.password:
@@ -80,7 +84,7 @@ async def main():
             raise ValueError('live endpoint differs from the declared server identity')
     os.environ['KAGGLE_SANDBOX_DIR']=str((args.inputs/'sandbox').resolve())
     args.out.mkdir(parents=True,mode=0o700)
-    artifact=build(args.out/'artifact',args.model,instruction=None if args.arm=='off' else args.arm,
+    artifact=build(args.out/'artifact',args.model,adapter=args.adapter,instruction=None if args.arm=='off' else args.arm,
         instruction_protocol=args.instruction_protocol,budget_profile=args.budget_profile)
     manifest={'schema':'gemma4-trajectory-cohort-v1','generator_kind':server_identity['kind'],
         'server_identity':server_identity,'model':args.model,'arm':args.arm,'task_ids':args.task_id,
@@ -118,12 +122,19 @@ async def main():
                                          extra_headers={'X-Gemma-Identity':digest(server_identity)} if not args.cpu_protocol_fixture else {},
                                          num_retries=5,llm_client=client)
         models.register(args.model,llm)
+        adapters=None
+        adapter_identities=None
+        if args.adapter:
+            adapters=discover_adapters(args.out/'artifact/agent',adapter_extensions=frozenset({'.safetensors'}))
+            adapter_identities=register_packaged_adapter(models,adapters,llm,
+                server_adapters=server_identity.get('adapters'),fixture=args.cpu_protocol_fixture)
+            manifest['candidate_adapters']=adapter_identities
         config=EvalConfig(tasks_path=args.tasks,snapshots_dir=args.inputs/'snapshots',results_dir=folder,
             submission_dir=args.out/'artifact/agent',models=models,wheels_dir=args.wheels,
             graph_dir=str(args.inputs/'graphs'),embeddings_dir=str(args.inputs/'embeddings'),
             image=args.image,**budget_values(args.budget_profile),
             **eval_history_options(args.history_profile,llm),
-            display_mode='quiet')
+            display_mode='quiet',adapter_manifest=adapters)
         manifest.setdefault('contract',{'budget':asdict(config.budget),'harness':asdict(config.harness),
             'environment':manifest['environment'],'image_id':manifest['image_id'],
             'model_identity':server_identity,'served_model':args.model,
@@ -136,6 +147,7 @@ async def main():
         if args.history_profile!=NO_COMPACTION:
             manifest['contract']['history']=history_contract(args.history_profile)
         if external:manifest['contract']['external_dev']=manifest['external_dev']
+        if adapter_identities:manifest['contract']['candidate_adapters']=adapter_identities
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
         start=time.perf_counter()
@@ -162,7 +174,8 @@ async def main():
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:result['capture_protocol']=args.capture_protocol
         if args.history_profile!=NO_COMPACTION:result['history_profile']=args.history_profile
-        result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
+        result['frozen_base_generator']=args.adapter is None and server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
+        if adapter_identities:result['candidate_adapters']=adapter_identities
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']
         result['capture_complete']=capture_error is None
         result['capture_error']=capture_error

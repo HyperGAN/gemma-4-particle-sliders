@@ -41,7 +41,7 @@ def main():
         'context_kind':'synthetic resource/derivative probe; forbidden as a training target',
         'scope':'memory, finite forward, exact initial OFF and live adapter gradients; not learned quality',
         'allocator_environment':{key:os.environ.get(key) for key in ('PYTORCH_ALLOC_CONF','PYTORCH_CUDA_ALLOC_CONF')},
-        'status':'started'}
+        'status':'started','phase':'loading','on_forwards_completed':0}
     sources=[Path(__file__),args.config,Path('src/gemma_particle/model.py'),Path('src/gemma_particle/runtime.py')]
     if config.get('frozen_quantization'):
         from gemma_particle.ct_linear import verify_ct_sources
@@ -55,20 +55,27 @@ def main():
         receipt['native_metadata']=native.metadata()
         if device.type=='cuda':torch.cuda.synchronize(device)
         receipt['load_seconds']=time.perf_counter()-start
+        receipt['phase']='off_forward';save()
         before={k:v.detach().cpu().clone() for k,v in native.network.state_dict().items()}
         start=time.perf_counter()
         with torch.no_grad():off=native.hidden(ids,strength=0).detach().clone()
         if device.type=='cuda':torch.cuda.synchronize(device)
         receipt['off_seconds']=time.perf_counter()-start
+        receipt['phase']='on_forward_0';save()
         storage=[]
         start=time.perf_counter()
         outputs=[]
         for _ in range(args.batch_size):
             outputs.append(native.hidden(ids,strength=1))
             storage.append(native.last_activation_storage)
+            receipt['on_forwards_completed']=len(outputs)
+            receipt['activation_storage_forwards']=storage
+            receipt['phase']=f'on_forward_{len(outputs)}' if len(outputs)<args.batch_size else 'forward_comparison'
+            save()
         response=torch.cat(outputs,dim=0)
         receipt['activation_storage_forwards']=storage
         receipt['initial_on_equals_off']=torch.equal(response.detach(),off.expand_as(response))
+        receipt['phase']='backward';save()
         direction=torch.linspace(.1,1,native.width,device=response.device)
         gradients=torch.autograd.grad((response*direction).sum(),tuple(native.network.parameters()),allow_unused=True)
         if device.type=='cuda':torch.cuda.synchronize(device)
@@ -85,6 +92,7 @@ def main():
         passed=(receipt['initial_on_equals_off'] and receipt['finite_gradients'] and receipt['nonzero_gradient_tensors']>0
             and receipt['connected_gradient_tensors']==receipt['gradient_tensors'] and receipt['adapter_unchanged'] and receipt['frozen_base'])
         receipt['status']='passed' if passed else 'failed'
+        receipt['phase']='completed'
     except Exception as exc:
         receipt.update(status='error',error_type=type(exc).__name__,error=str(exc))
         raise

@@ -1,0 +1,45 @@
+{
+  "schema": "gemma4-cpu-first-packed-040-forward-error-v1",
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa",
+    "weight_format": "ct-w4g32"
+  },
+  "device": "cuda:1",
+  "memory_fraction": 0.4,
+  "context_tokens": 28672,
+  "batch_size": 2,
+  "training_updates": 0,
+  "context_kind": "synthetic resource/derivative probe; forbidden as a training target",
+  "scope": "OFF forward completed; gradient-enabled forward failed before completing both sequences; no complete gradient qualification or optimizer update",
+  "allocator_environment": {
+    "PYTORCH_ALLOC_CONF": null,
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+  },
+  "status": "error",
+  "ct_sources": {
+    "version": "0.15.0.1",
+    "wheel_sha256": "e1b1f322e82e475715e242bad46925a304ea8e5c98b5055a15b8eb22fb6bfea9",
+    "verified_python_files": 102
+  },
+  "execution_sources": {
+    "/ml2/kaggle-hackathon-gemma-4/scripts/profile_native.py": "b3c5fee8bcac23cd3f191c07f4ad210a9ea26455f59b5dfbd94afbf136fa9e40",
+    "configs/31b-ct-shared-storage-pilot.json": "7d1763bc093298b314a4b4d2e10a6458dfa300cb53ec8111cfda663dc65455cf",
+    "src/gemma_particle/model.py": "5d589fdbf39714816c7d34949312a7d5c695895ca7437647aab18e092cd7fc8c",
+    "src/gemma_particle/runtime.py": "b6f834b88064eb99d83db7bd7515037ae2ff2cd3ca5cf6e3778db558451cf426",
+    "src/gemma_particle/ct_linear.py": "312cc05a33c074f4db898c5002ea3659d71ffa6b2239e80800972dc67585ce98"
+  },
+  "load_seconds": 5.107366032199934,
+  "off_seconds": 111.46539561497048,
+  "error_type": "OutOfMemoryError",
+  "error": "CUDA out of memory. Tried to allocate 1.75 GiB. GPU 1 has a total capacity of 47.40 GiB of which 29.35 GiB is free. Including non-PyTorch memory, this process has 18.03 GiB memory in use. 18.96 GiB allowed; Of the allocated memory 17.56 GiB is allocated by PyTorch, and 160.56 MiB is reserved by PyTorch but unallocated.",
+  "peak_host_rss_bytes": 34680897536,
+  "peak_allocated_bytes": 19559024640,
+  "peak_reserved_bytes": 19755171840,
+  "allocator_backend": "native",
+  "raw_result_sha256": "46347f1635150fe07d938d300428ada9c4bfe6e1867e6e2bf4b57b74cd10516e",
+  "log_sha256": "855964ab895b960112184ea062dda28545ae8b40e7d6e61102b403eab86042fc",
+  "next_delta": "same full two sequences and storage/source profile, explicit .50 shared GPU cap; phase markers added without numerical changes"
+}

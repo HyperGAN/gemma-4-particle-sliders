@@ -1,0 +1,32 @@
+{
+  "schema": "gemma4-candidate-alias-cpu-control-v1",
+  "status": "passed",
+  "pretrained_inference": false,
+  "synthetic_adapter": true,
+  "adapter_identities": {
+    "particle_lora": {
+      "base_model_name_or_path": "google/gemma-4-31B-it",
+      "rank": 1,
+      "files": {
+        "adapter_config.json": "5cd00ad91ededbbc65033a94d406d6ca29b60adf215dad500ce6561c777ca219",
+        "adapter_model.safetensors": "c2767f1a50276b7ab34d948ae8b67fc794d5633be6256e876085ae124e1e3dd9"
+      }
+    }
+  },
+  "official_compiler_selected_adapter_alias": true,
+  "all_captured_calls_use_exact_adapter_alias": true,
+  "summary_uses_adapter_alias": true,
+  "seed_and_thinking_controls_preserved": true,
+  "server_alias_and_bytes_mismatches_rejected": true,
+  "model_calls": 4,
+  "summary_calls": 1,
+  "wire_alias_inference": "unmeasured; capture is before LiteLLM provider dispatch",
+  "scope": "actual official compiler and ADK model-boundary routing only; no PEFT/vLLM effect or task-quality evidence; forbidden targets",
+  "tests_passed": 2,
+  "sources": {
+    "src/gemma_particle/adapters.py": "d3776aaa7d9109c247fcedfa50e2a150b808ecad0aa1f23690ff1b003d1e28bc",
+    "scripts/run_trajectories.py": "a0cd92fdcbfe9ed0f45d350afc267d47b09277276f4d55a13c6fff2bcb5c75b8",
+    "scripts/qualify_candidate_routing.py": "1ee4638e5aadba57cb1e3c1df4947f25ea623971122505ac0d6d15cc230acc49",
+    "tests/test_adapters.py": "10706c5ea5c5ce9165541bd6f5c534ce6d1b1e22edb610de8f52ce6c18d83474"
+  }
+}
