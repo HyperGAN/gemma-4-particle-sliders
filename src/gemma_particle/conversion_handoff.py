@@ -28,13 +28,22 @@ def projection_names(signature):
         for n in signature['backend']['adapter_names'] if n.startswith('adapters.') and n.endswith('.lora_down.weight')}
 
 
+def completed_training_state(selection):
+    presets=set(selection['training']['presets'])
+    if presets=={'empf'}:return 'completed_empf_only'
+    if presets=={'empf','rhbi_optimized'}:return 'completed_both_recipes'
+    raise ValueError('unsupported native recipe scope')
+
+
 def validate_training_outputs(training,cache,pilot,config_path,selection,probe_contexts,probe_qualification,*,require_complete=True):
     training,cache,pilot=map(Path,(training,cache,pilot));config=read(config_path)
     status=read(training/'progress.json');declaration=read(training/'plan.json');first=read(pilot/'progress.json')
-    complete=status.get('state')=='completed_both_recipes'
-    running=status.get('state') in {'waiting_for_shared_headroom','training','checkpoint_verified'}
+    presets=selection['training']['presets']
+    complete=status.get('state')==completed_training_state(selection)
+    running=status.get('state') in {'waiting_adopted_empf_checkpoint','waiting_for_shared_headroom','training','checkpoint_verified'}
     if ((not complete and (require_complete or not running))
-            or (complete and status.get('training_updates')!=2048)
+            or (complete and status.get('training_updates')!=1024*len(presets))
+            or set(declaration['presets'])!=set(presets)
             or first.get('state')!='completed_one_update' or first.get('training_updates')!=1
             or declaration['config_sha256']!=sha256_file(config_path)):
         raise ValueError('qualified native training state and unchanged pilot/config required')
@@ -45,7 +54,7 @@ def validate_training_outputs(training,cache,pilot,config_path,selection,probe_c
             or index['schema']!='gemma4-matched-response-cache-v1' or index['metadata']['model_identity']!=identity
             or index['metadata']['train_sha256']!=selection['training']['train_manifest_sha256']
             or index['responses_sha256']!=sha256_file(cache/'responses.safetensors')):
-        raise ValueError('one exact actual response cache required for both recipes')
+        raise ValueError('one exact actual response cache required for the declared recipes')
     train=Path(selection['training']['train_manifest']);tasks=read_jsonl(train)
     if (sha256_file(train)!=selection['training']['train_manifest_sha256']
             or not tasks or any(t['split']!='train' for t in tasks)):

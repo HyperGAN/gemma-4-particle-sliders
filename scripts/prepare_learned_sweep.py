@@ -1,4 +1,4 @@
-"""Measure six verified native checkpoint conversions and stage 18 DEV packets."""
+"""Measure verified native checkpoint conversions and stage the declared DEV packets."""
 import argparse
 from datetime import datetime,timezone
 import json
@@ -7,9 +7,9 @@ from pathlib import Path
 import subprocess
 import time
 
-from gemma_particle.conversion_handoff import validate_training_outputs,validate_conversion,read
+from gemma_particle.conversion_handoff import completed_training_state,validate_training_outputs,validate_conversion,read
 from gemma_particle.dev_dispatch import live,load_control_results,process_binding
-from gemma_particle.dev_selection import load_selection_plan
+from gemma_particle.dev_selection import baseline_selection_sha256,load_selection_plan
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.lora_serving import prepare_lora
 
@@ -41,6 +41,10 @@ def main():
     if args.out.exists():raise FileExistsError('sweep preparation is immutable; reconcile incomplete outputs')
     selection=load_selection_plan(args.selection_plan);config=args.executor/'configs/31b-ct-shared-positional-pilot.json'
     selection_sha=sha256_file(args.selection_plan)
+    control_sha=baseline_selection_sha256(selection,selection_sha)
+    learned=[condition for condition in selection['conditions'] if condition['role']=='learned']
+    expected_jobs={(condition['preset'],condition['completed_steps']) for condition in learned}
+    complete_state=completed_training_state(selection)
     if subprocess.check_output(['git','rev-parse','HEAD'],cwd=args.executor,text=True).strip()!=args.executor_commit:
         raise ValueError('exact qualified native executor required')
     subprocess.run(['git','diff','--quiet','HEAD'],cwd=args.executor,check=True)
@@ -48,6 +52,7 @@ def main():
     same_device=training_plan['device']==args.device
     expect_same_device=args.staged_controls is None
     if (training_plan['executor_commit']!=args.executor_commit or same_device!=expect_same_device
+            or set(training_plan['presets'])!=set(selection['training']['presets'])
             or training_plan['config_sha256']!=sha256_file(config)
             or qualification.get('status')!='passed' or qualification['probe_sha256']!=sha256_file(args.probe_contexts)
             or qualification['train_manifest_sha256']!=selection['training']['train_manifest_sha256']):
@@ -66,7 +71,7 @@ def main():
         identity_path=Path(controls_plan['server_identity'])
         baseline=read(identity_path)
         if (controls_plan.get('schema')!='gemma4-full-dev-controls-plan-v1'
-                or controls_plan['selection_plan_sha256']!=selection_sha
+                or controls_plan['selection_plan_sha256']!=control_sha
                 or baseline.get('device')!=args.device or baseline.get('base_only') is not True
                 or baseline.get('adapters') or type(controls_plan.get('server_pid')) is not int
                 or not controls_plan.get('server_birth_ticks')):
@@ -82,10 +87,11 @@ def main():
             'server':{'pid':controls_plan['server_pid'],'birth_ticks':controls_plan['server_birth_ticks']}}
     elif args.staged_controls_pid:
         raise ValueError('--staged-controls-pid requires --staged-controls')
-    already_complete=read(args.training/'progress.json').get('state')=='completed_both_recipes'
+    already_complete=read(args.training/'progress.json').get('state')==complete_state
     if not args.plan_only and not already_complete:
         if not args.training_pid:raise ValueError('owned live training supervisor required for this waiting handoff')
-        training_binding=process_binding(args.training_pid,'continue_full_training.py',args.training)
+        script='continue_empf_only.py' if complete_state=='completed_empf_only' else 'continue_full_training.py'
+        training_binding=process_binding(args.training_pid,script,args.training)
     args.out.mkdir(parents=True);(args.out/'logs').mkdir()
     declaration={'schema':'gemma4-learned-sweep-preparation-plan-v1','created_at':datetime.now(timezone.utc).isoformat(),
         'training':str(args.training),'training_plan_sha256':sha256_file(args.training/'plan.json'),
@@ -93,7 +99,7 @@ def main():
         'executor_commit':args.executor_commit,'selection_plan_sha256':selection_sha,'probe_sha256':sha256_file(args.probe_contexts),
         'probe_qualification_sha256':sha256_file(args.probe_qualification),'config_sha256':sha256_file(config),
         'sources':sources,'controller_sources':controller_sources,'source_sha256':sha256_file(Path(__file__)),'device':args.device,'memory_fraction':.5,
-        'expected_unit_conversions':6,'expected_candidate_packets':18,
+        'expected_unit_conversions':len(expected_jobs),'expected_candidate_packets':len(learned),
         'scope':'conversion/packet preparation only; no model DEV,holdout or official submission'}
     if staged:declaration['staged_controls']=staged
     initial_state='waiting_staged_baseline_release' if staged else 'waiting_actual_full_training'
@@ -109,7 +115,7 @@ def main():
             status=read(args.training/'progress.json')
             if status['state']=='error':
                 raise RuntimeError('actual native training failed; conversion cannot substitute checkpoints')
-            if status['state']!='completed_both_recipes' and not (training_binding and live(training_binding)):
+            if status['state']!=complete_state and not (training_binding and live(training_binding)):
                 raise RuntimeError('native supervisor exited without qualified full completion')
             return status
 
@@ -145,7 +151,7 @@ def main():
                 'control_results':{str(path):sha256_file(path) for path in controls}})
             (args.out/'staged-checkpoints').mkdir()
         else:
-            while training_status()['state']!='completed_both_recipes':time.sleep(10)
+            while training_status()['state']!=complete_state:time.sleep(10)
             # The ordinary converter shares the trainer's physical GPU.
             while training_binding and live(training_binding):time.sleep(1)
             check_declarations()
@@ -182,7 +188,7 @@ def main():
             current=training_status()
             recorded={(row['preset'],row['completed_steps']) for row in current.get('finished',[])}
             if not recorded-completed:
-                if current['state']=='completed_both_recipes':
+                if current['state']==complete_state:
                     if staged:write(args.out/'validated-native-jobs.json',verified_jobs(require_complete=True))
                     break
                 if status['state']!='waiting_verified_checkpoint':publish('waiting_verified_checkpoint')
@@ -220,19 +226,20 @@ def main():
                     'native_metadata_sha256':job['native_metadata_sha256'],'cache_index_sha256':job['cache_index_sha256'],
                     'conversion_report_sha256':sha256_file(report),'adapters':spec['adapters']}
             if staged:
-                packets=[{'condition':condition,**exports[(*key,condition['strength'])]} for condition in selection['conditions']
-                         if condition['role']=='learned' and (condition['preset'],condition['completed_steps'])==key]
+                packets=[{'condition':condition,**exports[(*key,condition['strength'])]} for condition in learned
+                         if (condition['preset'],condition['completed_steps'])==key]
                 if len(packets)!=3:raise ValueError('all three declared strengths are required for a staged checkpoint')
                 write(args.out/'staged-checkpoints'/f'{label}.json',{'schema':'gemma4-staged-checkpoint-packets-v1',
                     'selection_plan_sha256':selection_sha,'verified_job':job,'packets':packets})
             completed.add(key);publish('checkpoint_packets_ready',completed_unit_conversions=len(completed),candidate_packets=len(exports))
+        if completed!=expected_jobs or len(exports)!=len(learned):
+            raise ValueError('complete declared learned grid required')
         packets=[{'condition':condition,**exports[(condition['preset'],condition['completed_steps'],condition['strength'])]}
-            for condition in selection['conditions'] if condition['role']=='learned']
-        if len(packets)!=18:raise ValueError('complete declared learned grid required')
+            for condition in learned]
         write(args.out/'candidate-packets.json',{'schema':'gemma4-measured-learned-packets-v1',
             'selection_plan_sha256':declaration['selection_plan_sha256'],'packets':packets,
             'scope':'measured conversion and immutable packet identities only; no model DEV or official score'})
-        publish('prepared_complete_learned_grid',completed_unit_conversions=6,candidate_packets=18,
+        publish('prepared_complete_learned_grid',completed_unit_conversions=len(completed),candidate_packets=len(packets),
             candidate_packets_sha256=sha256_file(args.out/'candidate-packets.json'))
     except Exception as exc:
         publish('error',error_type=type(exc).__name__,error=str(exc));raise

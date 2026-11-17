@@ -20,8 +20,8 @@ from gemma_particle.lora_serving import BASE_ALIAS, BASE_REPO
 from test_conversion_handoff import fake_finished_run, put
 
 
-def packet_fixture(root):
-    args = fake_finished_run(root / 'native-fixture')
+def packet_fixture(root, presets=('empf', 'rhbi_optimized')):
+    args = fake_finished_run(root / 'native-fixture', presets)
     selection = args[4]
     selection['conditions'] = [{'id': f'{p}-{step}-{s}', 'role': 'learned', 'arm': 'off',
         'preset': p, 'completed_steps': step, 'strength': s}
@@ -47,14 +47,15 @@ def packet_fixture(root):
             'adapters': {'particle_lora': adapter_identity(adapter)}})
     put(directory / 'candidate-packets.json', {'schema': 'gemma4-measured-learned-packets-v1',
         'selection_plan_sha256': 'a' * 64, 'packets': packets})
-    put(directory / 'progress.json', {'state': 'prepared_complete_learned_grid', 'completed_unit_conversions': 6,
-        'candidate_packets': 18, 'candidate_packets_sha256': sha256_file(directory / 'candidate-packets.json')})
+    put(directory / 'progress.json', {'state': 'prepared_complete_learned_grid', 'completed_unit_conversions': len(jobs),
+        'candidate_packets': len(packets), 'candidate_packets_sha256': sha256_file(directory / 'candidate-packets.json')})
     return directory, selection, 'a' * 64, jobs, sha256_file(args[5])
 
 
-def test_complete_measured_grid_and_all_packets_reaudited(tmp_path):
-    args = packet_fixture(tmp_path)
-    assert len(load_packets(*args)) == 18
+@pytest.mark.parametrize('presets', [('empf',), ('empf', 'rhbi_optimized')])
+def test_complete_measured_grid_and_all_packets_reaudited(tmp_path, presets):
+    args = packet_fixture(tmp_path, presets)
+    assert len(load_packets(*args)) == 9 * len(presets)
     adapter = args[0] / args[1]['conditions'][0]['id'] / 'adapter_model.safetensors'
     adapter.write_bytes(b'damaged CPU fixture')
     with pytest.raises(ValueError):
@@ -94,6 +95,10 @@ def test_all_baseline_controls_and_denominators_required(tmp_path):
         records.append({'condition_id': condition['id'], 'result_sha256': sha256_file(path)})
     put(tmp_path / 'progress.json', {'state': 'complete', 'planned_conditions': 4, 'finished': records})
     assert len(load_control_results(tmp_path, {'conditions': controls}, 'a' * 64)) == 4
+    revision = {'conditions': controls, 'selection_scope': {'original_plan_sha256': 'a' * 64}}
+    assert len(load_control_results(tmp_path, revision, 'b' * 64)) == 4
+    with pytest.raises(ValueError, match='denominators'):
+        load_control_results(tmp_path, {'conditions': controls}, 'b' * 64)
     path = tmp_path / 'off/result.json'; value = json.loads(path.read_text()); value['secondary']['total'] = 5
     put(path, value); records[0]['result_sha256'] = sha256_file(path)
     put(tmp_path / 'progress.json', {'state': 'complete', 'planned_conditions': 4, 'finished': records})

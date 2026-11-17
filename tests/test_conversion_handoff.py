@@ -18,7 +18,7 @@ def put(path,value):
     path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value)+'\n')
 
 
-def fake_finished_run(root):
+def fake_finished_run(root,presets=('empf','rhbi_optimized')):
     config=root/'config.json';put(config,{'model':'CPU-fixture','model_revision':'f'*40,
         'attn_implementation':'sdpa','frozen_quantization':'ct-w4g32',
         'rank':8,'alpha':8,'particles':128,'particle_width':4})
@@ -27,8 +27,8 @@ def fake_finished_run(root):
     train=root/'train.jsonl';train.parent.mkdir(parents=True,exist_ok=True)
     train.write_text(''.join(json.dumps({'instance_id':i,'split':'train'})+'\n' for i in ['fit-a','fit-b','probe-a','probe-b']))
     selection={'training':{'train_manifest':str(train),'train_manifest_sha256':sha256_file(train),
-        'presets':['empf','rhbi_optimized'],'checkpoints':[256,512,1024],'source_cohort':{'fixture':'not actual PG source'}},
-        'conditions':[{'role':'learned','preset':p,'completed_steps':s} for p in ['empf','rhbi_optimized'] for s in [256,512,1024]]}
+        'presets':list(presets),'checkpoints':[256,512,1024],'source_cohort':{'fixture':'not actual PG source'}},
+        'conditions':[{'role':'learned','preset':p,'completed_steps':s} for p in presets for s in [256,512,1024]]}
     cache=root/'cache';cache.mkdir();(cache/'responses.safetensors').write_bytes(b'CPU fixture only; not actual tensors')
     put(cache/'index.json',{'schema':'gemma4-matched-response-cache-v1','metadata':{'model_identity':identity,
         'train_sha256':sha256_file(train)},'responses_sha256':sha256_file(cache/'responses.safetensors'),
@@ -38,7 +38,7 @@ def fake_finished_run(root):
     probe=root/'probe.json';put(probe,{'train_manifest_sha256':sha256_file(train),'fixture':'CPU probe only'})
     qualification=root/'probe-qualification.json';put(qualification,{'status':'passed','probe_sha256':sha256_file(probe),
         'train_manifest_sha256':sha256_file(train),'task_ids':['probe-a','probe-b']})
-    training=root/'training';put(training/'plan.json',{'config_sha256':sha256_file(config)});records=[]
+    training=root/'training';put(training/'plan.json',{'config_sha256':sha256_file(config),'presets':list(presets)});records=[]
     names=[f'adapters.fixture-layer-{i}-q_proj.lora_down.weight' for i in range(230)]
     for preset in selection['training']['presets']:
         folder=training/preset;folder.mkdir()
@@ -58,7 +58,8 @@ def fake_finished_run(root):
             records.append({'preset':preset,'completed_steps':step,'full_checkpoint_sha256':sha256_file(full),
                 'raw_metadata_sha256':sha256_file(native/'native.json'),
                 'updates_sha256':hashlib.sha256(''.join(lines[:step]).encode()).hexdigest()})
-    put(training/'progress.json',{'state':'completed_both_recipes','training_updates':2048,
+    state='completed_empf_only' if presets==('empf',) else 'completed_both_recipes'
+    put(training/'progress.json',{'state':state,'training_updates':1024*len(presets),
         'cache_index_sha256':cache_sha,'finished':records})
     return training,cache,pilot,config,selection,probe,qualification
 

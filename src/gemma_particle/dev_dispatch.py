@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .conversion_handoff import read, validate_conversion
 from .data import digest
+from .dev_selection import baseline_selection_sha256
 from .harness_identity import sha256_file
 from .lora_serving import BASE_ALIAS
 
@@ -36,15 +37,17 @@ def load_packets(directory, selection, plan_sha256, jobs, probe_sha256):
     path = directory / 'candidate-packets.json'
     manifest = read(path)
     expected = [c for c in selection['conditions'] if c['role'] == 'learned']
+    checkpoints = {(c['preset'], c['completed_steps']) for c in expected}
+    by_checkpoint = {(j['preset'], j['completed_steps']): j for j in jobs}
     packets = manifest['packets']
     if (status.get('state') != 'prepared_complete_learned_grid'
-            or status.get('completed_unit_conversions') != 6 or status.get('candidate_packets') != 18
+            or status.get('completed_unit_conversions') != len(checkpoints) or status.get('candidate_packets') != len(expected)
+            or len(jobs) != len(checkpoints) or by_checkpoint.keys() != checkpoints
             or status.get('candidate_packets_sha256') != sha256_file(path)
             or manifest.get('schema') != 'gemma4-measured-learned-packets-v1'
             or manifest.get('selection_plan_sha256') != plan_sha256
             or [p['condition'] for p in packets] != expected):
         raise ValueError('complete measured packet grid in fixed condition order required')
-    by_checkpoint = {(j['preset'], j['completed_steps']): j for j in jobs}
     for packet in packets:
         condition = packet['condition']
         job = by_checkpoint[(condition['preset'], condition['completed_steps'])]
@@ -64,6 +67,7 @@ def load_control_results(directory, selection, plan_sha256):
     directory = Path(directory)
     status = read(directory / 'progress.json')
     controls = [c for c in selection['conditions'] if c['role'] != 'learned']
+    control_sha = baseline_selection_sha256(selection, plan_sha256)
     if (status.get('state') != 'complete' or status.get('planned_conditions') != 4
             or [r['condition_id'] for r in status['finished']] != [c['id'] for c in controls]):
         raise ValueError('all four complete baseline controls required')
@@ -73,7 +77,7 @@ def load_control_results(directory, selection, plan_sha256):
         result = read(path)
         if (record['result_sha256'] != sha256_file(path)
                 or result.get('status') != 'complete' or result['condition'] != condition
-                or result['selection_plan_sha256'] != plan_sha256
+                or result['selection_plan_sha256'] != control_sha
                 or result['primary']['total'] != 42 or result['secondary']['total'] != 13):
             raise ValueError('unchanged complete baseline result and fixed denominators required')
         paths.append(path.resolve())

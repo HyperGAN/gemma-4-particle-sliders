@@ -6,33 +6,40 @@ from pathlib import Path
 from types import SimpleNamespace
 import sys
 
+import pytest
+
 from gemma_particle.harness_identity import sha256_file
 from test_conversion_handoff import fake_finished_run, put
 
 
-def test_staged_sweep_waits_for_release_and_publishes_each_checkpoint(tmp_path, monkeypatch):
+@pytest.mark.parametrize('presets', [('empf',), ('empf', 'rhbi_optimized')])
+def test_staged_sweep_waits_for_release_and_publishes_each_checkpoint(tmp_path, monkeypatch, presets):
     script = Path(__file__).resolve().parents[1] / 'scripts/prepare_learned_sweep.py'
     spec = importlib.util.spec_from_file_location('staged_conversion_controller', script)
     controller = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(controller)
-    training, cache, pilot, config, selection, probe, qualification = fake_finished_run(tmp_path)
+    training, cache, pilot, config, selection, probe, qualification = fake_finished_run(tmp_path, presets)
     (pilot / 'cache').symlink_to(cache, target_is_directory=True)
     completed = controller.read(training / 'progress.json')
     progress = {**completed, 'state': 'training', 'training_updates': 256, 'finished': completed['finished'][:1],
-                'completed_steps_by_preset': {'empf': 256, 'rhbi_optimized': 0}}
+                'completed_steps_by_preset': {preset: 256 if preset == 'empf' else 0 for preset in presets}}
     put(training / 'progress.json', progress)
     baseline_conditions = [{'id': name, 'role': 'control'} for name in ('off', 'reproduce', 'localize', 'verify')]
     learned = [{**row, 'id': f"{row['preset']}-{row['completed_steps']}-{strength}", 'strength': strength}
                for row in selection['conditions'] for strength in (1, .5, 1.5)]
     selection['conditions'] = baseline_conditions + learned
+    if presets == ('empf',):
+        selection['selection_scope'] = {'original_plan_sha256': 'a' * 64}
     selection_path = tmp_path / 'selection.json'
     put(selection_path, selection)
     selection_sha = sha256_file(selection_path)
+    baseline_sha = 'a' * 64 if presets == ('empf',) else selection_sha
     executor = tmp_path / 'executor'
     config_path = executor / 'configs/31b-ct-shared-positional-pilot.json'
     put(config_path, controller.read(config))
     put(executor / 'reports/long-history-gradient-qualification-v1.json', {'peak_host_rss_bytes': 1})
-    put(training / 'plan.json', {'executor_commit': 'fixture', 'device': 'cuda:1', 'config_sha256': sha256_file(config_path)})
+    put(training / 'plan.json', {'executor_commit': 'fixture', 'device': 'cuda:1',
+                                 'config_sha256': sha256_file(config_path), 'presets': list(presets)})
     inputs = ('scripts/convert_to_peft.py', 'scripts/derive_peft_strength.py', 'src/gemma_particle/model.py',
               'src/gemma_particle/runtime.py', 'src/gemma_particle/export.py', 'src/gemma_particle/conversion_probe.py',
               'src/gemma_particle/lora_strengths.py')
@@ -43,12 +50,12 @@ def test_staged_sweep_waits_for_release_and_publishes_each_checkpoint(tmp_path, 
     controls = tmp_path / 'controls'
     identity = tmp_path / 'baseline.json'
     put(identity, {'device': 'cuda:0', 'base_only': True, 'adapters': {}})
-    put(controls / 'plan.json', {'schema': 'gemma4-full-dev-controls-plan-v1', 'selection_plan_sha256': selection_sha,
+    put(controls / 'plan.json', {'schema': 'gemma4-full-dev-controls-plan-v1', 'selection_plan_sha256': baseline_sha,
                                  'server_identity': str(identity), 'server_pid': 30, 'server_birth_ticks': '300'})
     records = []
     for condition in baseline_conditions:
         path = controls / condition['id'] / 'result.json'
-        put(path, {'status': 'complete', 'condition': condition, 'selection_plan_sha256': selection_sha,
+        put(path, {'status': 'complete', 'condition': condition, 'selection_plan_sha256': baseline_sha,
                    'primary': {'total': 42}, 'secondary': {'total': 13}})
         records.append({'condition_id': condition['id'], 'result_sha256': sha256_file(path)})
     control_progress = controls / 'progress.json'
@@ -104,8 +111,8 @@ def test_staged_sweep_waits_for_release_and_publishes_each_checkpoint(tmp_path, 
     monkeypatch.setattr(controller.subprocess, 'run', run)
     monkeypatch.setattr(controller.time, 'sleep', sleep)
     controller.main()
-    assert len(clock['unit_conversions']) == 6
-    assert len(list((out / 'staged-checkpoints').glob('*.json'))) == 6
+    assert len(clock['unit_conversions']) == 3 * len(presets)
+    assert len(list((out / 'staged-checkpoints').glob('*.json'))) == 3 * len(presets)
     assert controller.read(out / 'staged-baseline-release.json')['observed_exited']
     assert [packet['condition'] for packet in controller.read(out / 'candidate-packets.json')['packets']] == learned
     assert controller.read(out / 'progress.json')['state'] == 'prepared_complete_learned_grid'

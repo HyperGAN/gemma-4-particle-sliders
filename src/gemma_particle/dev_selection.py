@@ -27,6 +27,12 @@ def empf_only_selection(base, origin):
     return plan
 
 
+def baseline_selection_sha256(selection, plan_sha256):
+    """Return the baseline provenance for a validated selection plan."""
+    scope=selection.get('selection_scope')
+    return scope['original_plan_sha256'] if scope else plan_sha256
+
+
 def load_selection_plan(path):
     plan=json.loads(Path(path).read_text())
     if plan.get('schema')!='gemma4-dev-selection-plan-v1':raise ValueError('explicit DEV selection plan required')
