@@ -28,6 +28,7 @@ from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,b
 from gemma_particle.data import read_jsonl,digest
 from gemma_particle.sandbox import isolate_sandbox_cache
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
+from gemma_particle.dev import load_external_dev,validate_agent_tasks,qualified_dev_identity
 from build_submission import build,MODELS
 
 
@@ -42,6 +43,8 @@ async def main():
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
     p.add_argument('--cpu-protocol-fixture',action='store_true')
+    p.add_argument('--external-dev-manifest',type=Path)
+    p.add_argument('--external-dev-qualification',type=Path)
     p.add_argument('--inputs',type=Path,default=Path('data/control-inputs/root/.cache/kagglehub/competitions/gemma-4-developer-agent'))
     p.add_argument('--image',default='gemma-particle-sandbox:fastapi-deps-v2')
     p.add_argument('--wheels',type=Path,required=True)
@@ -52,8 +55,12 @@ async def main():
     if endpoint.scheme!='http' or endpoint.hostname not in ('localhost','127.0.0.1','::1') or endpoint.username or endpoint.password:
         raise ValueError('an explicit local model endpoint is required')
     rows=read_jsonl(args.tasks)
-    if any(r.get('split') not in ('train','dev') or 'patch' in r or 'test_patch' in r for r in rows):
-        raise ValueError('agent phase requires sanitized TRAIN/DEV tasks')
+    if bool(args.external_dev_manifest)!=bool(args.external_dev_qualification):
+        raise ValueError('supplementary DEV requires both an explicit manifest and qualification')
+    external=load_external_dev(args.external_dev_manifest) if args.external_dev_manifest else None
+    validate_agent_tasks(rows,external)
+    if external and sha256_file(args.tasks)!=external.visible_file_sha256:
+        raise ValueError('visible supplementary DEV bytes differ')
     lookup={r['instance_id']:r for r in rows}
     if len(set(args.task_id))!=len(args.task_id) or any(i not in lookup for i in args.task_id):
         raise ValueError('selected task IDs must be unique and in the visible manifest')
@@ -84,6 +91,9 @@ async def main():
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
         'sandbox_setup_sha256':sha256_file(args.inputs/'sandbox/setup.py'),
         'network_mode':'none','mem_limit':'4g','cpu_quota':200000}
+    if external:
+        manifest['external_dev']=qualified_dev_identity(external,args.external_dev_qualification,
+            inputs=args.inputs,image_id=manifest['image_id'],wheels=args.wheels)
     (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
     for task_id in args.task_id:
         row=lookup[task_id]
@@ -116,6 +126,7 @@ async def main():
             manifest['contract'].update(instruction_protocol=args.instruction_protocol,
                 instruction_set_sha256=digest(instruction_set(args.instruction_protocol)))
         if args.budget_profile!=PILOT_BUDGET:manifest['contract']['budget_profile']=args.budget_profile
+        if external:manifest['contract']['external_dev']=manifest['external_dev']
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
         start=time.perf_counter()
@@ -137,6 +148,7 @@ async def main():
         result['visible_task_sha256']=digest(row)
         result['snapshot_sha256']=sha256_file(args.inputs/'snapshots'/f'{task_id}.tgz')
         result['model_identity']=server_identity.get('model_identity')
+        if external:result['external_dev']=manifest['external_dev']
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=args.instruction_protocol
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None

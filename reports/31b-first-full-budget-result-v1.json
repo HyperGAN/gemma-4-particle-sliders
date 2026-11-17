@@ -1,0 +1,60 @@
+{
+  "schema": "gemma4-first-full-budget-train-result-v1",
+  "as_of": "2026-11-17T04:21:26.572856+00:00",
+  "instance_id": "fastapi_11194",
+  "arm": "off",
+  "resolved": true,
+  "agent_error": "Sandbox execution error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 32768 tokens. However, you requested 4096 output tokens and your prompt contains at least 28673 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=28673) LiteLLM Retried: 5 times",
+  "capture_complete": false,
+  "elapsed_seconds": 671.3844797129277,
+  "tool_calls": 45,
+  "budget": {
+    "time_minutes": 60,
+    "tool_calls": 100,
+    "turns": 500,
+    "cost_usd": null,
+    "total_tokens": null
+  },
+  "harness": {
+    "command_timeout_seconds": 300,
+    "max_stdout_chars": 5000,
+    "max_file_lines": 150,
+    "max_file_chars": 10000,
+    "verification_timeout_seconds": 300
+  },
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "weight_format": "ct-w4g32",
+    "attn_implementation": "vllm:auto"
+  },
+  "verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_11194",
+    "patch_sha256": "6a83c6e8f094aca38d9c331052a7facc62ac3cdcd6314d1381899ca429d9872a",
+    "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "resolved": true,
+    "test_exit_code": 0,
+    "first_request_sha256": "65d66b90d23be82edb5b9c8f22dfda46a1b64ae87bd5141d4eb76d237bf14cd0",
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "cc12228e8b67fe932b5951ee0867e3e7324a363b4749bd05f9bd6f98f2d8b646",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "b31ad50e1b3f64e3ac1b305b87e9f1877ac110369a913580af997954d7364c9f",
+    "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+  },
+  "cohort_sha256": "22e21c946d65725f43648537fe5d0fbbc91bf68c7624bd71b06a995258a9eff3",
+  "outcomes_sha256": "339c292c4e2f98d9d3f0d9a775a207be2b3f5aec7bd9cd9cd14bbfa53b8a3185",
+  "plan_sha256": "8b0b6928389b68ad9f3ac3dd9714381ae6029975d432d95693c466a8052dd522",
+  "admitted_contexts": 0,
+  "optimizer_updates": 0,
+  "scope": "One TRAIN baseline patch passes fresh tests after an11-minute attempt. Runtime ended on32Kcontext limit; incomplete capture retained. Other arms still running. No DEV, holdout, trained adapter or official score. OFF success excludes this task from target admission."
+}

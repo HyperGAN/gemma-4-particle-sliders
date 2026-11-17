@@ -1,6 +1,6 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T04:12:57.728409+00:00",
+  "as_of": "2026-11-17T04:22:12.832935+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
@@ -12,8 +12,8 @@
     "first_native_train_pilot": "four E2B TRAIN tasks complete: all four arms unresolved, no admissible contexts; reports/e2b-native-collection-v1.json",
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; reports/vllm-serving-qualification-v1.json",
-    "supplementary_dev": "all42 fixed issue-only tasks/24 repositories pass independent empty/reference controls with workspace imports; no model DEV score; reports/supplementary-dev-qualification-v1.json",
-    "31b_vllm_collection": "three five-minute pilot cohorts completed:12unresolved attempts/0targets. Fresh original-prompt four-arm11194 trial running with documented60-minute defaults; reports/31b-vllm-short-pilots-v1.json",
+    "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
+    "31b_vllm_collection": "three short pilots:12unresolved/0targets. First full-budget TRAIN OFF patch passes fresh tests after671s/45tools; context-limit error+incomplete capture preserved. Teacher arms collecting;0targets/0updates. reports/31b-first-full-budget-result-v1.json",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json"
   },
   "task_resolution": [

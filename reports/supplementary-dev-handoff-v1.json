@@ -1,0 +1,100 @@
+{
+  "schema": "gemma4-supplementary-dev-handoff-v1",
+  "as_of": "2026-11-17T04:21:26.567385+00:00",
+  "status": "passed",
+  "gpu_used": false,
+  "pretrained_inference": false,
+  "eligible_for_training": false,
+  "generator_kind": "cpu_protocol_fixture",
+  "model_calls": 3,
+  "tool_calls": 2,
+  "budget": {
+    "time_minutes": 60,
+    "tool_calls": 100,
+    "turns": 500,
+    "cost_usd": null,
+    "total_tokens": null
+  },
+  "harness": {
+    "command_timeout_seconds": 300,
+    "max_stdout_chars": 5000,
+    "max_file_lines": 150,
+    "max_file_chars": 10000,
+    "verification_timeout_seconds": 300
+  },
+  "external_dev": {
+    "manifest_sha256": "af29865da0c00f4a3a58ec7aaf784c17c88e0c3854eb24c57618979c87cdefc3",
+    "qualification_sha256": "596d86ed1bb7cab1d4a50d0dac0e3d26b7d11d55f2ad26686086e08c1336b0a6",
+    "source_sha256": "e7316756ab3a459228da55f16268f560ae83f0c5fca570aeed70f8ede861e79b",
+    "visible_sha256": "6082d9ad60f08d06c1db218f046790b582e724f4247752deec0208103aac1087",
+    "visible_file_sha256": "63001b0d54f1467228cbf8841a11baa889ca0d7d416110ff44283661841bcbe6",
+    "inputs_receipt_sha256": "a33ea21aba22cf83f2205e019aba4439a1a4b9280aec4230f48ad516b66f7c33",
+    "forbidden_training": true
+  },
+  "cohort_sha256": "6daa68e26c7e0e4a651c7aa6788be1b393631da036f386d4b975d86bf46a2086",
+  "verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "loguru_1508",
+    "patch_sha256": "6035f71a47f59a7d2c961c29857ac206f744eb130731161a485e2a28a658bdd4",
+    "requests_sha256": "14f5c5211bc4521706741dfd003a3c3584ed786a5e63c39dc10362b453b74f89",
+    "resolved": false,
+    "test_exit_code": 1,
+    "first_request_sha256": "9fb8ce5cc0142081bb4570cd841bfad943b5b14c2b85d60a7d7f08c821b4a81e",
+    "error": null,
+    "image_id": "sha256:13e0e36764a6e1b2c052daeb204f8051fe7c9be8bda6716278cfac775de6bfa9",
+    "origin_checks": [
+      {
+        "package": "loguru",
+        "origin": "/workspace/loguru/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "75920ffa965e566d9b1e4e6bdeb5cf26a8e4aaf6a83d4b5a8256740ee669510e",
+    "tasks_sha256": "e7316756ab3a459228da55f16268f560ae83f0c5fca570aeed70f8ede861e79b",
+    "test_output_sha256": "fb729c950ce0f7315fdae50425426364d88153999658608ea4d495cefc44b007",
+    "verification_script_sha256": "aea29b3f58b49bb1e2a7632dd1404f1bcca85e6ad440c7427cdfcfa89a12d18e",
+    "external_dev": {
+      "manifest_sha256": "af29865da0c00f4a3a58ec7aaf784c17c88e0c3854eb24c57618979c87cdefc3",
+      "qualification_sha256": "596d86ed1bb7cab1d4a50d0dac0e3d26b7d11d55f2ad26686086e08c1336b0a6",
+      "source_sha256": "e7316756ab3a459228da55f16268f560ae83f0c5fca570aeed70f8ede861e79b",
+      "visible_sha256": "6082d9ad60f08d06c1db218f046790b582e724f4247752deec0208103aac1087",
+      "visible_file_sha256": "63001b0d54f1467228cbf8841a11baa889ca0d7d416110ff44283661841bcbe6",
+      "inputs_receipt_sha256": "a33ea21aba22cf83f2205e019aba4439a1a4b9280aec4230f48ad516b66f7c33",
+      "forbidden_training": true
+    }
+  },
+  "original_path_verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_11194",
+    "patch_sha256": "88a5a7d235b3b2dd815327c5baf2b586bcdc546d13e71aa9f6f661b5b5eeac16",
+    "requests_sha256": "f6fc66b72e5e42dd6e3d4cf5c6fa40e37543d15ea74a472e10dbea795ae71408",
+    "resolved": false,
+    "test_exit_code": 1,
+    "first_request_sha256": "65d66b90d23be82edb5b9c8f22dfda46a1b64ae87bd5141d4eb76d237bf14cd0",
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "b13013110a20254d070121ff964f87859e9935c8e235facffa82ec9135ceeb70",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "1003a38ee277215bdb80c2ad4f1516f79f5ec1669f9515cd8d7d17c65e11e8c3",
+    "verification_script_sha256": "aea29b3f58b49bb1e2a7632dd1404f1bcca85e6ad440c7427cdfcfa89a12d18e"
+  },
+  "default_artifact_byte_continuity": true,
+  "qualification_summary_sha256": "c0a0a7d1781d58967f14c69bce9f15669c4a1d4259c619866ad393faedc69e31",
+  "qualification_summary_controls": 42,
+  "cpu_preflight_sha256": "bec27a8691532bc5d8577823c383cb0831651f917b04c3747a1109dc619e69a6",
+  "execution_sources": {
+    "src/gemma_particle/dev.py": "f269941dd060f7f26d89c6351f51c23b9437618ac219febc0fc22f99c720b737",
+    "scripts/run_trajectories.py": "bf8b241a963af574740ad5034107d1a65fcd1968805330d0a9d579f084c9420c",
+    "scripts/verify_trajectories.py": "aea29b3f58b49bb1e2a7632dd1404f1bcca85e6ad440c7427cdfcfa89a12d18e",
+    "scripts/verify_external_dev.py": "ef08f4d47563f14b53db8a899f40fd3a1839941d7918028a2ca338a7c4cb1b00",
+    "tests/test_dev.py": "071f856b56d6ade8896fcb19ff3dec3c26f85f6fe7d1ecf4f6b00159a0ad8f05"
+  },
+  "scope": "One scripted supplementary task and original FastAPI task exercise capture/fresh-verifier transport. No model DEV accuracy or learned targets. Full model comparison must retain all42 fixed DEV tasks."
+}

@@ -6,6 +6,55 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+from datetime import datetime,timezone
+
+from gemma_particle.dev import load_external_dev,qualified_dev_identity
+
+
+def write_qualification(args,selection):
+    """Summarize terminal controls without re-running them or reading gold."""
+    sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    plan=json.loads((args.out/'plan.json').read_text())
+    summary=json.loads((args.out/'summary.json').read_text())
+    if (plan['manifest_sha256']!=selection.manifest_sha256
+            or plan['task_ids']!=selection.manifest['task_ids']
+            or summary['planned']!=len(selection.rows)
+            or len(summary['results'])!=len(selection.rows)
+            or {r['instance_id'] for r in summary['results']}!=set(plan['task_ids'])):
+        raise ValueError('terminal controls differ from the frozen DEV plan')
+    controls=[]
+    for entry in summary['results']:
+        source=args.out/entry['instance_id']/'result.json'
+        if not source.exists():
+            controls.append({'task':entry['instance_id'],'status':entry['status']});continue
+        if sha(source)!=entry['receipt_sha256']:raise ValueError('individual control receipt changed')
+        record=json.loads(source.read_text())
+        if (record['task']!=entry['instance_id'] or record['split']!='dev' or record['gpu_used'] is not False
+                or record['tasks_sha256']!=selection.manifest['source_sha256']
+                or record['external_dev_manifest_sha256']!=selection.manifest_sha256):
+            raise ValueError('individual control source/selection differs')
+        controls.append({**record,'receipt_sha256':entry['receipt_sha256']})
+    images={r.get('image_id') for r in controls}
+    passed=(summary['status']=='passed' and len(images)==1 and None not in images
+        and all(e['returncode']==0 for e in summary['results']))
+    receipt={'schema':'gemma4-supplementary-dev-qualification-v1','as_of':datetime.now(timezone.utc).isoformat(),
+        'status':'passed' if passed else 'failed','planned':len(selection.rows),
+        'qualified':sum(c['status']=='passed' for c in controls),'repositories':len(selection.manifest['repositories']),
+        'selection_manifest_sha256':selection.manifest_sha256,'source_sha256':selection.manifest['source_sha256'],
+        'visible_sha256':selection.manifest['visible_sha256'],'input_receipt_sha256':sha(args.inputs/'receipt.json'),
+        'image_id':next(iter(images)) if len(images)==1 else None,'raw_summary_sha256':sha(args.out/'summary.json'),
+        'no_model_inference':True,'forbidden_training':True,'controls':controls,
+        'scope':'CPU environment controls only; original Requests DEV retained and Rich/HTTPX holdout untouched.'}
+    target=args.out/'qualification.json'
+    if target.exists():raise FileExistsError('qualification receipt is immutable')
+    if passed:
+        # Use the same strict checks required at a later agent/verifier boundary.
+        temporary=args.out/'qualification.pending.json';temporary.write_text(json.dumps(receipt,indent=2)+'\n')
+        qualified_dev_identity(selection,temporary,inputs=args.inputs,image_id=receipt['image_id'],wheels=args.out/'empty-wheels')
+        temporary.rename(target)
+    else:target.write_text(json.dumps(receipt,indent=2)+'\n')
+    print(json.dumps({'qualification':str(target),'status':receipt['status']}),flush=True)
+    return 0 if passed else 2
 
 
 def main():
@@ -14,7 +63,10 @@ def main():
     p.add_argument('--raw-tasks',type=Path,default=Path('data/freshswe/raw/tasks.jsonl'))
     p.add_argument('--inputs',type=Path,default=Path('data/freshswe/selected'))
     p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--summarize-existing',action='store_true',help='summarize a terminal immutable control cohort without restarting any controls')
     args=p.parse_args()
+    selection=load_external_dev(args.manifest,source_sha256=hashlib.sha256(args.raw_tasks.read_bytes()).hexdigest())
+    if args.summarize_existing:return write_qualification(args,selection)
     if args.out.exists():raise FileExistsError('external control cohort is immutable')
     manifest=json.loads(args.manifest.read_text())
     args.out.mkdir(parents=True)
@@ -44,6 +96,7 @@ def main():
             print(json.dumps(results[-1]),flush=True)
     (args.out/'summary.json').write_text(json.dumps({'planned':len(manifest['task_ids']),'results':results,
         'status':'passed' if all(r['status']=='passed' for r in results) else 'incomplete qualification; retain every failure'},indent=2)+'\n')
+    return write_qualification(args,selection)
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':raise SystemExit(main())

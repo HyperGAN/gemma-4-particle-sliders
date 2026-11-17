@@ -20,6 +20,7 @@ from swegemma.harness.verification import verify_task
 from gemma_particle.capture import load_requests
 from gemma_particle.data import VISIBLE_FIELDS,REPO_SPLITS,digest,write_jsonl
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
+from gemma_particle.dev import load_external_dev,qualified_dev_identity,WORKSPACE_PACKAGES
 from gemma_particle.sandbox import isolate_sandbox_cache,SourceBoundManager
 
 
@@ -30,6 +31,8 @@ async def main():
     p.add_argument('--inputs',type=Path,default=Path('data/control-inputs/root/.cache/kagglehub/competitions/gemma-4-developer-agent'))
     p.add_argument('--wheels',type=Path,required=True)
     p.add_argument('--image',required=True)
+    p.add_argument('--external-dev-manifest',type=Path)
+    p.add_argument('--external-dev-qualification',type=Path)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.out.exists():raise FileExistsError('verification cohort is immutable')
@@ -38,6 +41,18 @@ async def main():
     if digest(contract)!=manifest['evaluation_contract_sha256']:
         raise ValueError('evaluation contract changed')
     environment=manifest['environment']
+    if bool(args.external_dev_manifest)!=bool(args.external_dev_qualification):
+        raise ValueError('supplementary DEV requires both an explicit manifest and qualification')
+    external=None
+    if args.external_dev_manifest:
+        external=load_external_dev(args.external_dev_manifest,source_sha256=sha256_file(args.tasks))
+        identity=qualified_dev_identity(external,args.external_dev_qualification,
+            inputs=args.inputs,image_id=manifest['image_id'],wheels=args.wheels)
+        if (manifest.get('external_dev')!=identity or contract.get('external_dev')!=identity
+                or manifest['visible_tasks_sha256']!=external.visible_file_sha256):
+            raise ValueError('captured supplementary DEV identity differs')
+    elif 'external_dev' in manifest or 'external_dev' in contract:
+        raise ValueError('captured supplementary DEV requires its explicit manifest and qualification')
     if (package_identity()!=environment['packages'] or wheel_identity(args.wheels)!=environment['wheels']
             or sha256_file(args.inputs/'sandbox/setup.py')!=environment['sandbox_setup_sha256']):
         raise ValueError('verification must use the captured harness and sandbox inputs')
@@ -53,10 +68,16 @@ async def main():
                 or captured['model_identity']!=manifest['server_identity'].get('model_identity')):
             raise ValueError('terminal result differs from the captured evaluation contract')
         task_id=captured['instance_id'];task=raw[task_id]
-        if REPO_SPLITS[task.repo] not in ('train','dev'):
-            raise ValueError('this curation verifier excludes the untouched holdout')
         visible={key:getattr(task,key) for key in VISIBLE_FIELDS}
-        visible['split']=REPO_SPLITS[task.repo]
+        if external:
+            expected=next((r for r in external.rows if r['instance_id']==task_id),None)
+            visible['split']='dev'
+            if visible!=expected or captured.get('external_dev')!=manifest['external_dev']:
+                raise ValueError('reference task differs from the frozen supplementary DEV task')
+        else:
+            if REPO_SPLITS.get(task.repo) not in ('train','dev'):
+                raise ValueError('this curation verifier excludes the untouched holdout')
+            visible['split']=REPO_SPLITS[task.repo]
         folder=args.cohort/task_id
         if (json.loads((folder/'visible-task.json').read_text())!=visible
                 or captured['visible_task_sha256']!=digest(visible)
@@ -81,7 +102,7 @@ async def main():
             first_request=first['request']
         destination=args.out/task_id;destination.mkdir(mode=0o700)
         isolate_sandbox_cache(destination/'tmp')
-        package={'psf/requests':'requests','fastapi/fastapi':'fastapi'}[task.repo]
+        package=WORKSPACE_PACKAGES[task.repo]
         manager=SourceBoundManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000),package=package)
         if manager.client.images.get(args.image).id!=manifest['image_id']:
             raise ValueError('sandbox image differs from the agent run')
@@ -98,6 +119,7 @@ async def main():
             'evaluation_contract_sha256':manifest['evaluation_contract_sha256'],
             'tasks_sha256':sha256_file(args.tasks),'test_output_sha256':sha256_file(destination/'test-output.txt')}
         receipt['verification_script_sha256']=sha256_file(Path(__file__))
+        if external:receipt['external_dev']=manifest['external_dev']
         if result.resolved and (not manager.origin_checks or not all(r['workspace'] for r in manager.origin_checks)):
             raise ValueError('passing score must test the edited workspace')
         timeout=(str(captured.get('agent_error','')).startswith('Agent exceeded session timeout')
