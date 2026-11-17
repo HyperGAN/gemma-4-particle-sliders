@@ -17,6 +17,7 @@ from gemma_particle.dev_dispatch import load_packets, load_control_results, cand
 from gemma_particle.dev_evidence import canonical_contract
 from gemma_particle.dev_selection import load_selection_plan
 from gemma_particle.harness_identity import sha256_file
+from gemma_particle.learned_effect import prepare_effect_probes, learned_effect_preflight
 
 
 def write(path, value):
@@ -35,6 +36,7 @@ def main():
     parser.add_argument('--selection-plan', type=Path, default=Path('research/dev-selection-v1.json'))
     parser.add_argument('--probe-contexts', type=Path, default=Path('data/conversion-probe-v1/contexts.json'))
     parser.add_argument('--probe-qualification', type=Path, default=Path('reports/conversion-probe-preparation-v1.json'))
+    parser.add_argument('--effect-protocol', type=Path, default=Path('research/learned-effect-protocol-v1.json'))
     parser.add_argument('--port', type=int, default=8031)
     parser.add_argument('--plan-only', action='store_true')
     args = parser.parse_args()
@@ -51,6 +53,8 @@ def main():
     subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=args.executor, check=True)
     selection = load_selection_plan(args.selection_plan)
     plan_sha = sha256_file(args.selection_plan)
+    effect_protocol, effect_cases = prepare_effect_probes(args.effect_protocol, args.probe_contexts,
+        args.probe_qualification, selection, plan_sha)
     conversion_plan = read(args.conversion / 'plan.json')
     controls_plan = read(args.controls / 'plan.json')
     training = Path(conversion_plan['training'])
@@ -88,11 +92,12 @@ def main():
     controller_names = ['scripts/run_learned_dev_grid.py', 'src/gemma_particle/dev_dispatch.py',
         'src/gemma_particle/conversion_handoff.py', 'src/gemma_particle/dev_evidence.py',
         'src/gemma_particle/dev_selection.py', 'src/gemma_particle/data.py',
-        'src/gemma_particle/harness_identity.py', 'src/gemma_particle/adapters.py', 'src/gemma_particle/lora_serving.py']
+        'src/gemma_particle/harness_identity.py', 'src/gemma_particle/adapters.py', 'src/gemma_particle/lora_serving.py',
+        'src/gemma_particle/learned_effect.py']
     own_sources = {name: sha256_file(controller / name) for name in controller_names}
     pins = {str(p): sha256_file(p) for p in [args.selection_plan, args.probe_contexts,
         args.probe_qualification, args.conversion / 'plan.json', args.controls / 'plan.json', baseline_path,
-        training_plan_path]}
+        training_plan_path, args.effect_protocol]}
     args.out.mkdir(parents=True)
     (args.out / 'logs').mkdir()
     declaration = {'schema': 'gemma4-learned-dev-grid-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
@@ -100,6 +105,9 @@ def main():
         'selection_plan_sha256': plan_sha, 'device': 'cuda:0', 'memory_fraction': .6, 'startup_headroom_GiB': 8,
         'port': args.port, 'condition_ids': [c['id'] for c in selection['conditions'] if c['role'] == 'learned'],
         'tasks_per_condition': 55, 'sources': sources, 'controller_sources': own_sources, 'declaration_pins': pins,
+        'learned_effect_protocol_sha256': sha256_file(args.effect_protocol),
+        'learned_effect_probe_task_ids': effect_protocol['probe_task_ids'],
+        'learned_effect_policy': 'two repeats per alias on two fixed TRAIN prefixes;stop if unstable or no observed effect',
         'scope': 'complete learned DEV grid and offline choice only; no holdout or official submission'}
     write(args.out / 'plan.json', declaration)
     status = {'state': 'prepared' if args.plan_only else 'waiting_actual_inputs', 'finished': [],
@@ -212,8 +220,13 @@ def main():
                         pass
                     time.sleep(5)
                 preflight = candidate_preflight(client, root, identity, call)
+                effect = learned_effect_preflight(client, root, identity, packet, effect_cases, call)
             preflight.update(server_identity_sha256=digest(identity), http_journal_sha256=sha256_file(attempts))
             write(args.out / (name + '-preflight.json'), preflight)
+            effect.update(protocol_sha256=sha256_file(args.effect_protocol), http_journal_sha256=sha256_file(attempts))
+            effect_path = args.out / (name + '-effect.json'); write(effect_path, effect)
+            if effect['status'] != 'passed':
+                raise RuntimeError('actual learned effect qualification ' + effect['status'] + ';preserve observations')
             publish('running_full_dev_condition', model_dev_inference=True, current_condition=name)
             destination = args.out / name
             command = [str(args.executor / '.harness-venv/bin/python'), 'scripts/run_dev_condition.py',
@@ -233,6 +246,7 @@ def main():
             publish('waiting_candidate_server_release', current_condition=name)
             server.wait(); server = None
             finished.append({'condition_id': name, 'result': str(result_path), 'result_sha256': sha256_file(result_path),
+                'learned_effect_sha256': sha256_file(effect_path),
                 'preflight_sha256': sha256_file(args.out / (name + '-preflight.json'))})
             publish('condition_complete', finished=finished)
         unchanged()

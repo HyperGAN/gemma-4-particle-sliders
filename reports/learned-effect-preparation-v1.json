@@ -1,0 +1,85 @@
+{
+  "schema": "gemma4-learned-effect-preparation-v1",
+  "as_of": "2026-11-17T15:08:11.948802+00:00",
+  "status": "cpu_preparation_passed_actual_learned_effect_unmeasured",
+  "source_base_commit": "0ef6e264eb25ef96d052810721ec2b628bd62575",
+  "sources_sha256": {
+    "scripts/run_learned_dev_grid.py": "0a71599a3481c184c9eed340e8c8fd91778ee7b6345da1b42cb065f2cc5e133b",
+    "src/gemma_particle/learned_effect.py": "8366cc54a9592c7ba0a717556ba433d7fdbe8695406cec794a05ffc5941205ba",
+    "tests/test_learned_effect.py": "9d2d30bd3b890366379a343a1e7afe7808a80c78ec8b9c00a72aa01704fccd0c",
+    "research/learned-effect-protocol-v1.json": "fb793bfd8e0d5c0199062e16160bafaaf226d5af649a014fb27f0a2b19487ee5"
+  },
+  "checks": {
+    "full_public_source_passed": 244,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "bc66dfc74d1bdc7713859abfc5a931ee826ce776101584588dcfadba3fd88a1e",
+    "focused_passed": 35,
+    "focused_log_sha256": "71c2c067ca4059ef750c8bb5313a20eb2800176ad26f2642dc9477a587d59de3",
+    "public_python_files_compared": 142,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "synthetic fixed-protocol bindings;no effect and below-tolerance changes;logprob,token,top-set effects;unstable base/learned repeats;wrong alias,length,nonfinite/missing probabilities,timeout,packet/prefix tampering;8 fixed calls and no retry after timeout",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "actual_plan_only": {
+    "plan_sha256": "80b6f2db27b4e4d1cf4bc3157f6b27882be761d4b11809372c7c0f8168e9a6ab",
+    "log_sha256": "afb4bb51bc6e4feb18ff0e116d2a02146e322426d964333ee95b283e2014ac10",
+    "fixed_train_probes": [
+      "fastapi_13207",
+      "fastapi_13537"
+    ],
+    "tokens": [
+      2884,
+      3199
+    ],
+    "scope": "original already-frozen disjoint TRAIN prompts and live producer declarations only;no model or GPU driver access"
+  },
+  "baseline_executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "protocol": {
+    "schema": "gemma4-learned-effect-protocol-v1",
+    "status": "prospective_before_learned_training_or_DEV",
+    "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+    "probe_contexts_sha256": "534da9c164e066de541b312e32232d9db1f9c37a40c5de6ea609f473bfa8fd59",
+    "probe_qualification_sha256": "83f70c94a9058f8d0498fbe54b3f826e6af83c6e665a09ab893b11406a7eb1b3",
+    "probe_task_ids": [
+      "fastapi_13207",
+      "fastapi_13537"
+    ],
+    "probe_token_counts": [
+      2884,
+      3199
+    ],
+    "aliases": [
+      "gemma-4-31b-it-qat-w4a16-ct",
+      "particle_lora"
+    ],
+    "repeats_per_alias": 2,
+    "generation": {
+      "temperature": 0,
+      "seed": 0,
+      "max_tokens": 1,
+      "logprobs": 20,
+      "ignore_eos": true,
+      "return_tokens_as_token_ids": true
+    },
+    "tolerance": 1e-05,
+    "required_effect_probes": 1,
+    "effect_rule": "generated token differs,top20 token-ID set differs,or maximum common-token logprob difference exceeds tolerance",
+    "qualification_rule": "both repeats of each alias agree within tolerance on both probes;at least one probe shows an effect",
+    "failure_policy": "preserve observations and stop;no rerolls,threshold changes or inferred unqualified DEV results",
+    "scope": "fixed disjoint TRAIN initial-prefix numerical diagnostic only;old repair-v1 probe prompts;no DEV/holdout content,no task-quality or native-fidelity claim"
+  },
+  "actual_pretrained_training_updates": 0,
+  "actual_learned_effect_completions": 0,
+  "actual_learned_dev_conditions": 0,
+  "new_gpu_model_work": false,
+  "holdout_accessed": false,
+  "official_score": null,
+  "waiter_replacement_policy": "freeze and validate new supervisor first;replace original only while verified waiting with0 learned attempts and no children;preserve old checkout/output and observed exit;retain same5a executor,22-condition grid andGPU0 contract",
+  "scope": "CPU numerical qualification preparation only;no actual learned effect,quality,conversion fidelity or official superiority established"
+}

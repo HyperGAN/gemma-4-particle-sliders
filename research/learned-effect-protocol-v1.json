@@ -1,0 +1,34 @@
+{
+  "schema": "gemma4-learned-effect-protocol-v1",
+  "status": "prospective_before_learned_training_or_DEV",
+  "core_selection_plan_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "probe_contexts_sha256": "534da9c164e066de541b312e32232d9db1f9c37a40c5de6ea609f473bfa8fd59",
+  "probe_qualification_sha256": "83f70c94a9058f8d0498fbe54b3f826e6af83c6e665a09ab893b11406a7eb1b3",
+  "probe_task_ids": [
+    "fastapi_13207",
+    "fastapi_13537"
+  ],
+  "probe_token_counts": [
+    2884,
+    3199
+  ],
+  "aliases": [
+    "gemma-4-31b-it-qat-w4a16-ct",
+    "particle_lora"
+  ],
+  "repeats_per_alias": 2,
+  "generation": {
+    "temperature": 0,
+    "seed": 0,
+    "max_tokens": 1,
+    "logprobs": 20,
+    "ignore_eos": true,
+    "return_tokens_as_token_ids": true
+  },
+  "tolerance": 1e-05,
+  "required_effect_probes": 1,
+  "effect_rule": "generated token differs,top20 token-ID set differs,or maximum common-token logprob difference exceeds tolerance",
+  "qualification_rule": "both repeats of each alias agree within tolerance on both probes;at least one probe shows an effect",
+  "failure_policy": "preserve observations and stop;no rerolls,threshold changes or inferred unqualified DEV results",
+  "scope": "fixed disjoint TRAIN initial-prefix numerical diagnostic only;old repair-v1 probe prompts;no DEV/holdout content,no task-quality or native-fidelity claim"
+}
