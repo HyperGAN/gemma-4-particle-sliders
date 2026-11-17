@@ -9,7 +9,7 @@ from pathlib import Path
 from .conversion_handoff import read
 from .data import digest
 from .dev_evidence import SERVER_SOURCES
-from .dev_evidence import canonical_contract
+from .dev_evidence import canonical_contract, retained_case_paths
 from .hardware_evidence import audit_hardware_pair
 from .harness_identity import sha256_file
 
@@ -106,6 +106,45 @@ No prompt, environment, model, source, package or engine setting is normalized.
         raise ValueError('only the exact qualified serving contract may normalize its physical device')
     result = deepcopy(contract); result['model_identity']['device'] = 'cuda:0'
     return result
+
+
+def audit_task_slot(condition_folder, result, record, manifest, slot, supplement):
+    """Bind each task to the serving identity of its original execution."""
+    server = manifest['server_identity']
+    reused_from = record.get('reused_from')
+    if reused_from is None:
+        if digest(server) != slot['server_identity_sha256']:
+            raise ValueError('task server differs from actual recorded condition slot')
+        return
+
+    condition = result['condition']
+    if not slot.get('baseline_control') or condition['role'] == 'learned':
+        raise ValueError('only a recovered base control can reuse a prior serving identity')
+    current_plan = read(Path(condition_folder) / 'plan.json')
+    receipt = current_plan.get('reused_evidence')
+    if (not receipt or receipt != result.get('reused_evidence')
+            or receipt['prior_condition'] != reused_from
+            or record['instance_id'] not in receipt['task_ids']):
+        raise ValueError('task must belong to the declared recovered prefix')
+
+    prior = Path(reused_from).resolve()
+    before_path = prior / 'plan.json'
+    before = read(before_path)
+    if (sha256_file(before_path) != receipt['prior_plan_sha256']
+            or any(before[k] != current_plan[k] for k in ['condition', 'selection_plan_sha256', 'task_ids', 'packet'])
+            or before['condition'] != condition or before['packet'] is not None):
+        raise ValueError('original matching base control recovery plan required')
+    cohort, verification = retained_case_paths(prior, record['panel'], record['instance_id'])
+    if (cohort != Path(record['cohort']).resolve() or verification != Path(record['verification']).resolve()):
+        raise ValueError('recovered task must retain its original evidence paths')
+    origin = read(cohort.parents[1] / 'plan.json')
+    if (origin['condition'] != condition or origin['packet'] is not None
+            or server != read(origin['server_identity']) or server != manifest['contract']['model_identity']
+            or server.get('base_only') is not True or server.get('adapters')
+            or type(server.get('observed_free_bytes')) is not int or type(server.get('total_device_bytes')) is not int
+            or server['observed_free_bytes'] < server['total_device_bytes'] * .6 + 8 * 1024**3):
+        raise ValueError('recovered task must match its original shared base server')
+    normalize_qualified_contract(canonical_contract({'model_identity': server}), condition['id'], supplement)
 
 
 def audit_condition_slot(path, result, supplement_path, supplement):

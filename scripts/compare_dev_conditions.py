@@ -8,7 +8,8 @@ from gemma_particle.dev_evidence import audit_verified_task,journal_digest,valid
 from gemma_particle.dev_selection import load_selection_plan,summarize_verified_panel,choose_learned_candidate
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.lora_serving import BASE_ALIAS
-from gemma_particle.resource_supplement import load_resource_supplement, normalize_qualified_contract, audit_condition_slot
+from gemma_particle.resource_supplement import (load_resource_supplement, normalize_qualified_contract,
+    audit_condition_slot, audit_task_slot)
 
 
 def main():
@@ -67,9 +68,8 @@ def main():
                     validate_matching_contract(contract,plan);fingerprint=digest(contract)
                     if result['canonical_contracts'][panel]!=fingerprint:raise ValueError('recorded DEV contract differs')
                     if resource is not None:
-                        server= json.loads((Path(record['cohort'])/'cohort.json').read_text())['server_identity']
-                        if digest(server)!=resource_evidence[name]['server_identity_sha256']:
-                            raise ValueError('task server differs from actual recorded condition slot')
+                        manifest=json.loads((Path(record['cohort'])/'cohort.json').read_text())
+                        audit_task_slot(path.parent,result,record,manifest,resource_evidence[name],resource)
                         contract=normalize_qualified_contract(contract,name,resource);fingerprint=digest(contract)
                     if panel in canonical and canonical[panel]!=fingerprint:raise ValueError('unmatched DEV condition contracts')
                     canonical[panel]=fingerprint

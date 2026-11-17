@@ -11,7 +11,7 @@ from gemma_particle.data import digest
 from gemma_particle.dev_evidence import canonical_contract
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.resource_supplement import (validate_resource_declaration, prepare_resource_supplement,
-    load_resource_supplement, normalize_qualified_contract, audit_condition_slot)
+    load_resource_supplement, normalize_qualified_contract, audit_condition_slot, audit_task_slot)
 from test_conversion_handoff import put
 from test_hardware_evidence import hardware_fixture
 
@@ -129,6 +129,50 @@ def test_every_learned_condition_needs_original_before_after_physical_slot_evide
     else:
         evidence = audit_condition_slot(*args)
         assert evidence['physical_index'] == 1 and evidence['sha256'] == sha256_file(evidence_path)
+
+
+@pytest.mark.parametrize('damage', [None, 'learned', 'undeclared', 'prior_plan', 'path',
+    'contract', 'server', 'headroom', 'device'])
+def test_recovered_base_task_binds_the_original_qualified_slot(tmp_path, damage):
+    _, resource, _ = resource_fixture(tmp_path)
+    baseline_path = Path(resource['baseline_server_identity'])
+    current = json.loads(baseline_path.read_text())
+    original = deepcopy(current)
+    original['observed_free_bytes'] -= 1
+    # The startup observation differs even when the execution contract matches.
+    assert digest(original) != digest(current)
+    if damage == 'headroom': original['observed_free_bytes'] = 0
+    if damage == 'device': original['device'] = 'cuda:1'
+    old = tmp_path / 'old'; new = tmp_path / 'new'
+    condition = {'id': 'off', 'role': 'baseline'}
+    task = 'fixture'; panel = 'primary'
+    cohort = old / panel / (task + '-agent'); cohort.mkdir(parents=True)
+    verification = old / panel / (task + '-verification'); verification.mkdir()
+    original_path = old / 'server-identity.json'; put(original_path, original)
+    plan = {'condition': condition, 'selection_plan_sha256': resource['selection_plan_sha256'],
+        'packet': None, 'task_ids': {panel: [task]}, 'server_identity': str(original_path)}
+    put(old / 'plan.json', plan)
+    receipt = {'prior_condition': str(old), 'prior_plan_sha256': sha256_file(old / 'plan.json'),
+        'task_ids': [task]}
+    put(new / 'plan.json', dict(plan, server_identity=str(baseline_path), reused_evidence=receipt))
+    result = {'condition': condition, 'reused_evidence': deepcopy(receipt)}
+    record = {'instance_id': task, 'panel': panel, 'cohort': str(cohort),
+        'verification': str(verification), 'reused_from': str(old)}
+    manifest = {'server_identity': original, 'contract': {'model_identity': deepcopy(original)}}
+    slot = {'server_identity_sha256': digest(current), 'baseline_control': True}
+    if damage == 'learned': slot['baseline_control'] = False
+    if damage == 'undeclared': result['reused_evidence']['task_ids'] = []
+    if damage == 'prior_plan': put(old / 'plan.json', dict(plan, changed=True))
+    if damage == 'path': record['cohort'] = str(tmp_path / 'other')
+    if damage == 'contract': manifest['contract']['model_identity']['device'] = 'cuda:1'
+    if damage == 'server': put(original_path, current)
+    if damage:
+        with pytest.raises(ValueError): audit_task_slot(new, result, record, manifest, slot, resource)
+    else:
+        audit_task_slot(new, result, record, manifest, slot, resource)
+        record['reused_from'] = None
+        with pytest.raises(ValueError, match='actual recorded condition slot'):
+            audit_task_slot(new, result, record, manifest, slot, resource)
 
 
 def test_actual_comparison_cli_rejects_unqualified_policy_before_result_or_task_reads(tmp_path):
