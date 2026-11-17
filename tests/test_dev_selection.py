@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from gemma_particle.data import digest
+from gemma_particle.harness_identity import sha256_file
 from gemma_particle.dev_selection import (load_selection_plan,summarize_verified_panel,
     paired_comparison,choose_learned_candidate,wilson_interval,EMPTY_PATCH_SHA256)
 
@@ -24,13 +25,21 @@ def fixture_row(task,resolved,*,tools=5,error=None):
         'visible_task_sha256':digest(task),'evaluation_contract_sha256':'fixture-contract','verification':receipt}
 
 
-def fixtures():
-    plan=load_selection_plan(Path(__file__).resolve().parents[1]/'research/dev-selection-v1.json')
+def fixtures(tmp_path):
+    # Keep the declared grid, but bind only local synthetic panel files. CPU
+    # controls must not require private Kaggle downloads or qualification runs.
+    plan=json.loads((Path(__file__).resolve().parents[1]/'research/dev-selection-v1.json').read_text())
     tasks={}
     for panel,n in [('primary',42),('secondary',13)]:
         tasks[panel]=[dict(instance_id=f'{panel}-fixture-{i}',split='dev',repo='fixture/repository') for i in range(n)]
         plan[panel]['task_ids']=[t['instance_id'] for t in tasks[panel]]
+        manifest=tmp_path/(panel+'-manifest.json');qualification=tmp_path/(panel+'-qualification.json')
+        manifest.write_text(json.dumps({'fixture':'CPU synthetic panel','task_ids':plan[panel]['task_ids']}))
+        qualification.write_text(json.dumps({'fixture':'CPU receipt; not an actual environment qualification'}))
+        plan[panel].update(manifest=str(manifest),manifest_sha256=sha256_file(manifest),
+            qualification=str(qualification),qualification_sha256=sha256_file(qualification))
     plan['secondary']['calibrated_task_ids']=plan['secondary']['task_ids'][:5]
+    packet=tmp_path/'selection-plan.json';packet.write_text(json.dumps(plan));plan=load_selection_plan(packet)
     result={'status':'complete'}
     for panel in tasks:
         calibrated=plan['secondary']['calibrated_task_ids'] if panel=='secondary' else ()
@@ -54,8 +63,8 @@ def test_complete_denominators_keep_errors_and_reject_grades_training_or_changed
         summarize_verified_panel([dict(tasks[0],split='train')],[rows[0]])
 
 
-def test_full_grid_and_primary_gain_secondary_floor_control_promotion():
-    plan,tasks,results=fixtures();candidate=next(c for c in plan['conditions'] if c['role']=='learned')
+def test_full_grid_and_primary_gain_secondary_floor_control_promotion(tmp_path):
+    plan,tasks,results=fixtures(tmp_path);candidate=next(c for c in plan['conditions'] if c['role']=='learned')
     assert choose_learned_candidate(plan,results)['selected'] is None
     # Elapsed time alone cannot promote a condition with identical outcomes/tools.
     rows=[fixture_row(t,i<2) for i,t in enumerate(tasks['primary'])]
@@ -74,11 +83,11 @@ def test_full_grid_and_primary_gain_secondary_floor_control_promotion():
     with pytest.raises(ValueError,match='all declared'):choose_learned_candidate(plan,incomplete)
 
 
-def test_aggregate_tampering_and_nonterminal_conditions_cannot_select():
-    plan,_,results=fixtures();candidate=next(c['id'] for c in plan['conditions'] if c['role']=='learned')
+def test_aggregate_tampering_and_nonterminal_conditions_cannot_select(tmp_path):
+    plan,_,results=fixtures(tmp_path);candidate=next(c['id'] for c in plan['conditions'] if c['role']=='learned')
     results[candidate]['primary']['resolved']=42
     with pytest.raises(ValueError,match='aggregate differs'):choose_learned_candidate(plan,results)
-    plan,_,results=fixtures();results[candidate]={'status':'running'}
+    plan,_,results=fixtures(tmp_path);results[candidate]={'status':'running'}
     with pytest.raises(ValueError,match='unfinished'):choose_learned_candidate(plan,results)
     results[candidate]={'status':'unqualified'}
     with pytest.raises(ValueError,match='preflight error evidence'):choose_learned_candidate(plan,results)

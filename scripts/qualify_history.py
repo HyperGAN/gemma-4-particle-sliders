@@ -30,7 +30,7 @@ class Fixture(LiteLLMClient):
             usage={'prompt_tokens':16000,'completion_tokens':10,'total_tokens':16010})
 
 
-async def run(out):
+async def run(out,artifact):
     if out.exists():raise FileExistsError('history qualification is immutable')
     out.mkdir(parents=True)
     fixture=Fixture();journal=RequestJournal(out/'requests',instance_id='cpu-history-fixture',arm='off')
@@ -45,7 +45,7 @@ async def run(out):
     for name in ['run_command','read_file','edit_file','write_file','get_status','submit_patch',
                  'get_code_neighbors','search_similar_code','get_code_subgraph']:
         tools.register(name,getattr(declarations,name))
-    agent=compile_submission(submission_dir=Path('dist/baseline-31b-official60-kaggle-v1/agent'),
+    agent=compile_submission(submission_dir=artifact,
         model_registry=models,tool_registry=tools)
     assert agent.canonical_model is not llm
     assert agent.canonical_model.llm_client is llm.llm_client
@@ -76,4 +76,6 @@ async def run(out):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True)
-    args=p.parse_args();asyncio.run(run(args.out))
+    p.add_argument('--artifact',type=Path,default=Path('dist/baseline-31b-official60-kaggle-v1/agent'),
+        help='compiled agent directory; tests can construct a fresh local artifact')
+    args=p.parse_args();asyncio.run(run(args.out,args.artifact))

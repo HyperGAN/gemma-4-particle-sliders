@@ -56,8 +56,12 @@ def test_auxiliary_tag_cannot_hide_tool_decisions_or_cross_history_profiles():
 def test_actual_compiler_clones_preserve_one_history_journal(tmp_path):
     root=Path(__file__).resolve().parents[1]
     env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
+    artifact=tmp_path/'artifact'
+    built=subprocess.run([str(root/'.harness-venv/bin/python'),'scripts/build_submission.py','--out',str(artifact)],
+        cwd=root,env=env,text=True,capture_output=True)
+    assert built.returncode==0,built.stderr[-3000:]
     out=tmp_path/'compiled-history'
-    result=subprocess.run([str(root/'.harness-venv/bin/python'),'scripts/qualify_history.py','--out',str(out)],
+    result=subprocess.run([str(root/'.harness-venv/bin/python'),'scripts/qualify_history.py','--artifact',str(artifact/'agent'),'--out',str(out)],
         cwd=root,env=env,text=True,capture_output=True)
     assert result.returncode==0,result.stderr[-5000:]
     receipt=json.loads((out/'result.json').read_text())

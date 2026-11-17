@@ -26,7 +26,8 @@
     "pretrained_optimization": "Zero pretrained updates. Original first EMPF pilot waits for2 distinct initial targets; passive full continuation stopped before execution to correct CPU placement of serialized CUDA RNG state; tiny actual CUDA exact disk resume passes both recipes.",
     "dev_selection": "First actual OFF DEV fix isort_2581 passed fresh tests with workspace import checked.1resolved among4completed; fixed55-task condition incomplete, no aggregate score. Controls continue from5a26151; reports/first-actual-dev-off-fix-v1.json",
     "candidate_packaging": "Dataset-backed learned-bundle bytes, native/cache/conversion binding and official compiler verified on CPU. No learned candidate uploaded/scored; reports/kaggle-candidate-preflight-v1.json",
-    "full_recipe_continuation": "Rearmed from frozen6c45b86 with original293406f pilot preserved. Native math/config/source pins match byte-for-byte; training-script AST differs only byCPU checkpoint loading. Both tiny CUDA exact-resume controls pass; actual121CPU/compiler qualification passes.0pretrained updates; reports/cpu-checkpoint-continuation-bridge-v1.json"
+    "full_recipe_continuation": "Rearmed from frozen6c45b86 with original293406f pilot preserved. Native math/config/source pins match byte-for-byte; training-script AST differs only byCPU checkpoint loading. Both tiny CUDA exact-resume controls pass; actual121CPU/compiler qualification passes.0pretrained updates; reports/cpu-checkpoint-continuation-bridge-v1.json",
+    "public_cpu_portability": "Public-source snapshot passes117 CPU tests with3 explicit skips, installed software only, no private data or prebuilt bundles. Selection/history fixtures self-contained; reports/public-source-cpu-portability-v1.json"
   },
   "task_resolution": [
     {

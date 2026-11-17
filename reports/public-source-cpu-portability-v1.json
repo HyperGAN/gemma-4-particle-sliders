@@ -1,0 +1,41 @@
+{
+  "schema": "gemma4-public-source-cpu-portability-v1",
+  "as_of": "2026-11-17T12:16:34.418462+00:00",
+  "status": "passed",
+  "gpu_used": false,
+  "public_source_base_commit": "ab591e914533038f8ff17c1b7fcf01f0dfaa2b33",
+  "updated_files_sha256": {
+    "tests/test_dev_selection.py": "a7ef5937f006c1ce256c37ad1a6438fa99437ec531491c477d005e7581050240",
+    "tests/test_history.py": "a3d942a7f4b4fd31b053619478facf6724af35aaa50c65b775092e1637240858",
+    "scripts/qualify_history.py": "b94c29792a7218834f164bb1c7257eddd80b4584d8b312d394f69a299e2cc3f0"
+  },
+  "export": "tracked public source snapshot plus these exact fixture changes; no data/ or dist/ directory",
+  "software_links": [
+    ".train-venv",
+    ".harness-venv",
+    ".vllm-venv",
+    ".venv",
+    ".deps"
+  ],
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests"
+  ],
+  "passed": 117,
+  "skipped": 3,
+  "skip_scope": [
+    "2 explicit opt-in CUDA resume tests",
+    "official downloaded-wheel byte check"
+  ],
+  "actual_log_sha256": "929385498f9ea85fe951e482e6756279b853b55c5824e0b4040f5a12cd14d27b",
+  "changes": [
+    "selection tests bind self-contained synthetic panel files",
+    "history test builds its own local CPU artifact and passes the new optional --artifact path"
+  ],
+  "real_model_or_task_performance": "not measured by this CPU suite",
+  "active_generation_or_training_executors": "unchanged",
+  "scope": "public-source software portability; installed dependencies linked, private competition inputs and prebuilt artifacts absent"
+}

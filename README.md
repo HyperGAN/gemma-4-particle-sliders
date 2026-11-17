@@ -51,8 +51,11 @@ python3.11 -m venv --system-site-packages .train-venv
 .train-venv/bin/python -m pip install 'setuptools>=84.2.1' wheel backports.tarfile
 .train-venv/bin/python scripts/bootstrap.py
 .train-venv/bin/python -m pip install -r requirements-model.txt pytest
-CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q tests
+CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q \
+  tests/test_gemma_binding.py tests/test_runtime.py tests/test_export.py
 ```
+
+The complete CPU suite also uses the separate `.harness-venv` and `.vllm-venv` software environments for real compiler/parser checks. A [public-source portability run](reports/public-source-cpu-portability-v1.json) passes without competition task downloads or prebuilt bundles; its two GPU checks and the downloaded-wheel byte check are explicitly skipped.
 
 The bootstrap checks exact commits and the source patch hash. Native loading also checks the installed engine and ParticleGAN source bytes before loading weights. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins. Existing 0.10.0 collections retain their original environment and frozen checkout.
 
