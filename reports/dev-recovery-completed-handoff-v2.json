@@ -1,0 +1,31 @@
+{
+  "schema": "gemma4-dev-recovery-completed-handoff-v2",
+  "as_of": "2026-11-17T11:07:53.653722+00:00",
+  "status": "actual next task completed through corrected audit and pipeline advanced",
+  "executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "first_two_actual_outcomes": [
+    {
+      "instance_id": "loguru_1508",
+      "resolved": false,
+      "capture_complete": true,
+      "agent_error": null,
+      "tool_calls": 16,
+      "elapsed_seconds": 252.39088167110458
+    },
+    {
+      "instance_id": "loguru_1504",
+      "resolved": false,
+      "capture_complete": true,
+      "agent_error": null,
+      "tool_calls": 14,
+      "elapsed_seconds": 275.9644036788959
+    }
+  ],
+  "actual_canonical_contracts_equal": true,
+  "canonical_contract_sha256": "0e5f59e2242508e3d7f7c414d519d175301f53c212ca519b7176d951e4806440",
+  "first_task_reused_without_new_model_inference": true,
+  "complete_tasks_observed": 2,
+  "fixed_total_per_condition": 55,
+  "selection_plan_file_sha256": "e20a744e77d3dbeb2bb22ac857d49821bc2c6bd1edbaffa6a7bf69556fc1ebf5",
+  "scope": "actual recovery handoff qualification; partial DEV panel and no aggregate or official score"
+}
