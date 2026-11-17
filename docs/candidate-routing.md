@@ -13,6 +13,7 @@ This control captures calls before LiteLLM provider dispatch; the `openai/` pref
 .harness-venv/bin/python scripts/run_trajectories.py \
   --tasks data/external-dev-v1/dev.jsonl --task-id DECLARED_DEV_TASK --arm off \
   --adapter runs/selected/peft --model gemma-4-31b-it-qat-w4a16-ct \
+  --prompt-profile repair-finalize-v2 \
   --endpoint http://127.0.0.1:8027/v1 --server-identity runs/candidate-server/server-identity.json \
   --external-dev-manifest data/external-dev-v1/manifest.json \
   --external-dev-qualification reports/supplementary-dev-qualification-v1.json \
@@ -21,3 +22,5 @@ This control captures calls before LiteLLM provider dispatch; the `openai/` pref
 ```
 
 The example requires actual task, wheel, image and input values from the qualified DEV manifest. It is not an executed model result.
+
+The current prospective cohort uses `repair-finalize-v2` for both candidate and matched OFF controls. Keep that common profile and its contract hash through DEV, confirmation and final packaging. Historical runs retain `repair-v1`; the explicit flag prevents inheriting that historical default for a new candidate comparison.
