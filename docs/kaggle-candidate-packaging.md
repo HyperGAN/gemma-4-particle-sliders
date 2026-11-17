@@ -23,6 +23,8 @@ CUDA_VISIBLE_DEVICES='' PYTHONPATH="$PWD/src" .harness-venv/bin/python \
 
 After actual preparation, publish `payload/dataset` privately with the authenticated Kaggle API, push `payload/notebook`, wait for that exact notebook version to complete, and download its output. Verify the downloaded ZIP against `payload/preparation.json` before submitting that notebook version through `competition_submit_code`. Preserve dataset, notebook/version and competition submission identifiers. An existing pending submission is polled by its ID rather than resubmitted.
 
+The [prepared one-shot publication runner](learned-publication.md) automates this continuation after independently reconstructing the selected experiment. It pins the dataset and notebook versions, verifies the downloaded archive, checks actual competition allowance and preserves durable mutation intents. It has not published a real learned candidate yet.
+
 CPU fixtures exercise a larger-than-512-KiB bundle, execute the emitted notebook locally, verify exact output bytes and reject corrupted payloads or changed native provenance. Licensed bundles also pass the real official compiler/ADK alias control. These fixtures are explicitly not loadable 31B candidates or real trained results. Actual dataset upload, Kaggle notebook execution and a learned official score remain unmeasured.
 
 The [selected-candidate preparation report](../reports/selected-candidate-preparation-v1.json) adds evaluated-archive, protocol and complete HTTP-journal controls. This is CPU preparation; no real candidate has passed the experiment gates.

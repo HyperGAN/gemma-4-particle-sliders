@@ -1,0 +1,20 @@
+{
+  "schema": "gemma4-kaggle-publication-runtime-v1",
+  "versions": {
+    "kaggle": "2.2.5",
+    "kagglesdk": "0.1.38"
+  },
+  "source_sha256": {
+    "kaggle": {
+      "kaggle/api/kaggle_api_extended.py": "87fac121033a45f689803b62ae5bdfe879b094ae540a55902a46bb6cd5359b4d"
+    },
+    "kagglesdk": {
+      "kagglesdk/datasets/types/dataset_api_service.py": "0ecb08b2f5b9257c4e5e09213b23990cb810079200840d553719ade3ea0eb675",
+      "kagglesdk/kernels/types/kernels_api_service.py": "a7dd65206e7fc27950385e7b163cda48a40766eb8ff7f89d7a334b9bfb151b5c",
+      "kagglesdk/kernels/types/kernels_enums.py": "a150ce25b55fbcceb3beaf585cca3373bbfb305a5589395f54d9e5606ee51ce1",
+      "kagglesdk/competitions/types/competition_api_service.py": "c8ff1eafe733d1c1552b1b4604eccbcd1b6598d7d6dc275826def0997db176c4",
+      "kagglesdk/competitions/types/submission_status.py": "0c76d3afc4bb00af10a59dba2e0d66e829c38ff2de8ab56e3ffc58b9205bc271"
+    }
+  },
+  "scope": "exact tested publication API implementation and typed request,response and enum interfaces;not an account request,full environment authentication or model result"
+}

@@ -1,0 +1,118 @@
+{
+  "schema": "gemma4-learned-publication-preparation-v1",
+  "created_at": "2026-11-17T16:40:36.341688+00:00",
+  "status": "CPU publication preparation qualified;no actual learned account mutations or official score",
+  "source_sha256": {
+    "scripts/publish_selected_candidate.py": "57dbdfb9a98d0dd817d28ba6d9836e7482a4073eb5a811eb5a9a73f283ae2de2",
+    "src/gemma_particle/kaggle_publication.py": "515687a60d76f549fb03cc5b0cf2d989d00602817cb0edbeea7b2da0e8a673cb",
+    "src/gemma_particle/selected_publication.py": "f78bdb4eaa67b4e12ef694b702d6ed7525f09b15e68ffd8f3ca489f856a5471c",
+    "tests/test_kaggle_publication.py": "a9ff9b199779dc2130ddb3c367336dfac642180ce299ff50508c8518450829aa",
+    "tests/test_selected_publication.py": "9315d644e11ecb42272145fe58405d6585f8a39d96f0b882b0f807e8e4050809",
+    "research/kaggle-publication-runtime-v1.json": "57cebf49ddba82cd5d9f01298eccdb87289807c408c4fc5eb97f173071a93014"
+  },
+  "tests": {
+    "focused_passed": 44,
+    "full_public_source_CPU_passed": 355,
+    "skipped": 3,
+    "public_python_files_equal": 162,
+    "private_data_or_dist_present": false,
+    "focused_log_sha256": "e4142506f514e7e928e90a9a15621d3abc7365ba5cca92950772e5f3db50df75",
+    "full_log_sha256": "65177ec87c8f218e776e5e5bed9f5aaa594a5ca2cb6e7433bba6fb4274f2bf2b",
+    "meaningful_controls": [
+      "real canonical emitter/envelope/archive validation and corrupt/extra files",
+      "real selected archive and24HTTP-exchange replay with supplied access/environment/pair boundaries",
+      "private dataset/notebook settings and explicit version1 status/output",
+      "unknown notebook statuses and transient read timeout retain same handle",
+      "server pending and live allowance gates",
+      "ambiguous dataset,push or submission SDK call stops after1invocation;immutable output prevents replay",
+      "wrong owner,existing notebook,public dataset,notebook failure and corrupt output cannot submit",
+      "matching description requires reconciliation",
+      "dataset SDK retry wrapper disabled and restored",
+      "unreleased access blocks account import and protected reads"
+    ],
+    "fixture_limits": "fake service has no actual Kaggle mutations;selected wiring fixture supplies the existing protected access,environment and pair validators while archive/effect/payload audits are real;not pretrained31B quality,actual GPU parity,authenticity or official submission evidence"
+  },
+  "current_unfinished_input_boundary": {
+    "status": "expected_rejection",
+    "counts": {
+      "account_imports": 0,
+      "HTTP_requests": 0,
+      "holdout_parser_calls": 0
+    },
+    "output_created": false,
+    "input": "actual unfinished DEV progress supplied as access;not a released receipt",
+    "input_sha256": "e69416d7918326cac32960f617a38ea310e595709e49f559ce1692588295743c",
+    "source_sha256": "57dbdfb9a98d0dd817d28ba6d9836e7482a4073eb5a811eb5a9a73f283ae2de2"
+  },
+  "actual_plan_only_boundary": {
+    "status": "prepared",
+    "counts": {
+      "account_imports": 0,
+      "HTTP_requests": 0,
+      "holdout_parser_calls": 0
+    },
+    "source_sha256": "57dbdfb9a98d0dd817d28ba6d9836e7482a4073eb5a811eb5a9a73f283ae2de2"
+  },
+  "installed_local_SDK_control": {
+    "status": "passed",
+    "scope": "actual installed SDK request/response compatibility and6 pinned source interfaces;local fake client;no account/network calls",
+    "versions": {
+      "kaggle": "2.2.5",
+      "kagglesdk": "0.1.38"
+    },
+    "interface_files": 6,
+    "local_client_calls": [
+      [
+        "fixture-owner",
+        "fixture-dataset"
+      ]
+    ],
+    "result": {
+      "ref": "fixture-owner/fixture-dataset",
+      "is_private": true,
+      "version": 1
+    },
+    "changed_interface_rejected": true,
+    "publisher_sha256": "57dbdfb9a98d0dd817d28ba6d9836e7482a4073eb5a811eb5a9a73f283ae2de2"
+  },
+  "source_bridge": {
+    "schema": "gemma4-learned-publication-source-bridge-v1",
+    "reference_commit": "b0aac0abdbac43146703a896aa63ea26c5743d37",
+    "whole_files_equal": {
+      "scripts/prepare_kaggle_candidate.py": true,
+      "scripts/prepare_selected_candidate.py": true,
+      "scripts/run_resource_dev_grid.py": true,
+      "scripts/collect_behavior_pool.py": true,
+      "scripts/wait_and_train_pilot.py": true,
+      "scripts/run_dev_condition.py": true,
+      "scripts/compare_dev_conditions.py": true,
+      "src/gemma_particle/selected_candidate.py": true,
+      "src/gemma_particle/confirmation.py": true,
+      "src/gemma_particle/confirmation_results.py": true,
+      "src/gemma_particle/confirmation_environments.py": true,
+      "src/gemma_particle/learned_effect.py": true,
+      "src/gemma_particle/resource_supplement.py": true
+    },
+    "scope": "named original preparation,training,collection,DEV,resource and confirmation files byte unchanged;separate publication modules only;not complete semantic equivalence or proof of model quality"
+  },
+  "actual_learned_dataset_creates": 0,
+  "actual_learned_notebook_pushes": 0,
+  "actual_learned_submission_requests": 0,
+  "actual_learned_official_scores": 0,
+  "new_GPU_model_work": false,
+  "latest_read_only_official_observation": {
+    "as_of": "2026-11-17T16:33:22.288546+00:00",
+    "original_OFF_submission": 58457991,
+    "status": "PENDING",
+    "score": null,
+    "num_today": 1,
+    "num_allowed_now": 0,
+    "public_leader": {
+      "team": "Yurnero",
+      "score": "0.29"
+    },
+    "scope": "existing OFF and public leaderboard read only;not a learned result"
+  },
+  "remaining": "actual second TRAINtarget and native training;measured conversions;full controls and qualified resource grid;fixed eligible DEV choice;independent access,49environments and complete pair;real readiness;actual private publication and learned official score strictly above fresh SOTA",
+  "goal": "active;not achieved"
+}
