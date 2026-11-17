@@ -1,0 +1,55 @@
+{
+  "schema": "gemma4-history-compaction-controls-v2",
+  "as_of": "2026-11-17T06:07:41.180223+00:00",
+  "status": "passed",
+  "gpu_used_for_qualification": false,
+  "pretrained_optimizer_updates": 0,
+  "profile": "official-compaction-v2",
+  "preceding_actual_model_error": {
+    "root": "runs/31b-vllm-13713-official-compaction-v2",
+    "source_commit": "d3ae4698b871a991f91949b278f5c8d80ea6756c",
+    "history_profile": "official-compaction-v1",
+    "progress_sha256": "1ff67ee550425be4870d98edeb32b56eab9025ad8ed9e1b9e2c13a094cfa0192",
+    "classification": "capture error; separate registry/compiled model clients duplicated journal counter and overwrote initial request",
+    "admitted_contexts": 0,
+    "historical_files_preserved": true
+  },
+  "corrections": [
+    "one task-owned capture transport/journal survives compiler model cloning",
+    "public summarizer binds to actual compiled root model including inherited seed/thinking controls",
+    "exclusive request/response file creation prevents overwrite by a duplicate counter"
+  ],
+  "actual_compiler_adk_fixture": {
+    "schema": "gemma4-history-cpu-fixture-v1",
+    "status": "passed",
+    "pretrained_inference": false,
+    "profile": "official-compaction-v2",
+    "assistant_decisions": 8,
+    "summary_calls": 11,
+    "all_calls_journaled": 19,
+    "summary_seen_in_subsequent_assistant_history": true,
+    "purpose_scope_restored": true,
+    "generation": "scripted transport with declared synthetic usage metadata",
+    "official_compiler_model_clones_share_journal": true,
+    "summary_uses_compiled_seed_and_thinking_config": true,
+    "scope": "actual ADK Runner and public token-threshold compaction APIs; forbidden as training targets or task-quality evidence"
+  },
+  "cpu_preflight": {
+    "path": "reports/compiled-history-preflight-v2.json",
+    "sha256": "30919d98fd5e4934ef4c4769a5c7c826d2fefd0e0a5d098f1366d3f1def7f97d",
+    "tests_passed": 69,
+    "official_compiler": "passed; no inference"
+  },
+  "sources": {
+    "src/gemma_particle/adk_capture.py": "459f484bc4bc4232841d5e656966b6b2e21fa97267fbcf0540f72db1392815c7",
+    "src/gemma_particle/history.py": "d379603c0aa85c108f342a6edfec281706bdb6551b690028b4cc91bd4367a83e",
+    "src/gemma_particle/capture.py": "e47db7ee0d47f5592c18a2cdcafa5204df553ae19b9ab2238a0b6c8ad3536675",
+    "src/gemma_particle/curation.py": "d24479d650cced00a8b844c3967c8920f2e1e90bd719087a9bf4d31bbe4e2397",
+    "scripts/run_trajectories.py": "a97ff648be5b042c54eae10ec0b91d3f0eee5d229da34a9c77a4baff700a24b4",
+    "scripts/qualify_history.py": "f5c419329ef16e06b76b05cbb77b9e0112facb6e47ce08d9f19a923fc114fa2b",
+    "scripts/collect_train_pool.py": "9f356830bba1a104f024958038e8f11a3925339796bdda6b3183c2f58b6be6e5",
+    "tests/test_capture.py": "4cf7e71d9c09b9c28893bc4f9a66c521c16baba04bd8ed4d1345e5d16f8a2a02",
+    "tests/test_history.py": "8b2691110dcc888508fa968ac499a4fa606d0db8eec2c029701baf144bcc5e62"
+  },
+  "scope": "software/compiler/capture qualification only. Fresh matched v2-profile pretrained collection required; no learned quality or complete official-scoring parity claim."
+}

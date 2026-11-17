@@ -1,10 +1,10 @@
 {
   "schema": "gemma4-current-results-v1",
-  "as_of": "2026-11-17T05:54:20.893386+00:00",
+  "as_of": "2026-11-17T06:07:41.180223+00:00",
   "objective_achieved": false,
   "gpu_used": true,
   "engineering": {
-    "cpu_preflight": "67 CPU checks pass under ParticleGAN 0.10.1; reports/cpu-preflight.json",
+    "cpu_preflight": "69 CPU checks pass, including real compiler+ADK history regression; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
     "real_task_verifier_controls": "initial TRAIN45/67; declared missing-dependency repair13/19. Per-task view qualifies58/67, retaining9failures and all original grades; reports/train-environment-qualification-v2.json",
     "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
@@ -13,14 +13,14 @@
     "31b_ct_host": "CPU derivative/loading controls and single128/4096 + batch2x4096 GPU gradient probes pass; no updates; reports/frozen-ct-qualification-v2.json",
     "31b_vllm_serving": "official wheel sources verified; exact multiline tool control and 25-request OpenAI token-format control pass; reports/vllm-serving-qualification-v1.json",
     "supplementary_dev": "all42 fixed tasks/24 repositories pass oracle environment controls; explicit source-bound agent/verifier handoff passes scripted CPU checks;44CPU checks pass; no model DEV score; reports/supplementary-dev-handoff-v1.json",
-    "31b_vllm_collection": "old11355 OFF/reproduce/localize fail; verify still live. Old GPU1 scheduler suspended prospectively, current13786 final arm continues. New frozen official-compaction13713 cohort queued on GPU0 with fresh OFF/teacher controls. 0 admitted targets and pretrained updates.",
+    "31b_vllm_collection": "uncompacted11355 all4 unresolved; oldGPU1 pool closed4tasks/0targets,51unattempted withdrawn. v1 compacted13713 capture error/0targets. Fresh corrected v2-profile pool pending. No pretrained optimizer update; reports/uncompacted-train-closure-v1.json",
     "operational_budgets": "new artifacts and runner default to60min/100tools/500turns/300scommand; real CPU harness and compiler checked;31CPU checks pass; reports/default-operational-budget-v1.json",
     "context_budget_capture": "prospective v4 exact-server token proof qualified; fresh 11355 OFF fails with verified context exhaustion and teacher arms are running. Complete winning teachers required; reports/context-budget-controls-v1.json",
     "train_pool": "fixed order, per-task environment checks, conditional teacher gates, automatic exact token transport and owned-server release;54CPU checks pass; reports/train-pool-controls-v1.json",
     "latest_upstream_review": "0.10.1 source cohort qualified in isolated environment: 57 CPU checks, bit-identical initial/one-update tensors and metrics for both explicit recipes; old full checkpoints rejected transactionally. Historical 0.10.0 evidence unchanged; reports/pg0101-source-qualification-v1.json",
-    "long_context_activation_storage": "opt-in lossless CPU storage passes CPU gradient and exact recipe-continuation controls; full-length GPU memory and actual recipe-step cost unmeasured; reports/activation-storage-cpu-v1.json",
+    "long_context_activation_storage": "GPU1 owned server/engine release observed; native CPU-offload probe with2x28672tokens is live under0.70 hard cap, zero updates; outcome pending at runs/ct-offload-long-resource-v1/result.json",
     "conversion_probe_preparation": "TRAIN13207/13537 initial issue prompts fixed before pretrained updates; exact2884/3199 tokens captured with no inference; full-history conversion sampling and disjointness CPU checks pass. Actual31B conversion/LoRA effect unmeasured; reports/conversion-probe-preparation-v1.json",
-    "history_management": "official starter settings qualified by 67 CPU checks and real ADK loop; frozen d3ae469 compacted13713 cohort queued behind observed live PID1623050. Old no-compaction outcomes retained; reports/history-compaction-controls-v1.json; reports/history-compaction-queue-v1.json"
+    "history_management": "first v1 actual model attempt had cloned-client capture ERROR, retained with0targets. Corrected v2 uses one journal and actual compiled canonical model; compiler regression and69CPU tests pass; reports/history-compaction-controls-v2.json"
   },
   "task_resolution": [
     {

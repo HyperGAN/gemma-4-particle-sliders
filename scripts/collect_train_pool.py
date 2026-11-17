@@ -18,6 +18,7 @@ from gemma_particle.curation import instruction_set
 from gemma_particle.data import read_jsonl,write_jsonl
 from gemma_particle.dev import validate_agent_tasks
 from gemma_particle.harness_identity import sha256_file,wheel_identity
+from gemma_particle.history import NO_COMPACTION,OFFICIAL_COMPACTION,HISTORY_PROFILES,history_contract
 
 EXECUTION_SOURCES=['src/gemma_particle/curation.py','scripts/build_submission.py',
     'scripts/run_trajectories.py','scripts/collect_arms.py','src/gemma_particle/budgets.py',
@@ -74,13 +75,17 @@ def main():
     p.add_argument('--image',default='gemma-particle-sandbox:fastapi-deps-v2')
     p.add_argument('--exclude-task',action='append',default=[])
     p.add_argument('--stop-server-pid',type=int)
+    p.add_argument('--history-profile',choices=HISTORY_PROFILES,default=OFFICIAL_COMPACTION)
     p.add_argument('--plan-only',action='store_true')
     args=p.parse_args()
     args.root=args.root.resolve();args.executor=args.executor.resolve();args.server_identity=args.server_identity.resolve()
     if args.root.exists():raise FileExistsError('TRAIN pool is immutable; incomplete runs require explicit reconciliation')
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=args.executor,text=True).strip()
     if commit!=args.executor_commit:raise ValueError('executor checkout moved')
-    sources={s:sha256_file(args.executor/s) for s in EXECUTION_SOURCES}
+    source_files=list(EXECUTION_SOURCES)
+    if args.history_profile!=NO_COMPACTION:
+        source_files.extend(['src/gemma_particle/history.py','src/gemma_particle/adk_capture.py'])
+    sources={s:sha256_file(args.executor/s) for s in source_files}
     server=json.loads(args.server_identity.read_text());qualification=json.loads(args.qualification.read_text())
     if sha256_file(args.raw_tasks)!=qualification['source_sha256']:raise ValueError('TRAIN source differs')
     selected=select_tasks(read_jsonl(args.visible_tasks),qualification,args.exclude_task)
@@ -98,6 +103,7 @@ def main():
         'executor':str(args.executor),'executor_commit':commit,'execution_sources':sources,
         'pool_source_sha256':sha256_file(Path(__file__)),'teacher_policy':'failed-off-only',
         'instruction_protocol':'tools-v2','capture_protocol':CONTEXT_CAPTURE_PROTOCOL,
+        'history_profile':args.history_profile,'history':history_contract(args.history_profile),
         'budget_profile':OFFICIAL_BUDGET,'budget':budget_values(OFFICIAL_BUDGET),
         'stop_rule':'first completed task bringing admitted contexts to at least two; preserve every earlier outcome',
         'scope':'adaptive TRAIN data collection only; no DEV/holdout or benchmark score'}
@@ -108,7 +114,7 @@ def main():
     def execute(command,log,*,cpu=False):
         child_env=dict(env)
         if cpu:child_env['CUDA_VISIBLE_DEVICES']=''
-        interpreter=args.executor/'.venv/bin/python' if cpu else python
+        interpreter=args.executor/'.train-venv/bin/python' if cpu else python
         with log.open('w') as stream:
             r=subprocess.run([str(interpreter),*command],cwd=args.executor,env=child_env,stdout=stream,stderr=subprocess.STDOUT)
         if r.returncode:raise RuntimeError(f'pipeline exit{r.returncode}; see{log}')
@@ -131,7 +137,7 @@ def main():
             'target_instructions':instruction_set('tools-v2'),'execution_sources':sources,
             'source_git':commit,'source_checkout':str(args.executor),
             'environment_control_sha256':record['receipt_sha256'],'pool_plan_sha256':sha256_file(args.root/'plan.json'),
-            **{k:plan[k] for k in ('teacher_policy','instruction_protocol','capture_protocol','budget_profile','budget','scope')}}
+            **{k:plan[k] for k in ('teacher_policy','instruction_protocol','capture_protocol','history_profile','history','budget_profile','budget','scope')}}
         write_json(task_root/'plan.json',task_plan)
         execute(['scripts/collect_arms.py','--root',str(task_root),'--visible-tasks',str(args.visible_tasks.resolve()),
             '--raw-tasks',str(args.raw_tasks.resolve()),'--inputs',str(args.inputs.resolve()),'--wheels',str(wheels),

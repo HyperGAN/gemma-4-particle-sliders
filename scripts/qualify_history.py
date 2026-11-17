@@ -4,15 +4,14 @@ import asyncio
 import json
 from pathlib import Path
 
-from google.adk.agents import LlmAgent
 from google.adk.apps.app import App
-from google.adk.models.lite_llm import LiteLlm,LiteLLMClient
+from google.adk.models.lite_llm import LiteLLMClient
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from litellm.types.utils import ModelResponse
 
-from gemma_particle.adk_capture import RecordingClient
+from gemma_particle.adk_capture import RecordingClient,RecordingLlm
 from gemma_particle.capture import RequestJournal,load_requests
 from gemma_particle.history import OFFICIAL_COMPACTION,CALL_PURPOSE,eval_history_options,is_assistant_decision
 
@@ -35,9 +34,21 @@ async def run(out):
     if out.exists():raise FileExistsError('history qualification is immutable')
     out.mkdir(parents=True)
     fixture=Fixture();journal=RequestJournal(out/'requests',instance_id='cpu-history-fixture',arm='off')
-    llm=LiteLlm(model='openai/cpu-history-fixture',api_key='local',llm_client=RecordingClient(journal,delegate=fixture))
+    llm=RecordingLlm(model='openai/cpu-history-fixture',api_key='local',llm_client=RecordingClient(journal,delegate=fixture))
     options=eval_history_options(OFFICIAL_COMPACTION,llm)
-    agent=LlmAgent(name='cpu_history_fixture',model=llm,instruction='Preserve the issue and report progress.')
+    # Compile the real artifact to exercise the compiler's deep model clone and
+    # subsequent thinking/seed clone. A direct LlmAgent missed this ownership edge.
+    from adk_submission import compile_submission,ModelRegistry,ToolRegistry
+    import validate_submission as declarations
+    model_name='gemma-4-31b-it-qat-w4a16-ct'
+    models=ModelRegistry();models.register(model_name,llm);tools=ToolRegistry()
+    for name in ['run_command','read_file','edit_file','write_file','get_status','submit_patch',
+                 'get_code_neighbors','search_similar_code','get_code_subgraph']:
+        tools.register(name,getattr(declarations,name))
+    agent=compile_submission(submission_dir=Path('dist/baseline-31b-official60-kaggle-v1/agent'),
+        model_registry=models,tool_registry=tools)
+    assert agent.canonical_model is not llm
+    assert agent.canonical_model.llm_client is llm.llm_client
     app=App(name='history_fixture',root_agent=agent,**options)
     sessions=InMemorySessionService();session=await sessions.create_session(app_name=app.name,user_id='fixture')
     runner=Runner(app=app,session_service=sessions)
@@ -49,11 +60,16 @@ async def run(out):
     auxiliary=[p for p in records if not is_assistant_decision(p,OFFICIAL_COMPACTION)]
     decisions=[p for p in records if is_assistant_decision(p,OFFICIAL_COMPACTION)]
     assert fixture.summaries>0 and len(auxiliary)==fixture.summaries and len(decisions)==8
+    assert llm.llm_client.bound_model is agent.canonical_model
+    for packet in auxiliary:
+        generation=packet['request']['generation']
+        assert generation['seed']==0 and generation['extra_body']['thinking_token_budget']==1024
     assert any('CPU compacted history' in json.dumps(p['request']['messages']) for p in decisions)
     receipt={'schema':'gemma4-history-cpu-fixture-v1','status':'passed','pretrained_inference':False,
         'profile':OFFICIAL_COMPACTION,'assistant_decisions':len(decisions),'summary_calls':len(auxiliary),
         'all_calls_journaled':len(records),'summary_seen_in_subsequent_assistant_history':True,
         'purpose_scope_restored':True,'generation':'scripted transport with declared synthetic usage metadata',
+        'official_compiler_model_clones_share_journal':True,'summary_uses_compiled_seed_and_thinking_config':True,
         'scope':'actual ADK Runner and public token-threshold compaction APIs; forbidden as training targets or task-quality evidence'}
     (out/'result.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt),flush=True)
 

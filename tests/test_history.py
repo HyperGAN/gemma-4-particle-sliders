@@ -1,4 +1,8 @@
 from copy import deepcopy
+import json
+import os
+from pathlib import Path
+import subprocess
 
 import pytest
 
@@ -47,3 +51,16 @@ def test_auxiliary_tag_cannot_hide_tool_decisions_or_cross_history_profiles():
         select_contexts([dict(instance_id='task',split='train')],rows)
     assert history_contract(NO_COMPACTION)['compaction'] is None
     assert history_contract(OFFICIAL_COMPACTION)['compaction']['token_threshold']==14336
+
+
+def test_actual_compiler_clones_preserve_one_history_journal(tmp_path):
+    root=Path(__file__).resolve().parents[1]
+    env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
+    out=tmp_path/'compiled-history'
+    result=subprocess.run([str(root/'.harness-venv/bin/python'),'scripts/qualify_history.py','--out',str(out)],
+        cwd=root,env=env,text=True,capture_output=True)
+    assert result.returncode==0,result.stderr[-5000:]
+    receipt=json.loads((out/'result.json').read_text())
+    assert receipt['official_compiler_model_clones_share_journal']
+    assert receipt['summary_uses_compiled_seed_and_thinking_config']
+    assert receipt['assistant_decisions']==8 and receipt['summary_calls']>0

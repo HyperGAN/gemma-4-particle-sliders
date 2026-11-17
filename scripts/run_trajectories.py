@@ -15,13 +15,12 @@ import httpx
 from urllib.parse import urlsplit
 
 from adk_submission import ModelRegistry
-from google.adk.models.lite_llm import LiteLlm
 from swegemma.config import EvalConfig
 from swegemma.harness.agent_runner import run_agent_sandbox
 from swegemma.models import Task
 from swegemma.sandbox import ContainerConfig, ContainerManager
 
-from gemma_particle.adk_capture import RecordingClient
+from gemma_particle.adk_capture import RecordingClient,RecordingLlm
 from gemma_particle.capture import RequestJournal,load_requests,CAPTURE_PROTOCOLS,LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
 from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,budget_values
@@ -115,7 +114,7 @@ async def main():
             delegate=ProtocolFixtureClient()
         client=RecordingClient(journal,delegate=delegate)
         models=ModelRegistry()
-        llm=LiteLlm(model='openai/'+args.model,api_base=args.endpoint,api_key='local',
+        llm=RecordingLlm(model='openai/'+args.model,api_base=args.endpoint,api_key='local',
                                          extra_headers={'X-Gemma-Identity':digest(server_identity)} if not args.cpu_protocol_fixture else {},
                                          num_retries=5,llm_client=client)
         models.register(args.model,llm)

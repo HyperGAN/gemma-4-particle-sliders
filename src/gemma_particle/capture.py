@@ -40,7 +40,8 @@ class RequestJournal:
             if purpose!='history_summary':raise ValueError('unknown capture purpose')
             packet['purpose']=purpose
         path = self.directory/f'{self.next_index:04d}-request.json'
-        path.write_text(json.dumps(packet,ensure_ascii=False,indent=2)+'\n')
+        with path.open('x') as stream:
+            stream.write(json.dumps(packet,ensure_ascii=False,indent=2)+'\n')
         path.chmod(0o600)
         self.next_index += 1
         return packet
@@ -58,9 +59,8 @@ class RequestJournal:
         result = {'schema':'gemma4-model-response-v1', 'request_sha256':packet['request_sha256'],
                   'response':selected, 'response_sha256':digest(selected)}
         path = self.directory/f'{packet["decision"]:04d}-response.json'
-        if path.exists():
-            raise FileExistsError('completion already recorded')
-        path.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+        with path.open('x') as stream:
+            stream.write(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
         path.chmod(0o600)
 
 
