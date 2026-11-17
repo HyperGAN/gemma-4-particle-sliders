@@ -28,13 +28,16 @@ def projection_names(signature):
         for n in signature['backend']['adapter_names'] if n.startswith('adapters.') and n.endswith('.lora_down.weight')}
 
 
-def validate_training_outputs(training,cache,pilot,config_path,selection,probe_contexts,probe_qualification):
+def validate_training_outputs(training,cache,pilot,config_path,selection,probe_contexts,probe_qualification,*,require_complete=True):
     training,cache,pilot=map(Path,(training,cache,pilot));config=read(config_path)
     status=read(training/'progress.json');declaration=read(training/'plan.json');first=read(pilot/'progress.json')
-    if (status.get('state')!='completed_both_recipes' or status.get('training_updates')!=2048
+    complete=status.get('state')=='completed_both_recipes'
+    running=status.get('state') in {'waiting_for_shared_headroom','training','checkpoint_verified'}
+    if ((not complete and (require_complete or not running))
+            or (complete and status.get('training_updates')!=2048)
             or first.get('state')!='completed_one_update' or first.get('training_updates')!=1
             or declaration['config_sha256']!=sha256_file(config_path)):
-        raise ValueError('actual complete two-recipe training and unchanged pilot/config required')
+        raise ValueError('qualified native training state and unchanged pilot/config required')
     cache_sha=sha256_file(cache/'index.json');index=read(cache/'index.json')
     identity={'repo':config['model'],'revision':config['model_revision'],'dtype':'bfloat16',
         'attn_implementation':config['attn_implementation'],'weight_format':config['frozen_quantization']}
@@ -57,18 +60,34 @@ def validate_training_outputs(training,cache,pilot,config_path,selection,probe_c
             or probe['train_manifest_sha256']!=sha256_file(train)):
         raise ValueError('fixed qualified conversion probes must remain disjoint from all fitting questions')
     expected={(c['preset'],c['completed_steps']) for c in selection['conditions'] if c['role']=='learned'}
-    records=status['finished'];observed=[(r['preset'],r['completed_steps']) for r in records]
-    if len(observed)!=len(set(observed)) or set(observed)!=expected:
-        raise ValueError('every declared recipe/checkpoint needs its actual verified receipt')
+    records={(r['preset'],r['completed_steps']):r for r in status.get('finished',[])}
+    if (len(records)!=len(status.get('finished',[])) or not records.keys()<=expected
+            or (complete and records.keys()!=expected)):
+        raise ValueError('unique actual receipts for the declared recipe checkpoints required')
+    if not complete:
+        verified=status['completed_steps_by_preset']
+        if (any(verified[preset]<step for preset,step in records)
+                or sum(verified.values())!=status['training_updates']):
+            raise ValueError('verified checkpoint exceeds published training progress')
     jobs=[];data_signatures=set();preset_signatures={}
     for preset in selection['training']['presets']:
+        checkpoints=selection['training']['checkpoints']
+        available=[step for step in checkpoints if (preset,step) in records]
+        if not available:
+            continue
+        if available!=checkpoints[:len(available)]:
+            raise ValueError('verified checkpoints must form a contiguous declared prefix')
         directory=training/preset;lines=(directory/'updates.jsonl').read_bytes().splitlines(keepends=True)
+        last=available[-1]
+        if complete and len(lines)!=1024:
+            raise ValueError('contiguous finite actual metric journal required')
+        lines=lines[:last]
         metrics=[json.loads(line) for line in lines]
-        if (len(lines)!=1024 or [m['step'] for m in metrics]!=list(range(1,1025)) or not finite(metrics)
+        if (len(lines)!=last or [m['step'] for m in metrics]!=list(range(1,last+1)) or not finite(metrics)
                 or any(type(m.get(k)) not in (int,float) for m in metrics for k in ('g_loss','d_loss'))):
             raise ValueError('contiguous finite actual metric journal required')
-        for step in selection['training']['checkpoints']:
-            record=next(r for r in records if (r['preset'],r['completed_steps'])==(preset,step))
+        for step in available:
+            record=records[preset,step]
             native=directory/f'RAW-{step:04d}';metadata=read(native/'native.json');pin=read(directory/f'FULL-{step:04d}.json')
             signature=metadata['game_signature'];recipe=signature['recipe']
             prefix_sha=hashlib.sha256(b''.join(lines[:step])).hexdigest()
@@ -97,7 +116,7 @@ def validate_training_outputs(training,cache,pilot,config_path,selection,probe_c
                 'native_metadata_sha256':record['raw_metadata_sha256'],'full_checkpoint_sha256':record['full_checkpoint_sha256'],
                 'projection_names':sorted(hosts),'cache_index_sha256':cache_sha,'fit_task_ids':sorted(ids),
                 'probe_task_ids':sorted(qualification['task_ids'])})
-    if len(data_signatures)!=1:raise ValueError('training response/condition identities differ across recipes or checkpoints')
+    if len(data_signatures)>1:raise ValueError('training response/condition identities differ across recipes or checkpoints')
     return jobs
 
 

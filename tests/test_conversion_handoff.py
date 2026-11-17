@@ -72,6 +72,30 @@ def test_complete_actual_receipt_shape_and_append_only_metric_prefixes(tmp_path)
     with pytest.raises(ValueError,match='journal prefix'):validate_training_outputs(*args)
 
 
+def test_staged_conversion_uses_only_verified_prefix_while_training_appends(tmp_path):
+    args=fake_finished_run(tmp_path)
+    expected=validate_training_outputs(*args)[0]
+    training=args[0]
+    path=training/'progress.json'
+    progress=json.loads(path.read_text())
+    record=progress['finished'][0]
+    progress.update(state='training',training_updates=256,finished=[record],
+                    completed_steps_by_preset={'empf':256,'rhbi_optimized':0})
+    put(path,progress)
+    metrics=training/'empf/updates.jsonl'
+    original=metrics.read_bytes().splitlines(keepends=True)
+    metrics.write_bytes(b''.join(original[:256])+b'{"step":257, "g_l')
+    assert validate_training_outputs(*args,require_complete=False)==[expected]
+    with pytest.raises(ValueError,match='qualified native training state'):
+        validate_training_outputs(*args)
+
+    progress['completed_steps_by_preset']['empf']=1
+    progress['training_updates']=1
+    put(path,progress)
+    with pytest.raises(ValueError,match='exceeds published training progress'):
+        validate_training_outputs(*args,require_complete=False)
+
+
 @pytest.mark.parametrize('damage',['raw','cache','missing_checkpoint','probe_overlap','objective'])
 def test_invalid_inputs_reject_before_any_conversion(tmp_path,damage):
     args=fake_finished_run(tmp_path);training,cache,_,_,_,_,qualification=args
