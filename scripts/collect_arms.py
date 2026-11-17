@@ -14,6 +14,7 @@ import subprocess
 import sys
 
 from gemma_particle.curation import select_contexts,instruction_set,DEFAULT_INSTRUCTION_PROTOCOL
+from gemma_particle.budgets import PILOT_BUDGET,budget_values
 from gemma_particle.data import read_jsonl,write_jsonl
 
 
@@ -31,10 +32,15 @@ def main():
     args=p.parse_args()
     plan=json.loads((args.root/'plan.json').read_text())
     protocol=plan.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
+    budget_profile=plan.get('budget_profile',PILOT_BUDGET)
+    budget=budget_values(budget_profile)
     instructions=instruction_set(protocol)
-    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:
+    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL or budget_profile!=PILOT_BUDGET:
         if plan.get('target_instructions')!=instructions:raise ValueError('declared instruction text changed')
         sources=['src/gemma_particle/curation.py','scripts/build_submission.py','scripts/run_trajectories.py','scripts/collect_arms.py']
+        if budget_profile!=PILOT_BUDGET:
+            if plan.get('budget')!=budget:raise ValueError('declared operational budget changed')
+            sources.append('src/gemma_particle/budgets.py')
         observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
         if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())
@@ -56,12 +62,14 @@ def main():
                     '--model',identity['served_model'],'--endpoint',args.endpoint,'--server-identity',str(args.server_identity),
                     '--inputs',str(args.inputs),'--wheels',str(args.wheels),'--image',args.image,'--out',str(agent)]
                 if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:command.extend(['--instruction-protocol',protocol])
+                if budget_profile!=PILOT_BUDGET:command.extend(['--budget-profile',budget_profile])
                 for task_id in selected:command.extend(['--task-id',task_id])
                 execute(command,logs/f'{arm}-agent.log')
             manifest=json.loads((agent/'cohort.json').read_text())
             if ([r['instance_id'] for r in manifest['runs']]!=selected or manifest['arm']!=arm
                     or manifest['server_identity']!=identity
-                    or manifest.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)!=protocol):
+                    or manifest.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)!=protocol
+                    or manifest.get('budget_profile',PILOT_BUDGET)!=budget_profile):
                 raise ValueError('existing arm is incomplete or belongs to another cohort; reconcile it first')
             verified=args.root/(arm+'-verification')
             if not verified.exists():

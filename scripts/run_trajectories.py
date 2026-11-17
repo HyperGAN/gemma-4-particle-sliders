@@ -24,6 +24,7 @@ from swegemma.sandbox import ContainerConfig, ContainerManager
 from gemma_particle.adk_capture import RecordingClient
 from gemma_particle.capture import RequestJournal,load_requests
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
+from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,budget_values
 from gemma_particle.data import read_jsonl,digest
 from gemma_particle.sandbox import isolate_sandbox_cache
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
@@ -36,6 +37,7 @@ async def main():
     p.add_argument('--task-id',action='append',required=True)
     p.add_argument('--arm',choices=['off',*TARGET_INSTRUCTIONS],required=True)
     p.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
+    p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=PILOT_BUDGET)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
@@ -69,12 +71,14 @@ async def main():
             raise ValueError('live endpoint differs from the declared server identity')
     os.environ['KAGGLE_SANDBOX_DIR']=str((args.inputs/'sandbox').resolve())
     args.out.mkdir(parents=True,mode=0o700)
-    artifact=build(args.out/'artifact',args.model,instruction=None if args.arm=='off' else args.arm,instruction_protocol=args.instruction_protocol)
+    artifact=build(args.out/'artifact',args.model,instruction=None if args.arm=='off' else args.arm,
+        instruction_protocol=args.instruction_protocol,budget_profile=args.budget_profile)
     manifest={'schema':'gemma4-trajectory-cohort-v1','generator_kind':server_identity['kind'],
         'server_identity':server_identity,'model':args.model,'arm':args.arm,'task_ids':args.task_id,
         'visible_tasks_sha256':hashlib.sha256(args.tasks.read_bytes()).hexdigest(),
         'artifact':artifact,'image_id':None,'runs':[]}
     if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:manifest['instruction_protocol']=args.instruction_protocol
+    if args.budget_profile!=PILOT_BUDGET:manifest['budget_profile']=args.budget_profile
     manager=ContainerManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000))
     manifest['image_id']=manager.client.images.get(args.image).id
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
@@ -102,7 +106,7 @@ async def main():
         config=EvalConfig(tasks_path=args.tasks,snapshots_dir=args.inputs/'snapshots',results_dir=folder,
             submission_dir=args.out/'artifact/agent',models=models,wheels_dir=args.wheels,
             graph_dir=str(args.inputs/'graphs'),embeddings_dir=str(args.inputs/'embeddings'),
-            image=args.image,max_tool_calls=40,max_time_minutes=5,max_turns=70,timeout_seconds=60,
+            image=args.image,**budget_values(args.budget_profile),
             display_mode='quiet')
         manifest.setdefault('contract',{'budget':asdict(config.budget),'harness':asdict(config.harness),
             'environment':manifest['environment'],'image_id':manifest['image_id'],
@@ -111,6 +115,7 @@ async def main():
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:
             manifest['contract'].update(instruction_protocol=args.instruction_protocol,
                 instruction_set_sha256=digest(instruction_set(args.instruction_protocol)))
+        if args.budget_profile!=PILOT_BUDGET:manifest['contract']['budget_profile']=args.budget_profile
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
         start=time.perf_counter()
         patch,error,trace=await run_agent_sandbox(manager,config,task,args.inputs/'snapshots'/f'{task_id}.tgz')
@@ -132,6 +137,7 @@ async def main():
         result['snapshot_sha256']=sha256_file(args.inputs/'snapshots'/f'{task_id}.tgz')
         result['model_identity']=server_identity.get('model_identity')
         if args.instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=args.instruction_protocol
+        if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']
         result['capture_complete']=capture_error is None

@@ -5,7 +5,7 @@
   "checks": [
     {
       "command": [
-        "/ml2/kaggle-hackathon-gemma-4/.venv/bin/python",
+        "/ml2/kaggle-hackathon-gemma-4-budget/.venv/bin/python",
         "-m",
         "pytest",
         "-q",
@@ -13,11 +13,11 @@
         ".deps/particle-sliders/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "12dd488a06c60d9151911fa164c1c77c631c4939c1bdbb665a60880cf8d2c253"
+      "output_sha256": "73451a478bd7008a6971341a83dc5741178e1d89c779892d05fa0d5422209672"
     },
     {
       "command": [
-        "/ml2/kaggle-hackathon-gemma-4/.harness-venv/bin/python",
+        "/ml2/kaggle-hackathon-gemma-4-budget/.harness-venv/bin/python",
         "scripts/validate_submission.py",
         "dist/baseline-31b/agent"
       ],
@@ -26,16 +26,12 @@
     }
   ],
   "sources": {
-    "src/gemma_4_particle_sliders.egg-info/PKG-INFO": "842aa2bbb640ff1d7d533e43fd7d9214122825dcb09ed08c9a88313d5f057bdd",
-    "src/gemma_4_particle_sliders.egg-info/SOURCES.txt": "bad1cad4c4b5bc0eb12a2d76e4beb4dac3881ef04e3d88d90adc21093c8cb185",
-    "src/gemma_4_particle_sliders.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-    "src/gemma_4_particle_sliders.egg-info/requires.txt": "54cfd0cff2a157f4a88d1d5e69f964e8f954862aab868bca4428115ca3a85014",
-    "src/gemma_4_particle_sliders.egg-info/top_level.txt": "786579d9854c98022cd2f7ffe94609f0dbecccd7c9bd68ec242bafd1f62f025c",
     "src/gemma_particle/__init__.py": "e1e74b2b66901e5679012a9b4fde6a5d93543a60a4e606557d45dbe38e7ab544",
     "src/gemma_particle/adk_capture.py": "50cdd3e384adc449f477841a27bea62e7531ce07e77df53f8261e290cbd8ec8c",
+    "src/gemma_particle/budgets.py": "be17006878d14c733e9a0a3be6abffd57a57029f962c4e90295a47ce4421901d",
     "src/gemma_particle/capture.py": "89f74f3134c41d922f6a658d7d7d2828a018a4e1cbcf2783bd4a4b3e03bcbd08",
     "src/gemma_particle/ct_linear.py": "cb8d51500bd4039e8d06b2b4843e08a20395455a2c5e999131ff8377bd4bff89",
-    "src/gemma_particle/curation.py": "58a1500c6fbf877dbd0e2097e1febc87fd50049e92978009786fa36a5a3c4ae0",
+    "src/gemma_particle/curation.py": "b1e0645a3cafe4ce431e6ecb7ffe605bbd5c640baf1b87b55cbfda75a8f77a10",
     "src/gemma_particle/data.py": "a1af2afdeafb0f1407d4ff3cad9bbc069653ff1e9a9221a0829b9a4aca065b4a",
     "src/gemma_particle/evaluation.py": "742c7679fee9c7a3307c53fd7ff5dfee70a7bf8b327bf01e8b113308d96d2a00",
     "src/gemma_particle/export.py": "d32d92f453d92e528d96ca80b6f98aa9d36203330599facc6c409a71c7ccfa2d",
@@ -51,6 +47,7 @@
     "src/gemma_particle/transport.py": "4579c90d71d54a78b2928730272acff46773e2a0a1d51e62141e2aa2595002c2",
     "src/gemma_particle/vllm_identity.py": "9c762df267351f4bf9a4f42ceb51f58ed9ba7753829b9303636e3cf88221659c",
     "tests/conftest.py": "3111bdd09841be2bcbc7387be5aa801c333f085a668f9726352786eba21ab91d",
+    "tests/test_budget_artifact.py": "40f059c4a96b32c59cf6c8fa50186af148e203442cfc97afcd01c0e99e8528b8",
     "tests/test_capture.py": "15dc835279d9e83a56f60b52fe80febcb45880a1ed94d1323591ca279f92b85e",
     "tests/test_ct_linear.py": "1f31c7878866b604c22be87fd053b8cad46f534c784694fc4082a05b88350044",
     "tests/test_data.py": "626f7a875dfa72d6213704268545d45de6923ef70e8276f88601f423d3f639fe",
@@ -63,9 +60,9 @@
     "tests/test_runtime.py": "17a7208a1c1c9cc016e85aee4968a56fc56d3497ef376efa54ad4092c47c635d",
     "tests/test_transport.py": "5adabb71043e74f5cee802c6190f45af315c45b0fb85f517b76dc1799c415bfb",
     "scripts/bootstrap.py": "96642d6cadf203f32e9a59d8279f5a4b20d32c40a77321dbf41d1d5caac25463",
-    "scripts/build_submission.py": "307ebcb2df5c9088a5c3e3fcf77c75ac604a81df82a0252afc84a745dd4df2b5",
+    "scripts/build_submission.py": "8d204035f9921c579596a5c0d6f63cc200283ed81a0742adab96227144079949",
     "scripts/cache_contexts.py": "a74cfeb94caba6ed41df4c1205d82b81cef2d7f77f386b79a261430c900b2f7f",
-    "scripts/collect_arms.py": "fe0097f445f397f59d7fac0d7ecd57cd2a7a045920aa230fbebe1a845f17a64d",
+    "scripts/collect_arms.py": "0b66d62391e6623c9c229c97db6f70818959b116520e64ced710a4a101c20563",
     "scripts/convert_to_peft.py": "2684afa2a3448d37ffd368db3e24dad0e4ecb2f20f6477a994230ae2f0b2d117",
     "scripts/curate.py": "bcffd97225bcf7232d8ec04667b81bafdf87e98e2ea9ae8dbc09e3561a8b44bd",
     "scripts/extract_external_dev.py": "be9808f7c07a8d03d0eb1a74a6e8ab719a7738769d5b73303b530baaf5b85da9",
@@ -77,7 +74,7 @@
     "scripts/prepare_task_wheels.py": "1d8a7bc76d8ea01d6ed3f2f33d9e2418ea4520e2d69309f6293e053ee8d79e82",
     "scripts/prepare_tasks.py": "2b5904af930ba9049702ad8f61e7ca59ec1185190e74e367535cf87e9aa04f46",
     "scripts/profile_native.py": "546a20399fa51441519f5bbd760fa4723a32301f6f55822a7f735b68eb2fba55",
-    "scripts/run_trajectories.py": "783ca06c32207746c39b74d4311de325befdce5af957aab63bc6f9e682a4a05e",
+    "scripts/run_trajectories.py": "d69e2d4eec4ee764c3d4c1b3b21d8cbf6b2636cd4f915e6c961a3df09695ee36",
     "scripts/serve_native.py": "97854b7601c56db7270844e49267877efaabc4478ddef8d15a8894d93337e4e6",
     "scripts/serve_vllm.py": "3e01f46718275708ef75110810344199556e16fe944959dc607ab685383ea1b4",
     "scripts/tokenize_contexts.py": "83501a64769ef4e3f8448a139244939861a942dc66b5ba8eb5a74fb16e19b099",
