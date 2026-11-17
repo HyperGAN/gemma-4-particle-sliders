@@ -48,7 +48,8 @@ def test_exact_derivative_and_no_saved_dense_matrix():
     assert ((16,8),torch.int32) in saved
 
 
-def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path):
+@pytest.mark.parametrize('checkpoint_profile',['none','nested_attention_mlp'])
+def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path,checkpoint_profile):
     from copy import deepcopy
     from compressed_tensors.compressors.pack_quantized import PackedQuantizationCompressor
     from gemma_particle.ct_linear import replace_compressed_linears
@@ -75,7 +76,8 @@ def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decomp
         quantization_config=CompressedTensorsConfig(run_compressed=True))
     profile=replace_compressed_linears(model)
     assert len(profile['modules'])==19 and not hasattr(model,'ct_decompress_hook')
-    a=Native(model,identity={'fixture':'packed-gemma4'},host_profile='frozen-ct-w4g32')
+    options={} if checkpoint_profile=='none' else dict(checkpointing=True,activation_storage='cpu',checkpoint_profile=checkpoint_profile)
+    a=Native(model,identity={'fixture':'packed-gemma4'},host_profile='frozen-ct-w4g32',**options)
     b=Native(reference,identity={'fixture':'decompressed-gemma4'})
     try:
         with torch.no_grad():

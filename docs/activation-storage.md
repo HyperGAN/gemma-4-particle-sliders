@@ -22,3 +22,11 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True OMP_NUM_THREADS=4 MKL_NUM_THREA
 ```
 
 This command is a synthetic derivative/resource probe. It performs zero optimizer updates and cannot supply a training target or a coding score. The current collectors remain in their original frozen checkout and environment.
+
+## Nested attention and MLP checkpoints
+
+The separate [nested config](../configs/31b-ct-nested-offload-pilot.json) adds the same public `checkpoint_with_adapter_scale` wrapper to each decoder layer's attention and MLP subblocks. The outer decoder checkpoint remains. During recomputation, subblock checkpoint inputs can stand in for retained internal attention or MLP intermediates. This changes storage and recomputation, preserving full histories, model arithmetic, full-width responses, batch and public PG recipes.
+
+The [nested CPU qualification](../reports/nested-checkpoint-cpu-v1.json) and [79-check preflight](../reports/nested-checkpoint-preflight-v1.json) pass. They cover nonzero adapter gradients against a direct shared-KV Gemma fixture, deferred adapter strength, exact packed-CT versus dense-public-decompression gradients, both recipes' matching updates and exact continuation, rejection of a mismatched full-checkpoint profile before mutation, and cleanup of all three wrapper boundaries. The nondefault profile enters native metadata and the full checkpoint signature. Earlier block-profile receipts and errors remain unchanged.
+
+The full-history GPU result is still pending. Another native worker now occupies GPU 1; the next allocation must respect its declared budget as well as this host's eight-GiB startup headroom check. CPU success does not establish the required full-history pretrained gradient or an actual training step.

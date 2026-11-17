@@ -40,9 +40,11 @@ def test_live_inplace_mutation_is_rejected_and_hooks_restore_after_error():
 
 
 @pytest.mark.parametrize('storage',['device','cpu'])
-def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(storage):
+@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp'])
+def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(storage,checkpoint_profile):
     direct=Native(tiny_model(),identity={'fixture':'activation-storage'})
-    wrapped=Native(tiny_model(),identity=direct.identity,checkpointing=True,activation_storage=storage)
+    wrapped=Native(tiny_model(),identity=direct.identity,checkpointing=True,activation_storage=storage,
+                   checkpoint_profile=checkpoint_profile)
     try:
         with torch.no_grad():
             for _,_,adapter in direct.slider.hosts:adapter.lora_up.weight.fill_(.01)
@@ -64,15 +66,18 @@ def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(sto
         if storage=='cpu':assert wrapped.last_activation_storage['copied_bytes']>0
     finally:direct.close();wrapped.close()
     assert all(not getattr(layer,'_pg09_scale_checkpoint',False) for layer in wrapped.trunk.layers)
+    assert all(not getattr(m,'_pg09_scale_checkpoint',False) for layer in wrapped.trunk.layers for m in (layer.self_attn,layer.mlp))
 
 
 @pytest.mark.parametrize('preset',['rhbi_optimized','empf'])
-def test_cpu_storage_recipe_update_and_exact_continuation(preset):
+@pytest.mark.parametrize('checkpoint_profile',['block','nested_attention_mlp'])
+def test_cpu_storage_recipe_update_and_exact_continuation(preset,checkpoint_profile):
     natives=[]
     try:
         games=[]
-        for storage in ('device','cpu','cpu'):
-            native=Native(tiny_model(),identity={'fixture':'activation-game'},checkpointing=True,activation_storage=storage)
+        for storage,profile in [('device','block'),('cpu',checkpoint_profile),('cpu',checkpoint_profile)]:
+            native=Native(tiny_model(),identity={'fixture':'activation-game'},checkpointing=True,activation_storage=storage,
+                          checkpoint_profile=profile)
             natives.append(native)
             rows=[native.prepare(ContextRow((2,3,4+i),(2,8,9,3,4+i),str(i),0)) for i in range(2)]
             games.append(make_game(native,rows,preset=preset,steps=3,batch=2))
@@ -82,5 +87,24 @@ def test_cpu_storage_recipe_update_and_exact_continuation(preset):
         assert_equal(games[1].step(),games[2].step())
         assert_equal(games[1].state_dict(),games[2].state_dict())
         with pytest.raises(ValueError):games[0].load_state_dict(packet)
+    finally:
+        for native in natives:native.close()
+
+
+def test_nested_profile_full_resume_is_rejected_by_block_profile_before_mutation():
+    natives=[]
+    try:
+        games=[]
+        for profile in ('block','nested_attention_mlp'):
+            native=Native(tiny_model(),identity={'fixture':'checkpoint-profile'},checkpointing=True,
+                          activation_storage='cpu',checkpoint_profile=profile)
+            natives.append(native)
+            rows=[native.prepare(ContextRow((2,3,4+i),(2,8,9,3,4+i),str(i),0)) for i in range(2)]
+            games.append(make_game(native,rows,preset='empf',steps=3,batch=2))
+        assert_equal(games[0].step(),games[1].step())
+        assert_equal(natives[0].network.state_dict(),natives[1].network.state_dict())
+        before=games[0].state_dict()
+        with pytest.raises(ValueError):games[0].load_state_dict(games[1].state_dict())
+        assert_equal(before,games[0].state_dict())
     finally:
         for native in natives:native.close()

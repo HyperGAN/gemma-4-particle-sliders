@@ -37,6 +37,9 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     activation_storage=config.get('activation_storage','device') if checkpointing else 'device'
     if activation_storage not in ('device','cpu'):
         raise ValueError('unqualified activation storage profile')
+    checkpoint_profile=config.get('checkpoint_profile','block') if checkpointing else 'block'
+    if checkpoint_profile not in ('block','nested_attention_mlp'):
+        raise ValueError('unqualified checkpoint profile')
     from transformers import AutoModelForImageTextToText,CompressedTensorsConfig
     identity = model_identity(config)
     device = torch.device(device)
@@ -62,6 +65,7 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     if quantized:
         replace_compressed_linears(model)
     return Native(model, identity=identity, checkpointing=checkpointing, activation_storage=activation_storage,
+                  checkpoint_profile=checkpoint_profile,
                   rank=config['rank'], alpha=config['alpha'],
                   host_profile='frozen-ct-w4g32' if quantized else 'float-linear',
                   particles=config['particles'], particle_width=config['particle_width'], seed=config['seed'])

@@ -110,13 +110,17 @@ class Prepared:
 
 
 class Native:
-    def __init__(self, model, *, identity, checkpointing=False, activation_storage='device', **slider_options):
+    def __init__(self, model, *, identity, checkpointing=False, activation_storage='device',
+                 checkpoint_profile='block', **slider_options):
         if not identity:
             raise ValueError("pinned pretrained identity or explicit CPU fixture identity required")
         if activation_storage not in ('device', 'cpu') or (activation_storage == 'cpu' and not checkpointing):
             raise ValueError('CPU activation storage requires block checkpointing')
+        if checkpoint_profile not in ('block', 'nested_attention_mlp') or (checkpoint_profile != 'block' and not checkpointing):
+            raise ValueError('nested attention/MLP checkpoints require block checkpointing')
         self.source_cohort=require_core_source()
         self.activation_storage=activation_storage
+        self.checkpoint_profile=checkpoint_profile
         self.last_activation_storage=None
         self.model, self.identity = model, dict(identity)
         self._flags = [(p, p.requires_grad) for p in model.parameters()]
@@ -133,6 +137,9 @@ class Native:
             if checkpointing:
                 for layer in self.trunk.layers:
                     self._handles.append(checkpoint_with_adapter_scale(layer, self.network))
+                    if checkpoint_profile == 'nested_attention_mlp':
+                        for subblock in (layer.self_attn, layer.mlp):
+                            self._handles.append(checkpoint_with_adapter_scale(subblock, self.network))
         except BaseException:
             self.close()
             raise
@@ -174,7 +181,8 @@ class Native:
                 "response": "full native final hidden state", "adapter_names": list(self.network.names),
                 "host_profile":self.slider.host_profile,
                 "target_convention": "same question and observed history; teacher has selected behavioral system instruction",
-                "ema_decay": None}
+                "ema_decay": None,
+                **({'checkpoint_profile':self.checkpoint_profile} if self.checkpoint_profile != 'block' else {})}
 
     def close(self):
         for handle in reversed(self._handles):

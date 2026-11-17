@@ -1,0 +1,23 @@
+{
+  "schema": "gemma4-nested-checkpoint-cpu-qualification-v1",
+  "status": "passed",
+  "as_of": "2026-11-17T06:34:24.826715+00:00",
+  "preflight_sha256": "5800cab2e8ba73a0f258334dd4be2b6123b44a3b1ab0483b6bb240888feee5b1",
+  "tests_passed": 79,
+  "compiler": "actual installed official compiler; inference not executed",
+  "profile": "nested_attention_mlp",
+  "config": "configs/31b-ct-nested-offload-pilot.json",
+  "config_sha256": "4bbd2f5d7c803846487d2af518fbe2aa600074d1c4c48994de1677a596358726",
+  "controls": [
+    "nonzero adapter outputs and all parameter gradients match direct on shared-KV Gemma fixture",
+    "deferred backward preserves forward adapter strength and restores ambient strength",
+    "public packed CT forward and all adapter gradients bit-identical to dense public decompression",
+    "both explicit PG recipes match block-profile update and preserve exact nested full-state continuation",
+    "profile-mismatched full checkpoint rejected before mutation",
+    "wrapper cleanup restores decoder, attention and MLP methods"
+  ],
+  "gpu_used": false,
+  "pretrained_updates": 0,
+  "long_history_gradient_qualification": "not yet achieved; full-history GPU probe pending resource sharing",
+  "scope": "CPU random Gemma fixture, exact host/continuation and compiler controls; no coding quality claim"
+}
