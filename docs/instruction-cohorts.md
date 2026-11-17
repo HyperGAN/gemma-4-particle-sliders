@@ -1,0 +1,11 @@
+# Versioned teacher instructions
+
+`behavior-v1` is the original reproduce/localize/verify instruction set. Its default artifacts and metadata remain byte-compatible with existing runs. Four real 31B artifact archives were regenerated and matched their originals exactly; the OFF archive is also identical between v1 and v2. The official compiler accepted all four v2 artifacts. These are software controls, not task accuracy.
+
+`tools-v2` adds one common instruction to the three teacher arms: use the literal tool schema, keep a filepath separate from line-range arguments, use an exact `sed` range when a range read fails, avoid repeated unchanged calls, and preserve time to edit/check/submit. This hypothesis comes from TRAIN traces that wasted time on malformed filepath arguments and repeated file headers. It contains no reference-patch answer or task-specific repair hint. The OFF prompt, sampling and five-minute budget remain the same.
+
+Each v2 plan declares `instruction_protocol`, the full `target_instructions` mapping and SHA256 values for curation, builder, runner and collector sources before inference. Startup rejects a changed declaration. The evaluation contract includes the protocol and instruction-set digest. Captured outcomes retain that identity, curation rejects mixed versions, and cache preparation checks the exact corresponding positive/neutral system-prompt difference. Historical runs with no explicit field retain v1 semantics.
+
+Every new trial runs all four arms and obtains fresh-container verification. A previous failed OFF run cannot be relabeled as the new trial's control. A failed trial stays in its own immutable directory and report. Only a complete, verified successful teacher against that trial's failed OFF control can supply contexts; this admission rule is unchanged. No instruction-version result changes ParticleGAN recipes or their RNG, objectives, penalties or optimizer schedules.
+
+The first v2 trial repeats TRAIN task `fastapi_11194` on the same pinned 31B vLLM server after its v1 collector stops. Its plan is fixed before the v2 outcomes. Further tasks require separate declared trials. DEV and holdout results did not inform this hypothesis.

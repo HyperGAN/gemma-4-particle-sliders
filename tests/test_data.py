@@ -1,7 +1,7 @@
 import json
 import pytest
 from gemma_particle.data import prepare_tasks, read_jsonl
-from gemma_particle.curation import select_contexts, TARGET_INSTRUCTIONS
+from gemma_particle.curation import select_contexts, TARGET_INSTRUCTIONS,instruction_set,DEFAULT_INSTRUCTION_PROTOCOL
 from gemma_particle.data import digest
 
 
@@ -19,22 +19,24 @@ def test_references_removed_and_splits_immutable(tmp_path):
         prepare_tasks(source, out)
 
 
-def outcome(arm, resolved):
-    messages = [{"role": "system", "content": "base" + ("\n\n"+TARGET_INSTRUCTIONS[arm] if arm != "off" else "")+'\n\nADK agent identity'},
+def outcome(arm, resolved, protocol=DEFAULT_INSTRUCTION_PROTOCOL):
+    messages = [{"role": "system", "content": "base" + ("\n\n"+instruction_set(protocol)[arm] if arm != "off" else "")+'\n\nADK agent identity'},
                 {"role": "user", "content": "same issue"}]
     request={'model':'gemma','messages':messages,'tools':None,'generation':{'seed':0}}
     requests=[dict(instance_id='task',arm=arm,decision=0,request=request,request_sha256=digest(request))]
     receipt = dict(instance_id="task", resolved=resolved, patch_sha256="a"*64,
                    requests_sha256=digest(requests),first_request_sha256=digest(request),stage="fresh-container-tests")
-    return dict(schema='gemma4-verified-trajectory-v3',generator_kind='gemma4',frozen_base_generator=True,instance_id="task", arm=arm,
+    result=dict(schema='gemma4-verified-trajectory-v3',generator_kind='gemma4',frozen_base_generator=True,instance_id="task", arm=arm,
                 first_request=request,task_budget_exhausted=False,
                 resolved=resolved,requests=requests,capture_complete=True,evaluation_contract_sha256='matched',
                 model_identity={'repo':'google/gemma-4-E2B-it','revision':'b'*40,'dtype':'bfloat16'},
                 patch_sha256="a"*64, verification=receipt, tool_calls=3, elapsed_seconds=5)
+    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:result['instruction_protocol']=protocol
+    return result
 
 
-def arms(*,off=False):
-    return [outcome('off',off),outcome('verify',True),outcome('reproduce',False),outcome('localize',False)]
+def arms(*,off=False,protocol=DEFAULT_INSTRUCTION_PROTOCOL):
+    return [outcome('off',off,protocol),outcome('verify',True,protocol),outcome('reproduce',False,protocol),outcome('localize',False,protocol)]
 
 
 def test_curation_requires_actual_paired_win_and_train_membership():
@@ -90,3 +92,17 @@ def test_task_timeout_off_control_retains_real_first_request_but_winner_must_be_
     assert select_contexts(tasks,rows)==[]
     baseline['task_budget_exhausted']=True;rows[1]['capture_complete']=False
     assert select_contexts(tasks,rows)==[]
+
+
+def test_versioned_tool_instruction_pairs_and_mixed_protocol_rejection():
+    tasks=[dict(instance_id='task',split='train')]
+    rows=arms(protocol='tools-v2');pairs=select_contexts(tasks,rows)
+    assert pairs[0]['instruction_protocol']=='tools-v2'
+    assert 'Keep filepath a plain path' in pairs[0]['positive_messages'][0]['content']
+    assert 'Keep filepath a plain path' not in pairs[0]['neutral_messages'][0]['content']
+    assert 'instruction_protocol' not in select_contexts(tasks,arms())[0]
+    rows[0].pop('instruction_protocol')
+    with pytest.raises(ValueError,match='unmatched instruction protocols'):select_contexts(tasks,rows)
+    rows=arms()
+    for row in rows:row['instruction_protocol']='tools-v2'
+    with pytest.raises(ValueError,match='declared instruction'):select_contexts(tasks,rows)

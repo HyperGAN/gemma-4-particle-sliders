@@ -1,0 +1,80 @@
+{
+  "schema": "gemma4-instruction-version-controls-v1",
+  "status": "passed",
+  "checks": [
+    {
+      "arm": "off",
+      "v1_matches_live_artifact": true,
+      "v1_archive_sha256": "5be2652ca1413d99cd4b7bfc25279b8a6a418ea6776732c21f85aea2c3c914fe",
+      "v2_archive_sha256": "5be2652ca1413d99cd4b7bfc25279b8a6a418ea6776732c21f85aea2c3c914fe",
+      "v2_compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "reproduce",
+      "v1_matches_live_artifact": true,
+      "v1_archive_sha256": "6dcde10461750f0b462b0881d5ceb5151ca4a29c097c435f185a05e6e0e67823",
+      "v2_archive_sha256": "5cb6ddb0b569fcc3e8e7f619b8fd2cbf3e271e26c2b840120fa814ad3b4cf726",
+      "v2_compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "localize",
+      "v1_matches_live_artifact": true,
+      "v1_archive_sha256": "6c93347381202bf5a8fdda18f30117ac69bdb9b9a4371881389b2d9aeff75055",
+      "v2_archive_sha256": "b2266a8b2c94f8b60b0455c1b91d97242dd53325af8ab64c2c990d656e8efa2f",
+      "v2_compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    },
+    {
+      "arm": "verify",
+      "v1_matches_live_artifact": true,
+      "v1_archive_sha256": "34c2c3e59e1ca68f18dd0cac0212f66bca2ad6895ffe092f2f8741e6e1f72be8",
+      "v2_archive_sha256": "871dfe0dfc3f4f4d24999b46e39538ace6cab7bc26867a4e56e9fb565b814aed",
+      "v2_compiler": {
+        "status": "compiled",
+        "agent": "gemma_particle_coder",
+        "model": "gemma-4-31b-it-qat-w4a16-ct",
+        "inference_executed": false,
+        "authority": "installed adk-submission; reports/harness-environment.json records source identity"
+      }
+    }
+  ],
+  "scope": "artifact continuity and official compiler only; no inference or learned-quality result",
+  "raw_receipt_sha256": "f2f930aa6ba0c2f972fc367f3ee343e98f4c1921574fc1ffcf0b8d80c6d50fee",
+  "instruction_protocols": {
+    "behavior-v1": {
+      "reproduce": "Before editing, reproduce the reported failure with a focused executable check. Trace the failing values into the implementation, make the smallest justified fix, then rerun that check and related tests. Submit the patch within the tool and time budget.",
+      "localize": "Locate the implementation and its closest tests. State the concrete cause supported by those files, check boundary cases and public API compatibility, make a focused fix, and verify it with targeted tests before submitting the patch.",
+      "verify": "Use an iterative repair loop: inspect the issue and repository, form one falsifiable hypothesis, test it with a short command, edit the relevant code, and check both the original failure and adjacent behavior. Preserve time to submit a patch."
+    },
+    "tools-v2": {
+      "reproduce": "Before editing, reproduce the reported failure with a focused executable check. Trace the failing values into the implementation, make the smallest justified fix, then rerun that check and related tests. Submit the patch within the tool and time budget.\n\nUse each tool's declared schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. If a range read fails or repeats the file header, use run_command with sed to read the exact range. Avoid repeating unchanged calls. Batch narrow searches when useful and preserve time for a code edit, a focused check, and submit_patch.",
+      "localize": "Locate the implementation and its closest tests. State the concrete cause supported by those files, check boundary cases and public API compatibility, make a focused fix, and verify it with targeted tests before submitting the patch.\n\nUse each tool's declared schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. If a range read fails or repeats the file header, use run_command with sed to read the exact range. Avoid repeating unchanged calls. Batch narrow searches when useful and preserve time for a code edit, a focused check, and submit_patch.",
+      "verify": "Use an iterative repair loop: inspect the issue and repository, form one falsifiable hypothesis, test it with a short command, edit the relevant code, and check both the original failure and adjacent behavior. Preserve time to submit a patch.\n\nUse each tool's declared schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. If a range read fails or repeats the file header, use run_command with sed to read the exact range. Avoid repeating unchanged calls. Batch narrow searches when useful and preserve time for a code edit, a focused check, and submit_patch."
+    }
+  },
+  "execution_sources": {
+    "src/gemma_particle/curation.py": "58a1500c6fbf877dbd0e2097e1febc87fd50049e92978009786fa36a5a3c4ae0",
+    "scripts/build_submission.py": "307ebcb2df5c9088a5c3e3fcf77c75ac604a81df82a0252afc84a745dd4df2b5",
+    "scripts/run_trajectories.py": "783ca06c32207746c39b74d4311de325befdce5af957aab63bc6f9e682a4a05e",
+    "scripts/collect_arms.py": "fe0097f445f397f59d7fac0d7ecd57cd2a7a045920aa230fbebe1a845f17a64d",
+    "scripts/cache_contexts.py": "a74cfeb94caba6ed41df4c1205d82b81cef2d7f77f386b79a261430c900b2f7f"
+  },
+  "cpu_preflight_sha256": "e73cc49b8412a2d2852eeb5f730b4e4a623e2d8057e38e8fc9c97ae0aa9a5a73"
+}

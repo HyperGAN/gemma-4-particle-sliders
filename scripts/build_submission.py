@@ -7,13 +7,14 @@ import shutil
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 import yaml
-from gemma_particle.curation import TARGET_INSTRUCTIONS
+from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
 
 MODELS = [f"gemma-4-{size}-it-qat-w4a16-ct" for size in ("31b", "12b", "e4b", "e2b")]
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(out, model, adapter=None, instruction=None):
+def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL):
+    instructions=instruction_set(instruction_protocol)
     out = Path(out)
     if out.exists():
         raise FileExistsError("build directory already exists; use a new artifact path")
@@ -41,7 +42,7 @@ def build(out, model, adapter=None, instruction=None):
     (agent / "agent.yaml").write_text(text)
     if instruction:
         prompt = agent / "prompts/system.md"
-        prompt.write_text(prompt.read_text().rstrip() + "\n\n" + TARGET_INSTRUCTIONS[instruction] + "\n")
+        prompt.write_text(prompt.read_text().rstrip() + "\n\n" + instructions[instruction] + "\n")
     files = sorted(p for p in agent.rglob("*") if p.is_file())
     if sum(p.stat().st_size for p in files) >= 3 * 1024**3:
         raise ValueError("unpacked submission must be smaller than 3 GiB")
@@ -58,6 +59,7 @@ def build(out, model, adapter=None, instruction=None):
                "sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
                "files": {str(p.relative_to(agent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
                "official_validation": "pending", "scorer_vllm_parity": "unmeasured", "kaggle_score": None}
+    if instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:receipt['instruction_protocol']=instruction_protocol
     (out / "build.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return receipt
 
@@ -68,5 +70,6 @@ if __name__ == "__main__":
     parser.add_argument("--model", choices=MODELS, default=MODELS[0])
     parser.add_argument("--adapter", type=Path)
     parser.add_argument("--target-instruction", choices=TARGET_INSTRUCTIONS)
+    parser.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
     args = parser.parse_args()
-    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction), indent=2))
+    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol), indent=2))

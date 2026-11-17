@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from transformers import AutoTokenizer
 from gemma_particle.data import read_jsonl, digest
-from gemma_particle.curation import TARGET_INSTRUCTIONS
+from gemma_particle.curation import instruction_set,DEFAULT_INSTRUCTION_PROTOCOL
 from gemma_particle.model import ContextRow
 from gemma_particle.runtime import load_native, model_identity, save_cache, file_hash
 from gemma_particle.prompting import tokenize_context
@@ -35,7 +35,7 @@ for row in contexts:
     if row.get('schema') != 'gemma4-paired-context-v2' or row['split'] != 'train' or row['instance_id'] not in allowed:
         raise ValueError('only TRAIN contexts may supply targets')
     neutral, positive = row['neutral_messages'], row['positive_messages']
-    insertion = '\n\n'+TARGET_INSTRUCTIONS[row['target_arm']]
+    insertion = '\n\n'+instruction_set(row.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL))[row['target_arm']]
     if (not neutral or neutral[0]['role'] != 'system' or positive[0]['role'] != 'system'
             or positive[0]['content'].count(insertion)!=1
             or positive[0]['content'].replace(insertion,'',1) != neutral[0]['content'] or neutral[1:] != positive[1:]):

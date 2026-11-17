@@ -5,6 +5,7 @@ reconciliation and are never restarted automatically. Each agent subprocess
 sees sanitized tasks. Only the separate verifier reads reference-bearing data.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -12,7 +13,7 @@ import signal
 import subprocess
 import sys
 
-from gemma_particle.curation import select_contexts
+from gemma_particle.curation import select_contexts,instruction_set,DEFAULT_INSTRUCTION_PROTOCOL
 from gemma_particle.data import read_jsonl,write_jsonl
 
 
@@ -29,6 +30,13 @@ def main():
     p.add_argument('--stop-server-pid',type=int)
     args=p.parse_args()
     plan=json.loads((args.root/'plan.json').read_text())
+    protocol=plan.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
+    instructions=instruction_set(protocol)
+    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:
+        if plan.get('target_instructions')!=instructions:raise ValueError('declared instruction text changed')
+        sources=['src/gemma_particle/curation.py','scripts/build_submission.py','scripts/run_trajectories.py','scripts/collect_arms.py']
+        observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
+        if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())
     if plan['server_identity']!=identity or plan['arms']!=['off','reproduce','localize','verify']:
         raise ValueError('declared model identity or four-arm plan changed')
@@ -47,11 +55,13 @@ def main():
                 command=['scripts/run_trajectories.py','--tasks',str(args.visible_tasks),'--arm',arm,
                     '--model',identity['served_model'],'--endpoint',args.endpoint,'--server-identity',str(args.server_identity),
                     '--inputs',str(args.inputs),'--wheels',str(args.wheels),'--image',args.image,'--out',str(agent)]
+                if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:command.extend(['--instruction-protocol',protocol])
                 for task_id in selected:command.extend(['--task-id',task_id])
                 execute(command,logs/f'{arm}-agent.log')
             manifest=json.loads((agent/'cohort.json').read_text())
             if ([r['instance_id'] for r in manifest['runs']]!=selected or manifest['arm']!=arm
-                    or manifest['server_identity']!=identity):
+                    or manifest['server_identity']!=identity
+                    or manifest.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)!=protocol):
                 raise ValueError('existing arm is incomplete or belongs to another cohort; reconcile it first')
             verified=args.root/(arm+'-verification')
             if not verified.exists():

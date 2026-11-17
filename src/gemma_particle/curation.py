@@ -8,6 +8,17 @@ TARGET_INSTRUCTIONS = {
     "localize": "Locate the implementation and its closest tests. State the concrete cause supported by those files, check boundary cases and public API compatibility, make a focused fix, and verify it with targeted tests before submitting the patch.",
     "verify": "Use an iterative repair loop: inspect the issue and repository, form one falsifiable hypothesis, test it with a short command, edit the relevant code, and check both the original failure and adjacent behavior. Preserve time to submit a patch.",
 }
+DEFAULT_INSTRUCTION_PROTOCOL = 'behavior-v1'
+TOOL_PRECISION = ("Use each tool's declared schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. "
+    "If a range read fails or repeats the file header, use run_command with sed to read the exact range. "
+    "Avoid repeating unchanged calls. Batch narrow searches when useful and preserve time for a code edit, a focused check, and submit_patch.")
+INSTRUCTION_PROTOCOLS = {DEFAULT_INSTRUCTION_PROTOCOL:TARGET_INSTRUCTIONS,
+    'tools-v2':{key:value+'\n\n'+TOOL_PRECISION for key,value in TARGET_INSTRUCTIONS.items()}}
+
+
+def instruction_set(protocol=DEFAULT_INSTRUCTION_PROTOCOL):
+    if protocol not in INSTRUCTION_PROTOCOLS:raise ValueError('unknown instruction protocol')
+    return INSTRUCTION_PROTOCOLS[protocol]
 
 
 def select_contexts(tasks, outcomes):
@@ -23,6 +34,7 @@ def select_contexts(tasks, outcomes):
         raise ValueError("only TRAIN tasks may supply target contexts")
     by_task = {}
     for row in outcomes:
+        instructions=instruction_set(row.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL))
         task_id = row["instance_id"]
         if task_id not in allowed:
             raise ValueError("non-TRAIN outcome")
@@ -32,7 +44,7 @@ def select_contexts(tasks, outcomes):
             raise ValueError('curation targets require the frozen base generator')
         if type(row.get("resolved")) is not bool:
             raise ValueError("resolved must be a boolean, not a string or score")
-        if row["arm"] != "off" and row["arm"] not in TARGET_INSTRUCTIONS:
+        if row["arm"] != "off" and row["arm"] not in instructions:
             raise ValueError("unknown target-instruction arm")
         identity=row.get('model_identity',{})
         if not identity or identity.get('dtype')!='bfloat16' or len(identity.get('revision',''))!=40:
@@ -53,7 +65,10 @@ def select_contexts(tasks, outcomes):
         arms[row["arm"]] = row
     selected = []
     for task_id, arms in sorted(by_task.items()):
-        if set(arms) != {'off',*TARGET_INSTRUCTIONS}:
+        protocols={r.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL) for r in arms.values()}
+        if len(protocols)!=1:raise ValueError('curation arms have unmatched instruction protocols')
+        protocol=next(iter(protocols));instructions=instruction_set(protocol)
+        if set(arms) != {'off',*instructions}:
             raise ValueError('all four declared curation arms must finish before selection')
         baseline=arms['off']
         if any(r['evaluation_contract_sha256'] != baseline['evaluation_contract_sha256'] for r in arms.values()):
@@ -76,7 +91,7 @@ def select_contexts(tasks, outcomes):
             raise ValueError('captured OFF system prompt required')
         base_system=off_messages[0]['content']
         off_request=baseline['first_request']
-        insertion='\n\n'+TARGET_INSTRUCTIONS[winner['arm']]
+        insertion='\n\n'+instructions[winner['arm']]
         for packet in winner["requests"]:
             request=packet['request']
             if any(request[k]!=off_request[k] for k in ('model','tools','generation')):
@@ -99,4 +114,5 @@ def select_contexts(tasks, outcomes):
                              "model_identity":winner['model_identity'],
                              "target_arm": winner["arm"], "verification": winner["verification"],
                              "quality_rubric": RUBRIC})
+            if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:selected[-1]['instruction_protocol']=protocol
     return selected
