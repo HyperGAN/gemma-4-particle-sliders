@@ -1,0 +1,82 @@
+{
+  "schema": "gemma4-submission-finalization-control-v1",
+  "created_at": "2026-11-17T08:34:22.660769+00:00",
+  "server_identity_sha256": "7605bd1c1b555db997da3de0bbd99e792694be9cbdf1c9b96c0a4291879a7f96",
+  "source_sha256": "d25381cd3a80cf786f6a3249d76a8004fe419ed5886d19c9a1bd297ff3d53c4a",
+  "system_prompt_sha256": "a6794476679e0ad6a35b4615355bb9737501bcfc8528b9a16936857cde0df9ea",
+  "cue": "After submit_patch returns status ok, finish with one short final text response. Do not call submit_patch again unless you made another code change after the previous submission.",
+  "automatic_retries": false,
+  "scope": "Fixed synthetic termination control only; no actual repository/tool execution, target, learned adapter or task score.",
+  "state": "complete",
+  "plan_sha256": "d9135f156a4a7a9cf5cd3e59f65c2bdd768ef2a33c949f1f5f24517765faa83b",
+  "finished": [
+    {
+      "id": "submits_1_current_prompt",
+      "request_sha256": "aad2802b37a99df174fc67c838e498eb09b1667b912b74421dfcf5074b81af4a",
+      "status": "completed",
+      "final_text": true,
+      "finish_reason": "stop",
+      "response_sha256": "91627d38975d50b15a357724e3ec22d2638839fba59ea6bb731e0dddb89550f3",
+      "tool_calls": 0,
+      "usage": {
+        "prompt_tokens": 365,
+        "total_tokens": 368,
+        "completion_tokens": 3,
+        "prompt_tokens_details": null
+      },
+      "seconds": 18.119426210876554
+    },
+    {
+      "id": "submits_1_explicit_finish",
+      "request_sha256": "28b5302dc987bfef992ede522f699716a8111ac5ae0898d10419141780ad291c",
+      "status": "completed",
+      "final_text": true,
+      "finish_reason": "stop",
+      "response_sha256": "e10f9eedffa31237b606fb3185d98b3e1f2285ec37e731cc4feb6853032fe7e0",
+      "tool_calls": 0,
+      "usage": {
+        "prompt_tokens": 400,
+        "total_tokens": 435,
+        "completion_tokens": 35,
+        "prompt_tokens_details": null
+      },
+      "seconds": 44.12401935691014
+    },
+    {
+      "id": "submits_12_current_prompt",
+      "request_sha256": "99cc5a59444421fff0a0479a70e9bfca2e9b35e2888f471ff205fdf3a9256cf3",
+      "status": "completed",
+      "final_text": false,
+      "finish_reason": "tool_calls",
+      "response_sha256": "b3a94421a15cb5d8499ceb4e14576b8405abb19d2592cbc3aeca4d025c1a040d",
+      "tool_calls": 1,
+      "usage": {
+        "prompt_tokens": 860,
+        "total_tokens": 927,
+        "completion_tokens": 67,
+        "prompt_tokens_details": null
+      },
+      "seconds": 30.119478423148394
+    },
+    {
+      "id": "submits_12_explicit_finish",
+      "request_sha256": "7351b44e4484c2366b1005f59eb6edc165c8e103b3acb16e88970a50f4c923c6",
+      "status": "completed",
+      "final_text": true,
+      "finish_reason": "stop",
+      "response_sha256": "35ec85ce5e773da6ada165184a88db6abf8dcb3243374f84b3593ae6501f28b3",
+      "tool_calls": 0,
+      "usage": {
+        "prompt_tokens": 895,
+        "total_tokens": 922,
+        "completion_tokens": 27,
+        "prompt_tokens_details": null
+      },
+      "seconds": 47.86681769299321
+    }
+  ],
+  "training_updates": 0,
+  "actual_task_results": 0,
+  "raw_result_sha256": "f8c3256f2d1ef34c881baa4208c3dc3a48e75733e6c977293e1bbeb27f4659e6",
+  "conclusion": "Both prompts ended after one synthetic submission. After12 repeated submissions, the current prompt emitted another tool call; the explicit finish cue produced final text. This supports a separate prospective prompt profile, not a real-task fix claim."
+}

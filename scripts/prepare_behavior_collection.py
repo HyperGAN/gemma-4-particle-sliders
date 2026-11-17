@@ -20,6 +20,7 @@ from gemma_particle.data import digest
 from gemma_particle.dev import validate_agent_tasks
 from gemma_particle.harness_identity import sha256_file, wheel_identity
 from gemma_particle.history import OFFICIAL_COMPACTION, history_contract
+from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
     p.add_argument('--server-identity', type=Path, required=True)
     p.add_argument('--endpoint', required=True)
     p.add_argument('--task-id', required=True)
+    p.add_argument('--prompt-profile', choices=PROMPT_PROFILES, default=DEFAULT_PROMPT_PROFILE)
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     args = p.parse_args()
@@ -83,6 +85,8 @@ def main():
         'scripts/run_trajectories.py', 'scripts/collect_arms.py', 'src/gemma_particle/budgets.py',
         'src/gemma_particle/capture.py', 'src/gemma_particle/context_budget.py',
         'scripts/verify_trajectories.py', 'src/gemma_particle/history.py', 'src/gemma_particle/adk_capture.py']
+    if args.prompt_profile != DEFAULT_PROMPT_PROFILE:
+        sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
     plan = {'schema': 'gemma4-curation-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
         'task_ids': [args.task_id], 'arms': ['off', 'reproduce', 'localize', 'verify'],
         'server_identity': server, 'target_instructions': instruction_set('tools-v2'),
@@ -97,6 +101,9 @@ def main():
         'preparer_sha256': sha256_file(Path(__file__)),
         'legacy_contexts': 'unused auxiliary output; not admitted Jev fitting data',
         'scope': 'fresh prospective TRAIN raw collection; no grades, fitting targets or benchmark score'}
+    if args.prompt_profile != DEFAULT_PROMPT_PROFILE:
+        plan['prompt_profile'] = args.prompt_profile
+        plan['common_prompt'] = prompt_identity((executor/'submission/prompts/system.md').read_text(),args.prompt_profile)
     args.root.mkdir(parents=True, exist_ok=False, mode=0o700)
     (args.root / 'plan.json').write_text(json.dumps(plan, indent=2) + '\n')
     (args.root / 'behavior-protocol.json').write_bytes(args.protocol.read_bytes())

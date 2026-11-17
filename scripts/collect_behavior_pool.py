@@ -17,6 +17,7 @@ from collect_train_pool import select_tasks, stop_owned_server, write_json
 from gemma_particle.behavior_protocol import load_behavior_protocol
 from gemma_particle.data import read_jsonl, write_jsonl
 from gemma_particle.harness_identity import sha256_file
+from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES
 
 
 def checked_checkout(path, expected):
@@ -56,6 +57,7 @@ def main():
     p.add_argument('--curator-commit', required=True)
     p.add_argument('--server-identity', type=Path, required=True)
     p.add_argument('--endpoint', required=True)
+    p.add_argument('--prompt-profile',choices=PROMPT_PROFILES,default=DEFAULT_PROMPT_PROFILE)
     p.add_argument('--key-file', type=Path)
     p.add_argument('--first-cohort', type=Path)
     p.add_argument('--first-collector-pid', type=int)
@@ -95,6 +97,7 @@ def main():
         if (first['task_ids'] != [selected[0]['instance_id']] or first['server_identity'] != server
                 or first['source_git'] != args.executor_commit
                 or first.get('behavior_protocol_sha256') != sha256_file(args.protocol)
+                or first.get('prompt_profile',DEFAULT_PROMPT_PROFILE) != args.prompt_profile
                 or first.get('endpoint') != args.endpoint.rstrip('/')):
             raise ValueError('existing first quartet differs from this fixed-order study')
         birth = collector_identity(args.first_collector_pid, args.first_cohort)
@@ -112,6 +115,7 @@ def main():
         'qualification_sha256':sha256_file(args.qualification), 'visible_tasks_sha256':sha256_file(args.visible_tasks),
         'raw_tasks_sha256':qualification['source_sha256'], 'server_identity':server,
         'endpoint':args.endpoint.rstrip('/'), 'executor':str(args.executor), 'executor_commit':args.executor_commit,
+        'prompt_profile':args.prompt_profile,
         'curator':str(args.curator), 'curator_commit':args.curator_commit,
         'supervisor_sha256':sha256_file(Path(__file__)),
         'first_existing_cohort':str(args.first_cohort) if args.first_cohort else None,
@@ -141,7 +145,8 @@ def main():
             execute(args.curator, python, ['scripts/prepare_behavior_collection.py', '--root', str(cohort),
                 '--executor', str(args.executor), '--executor-commit', args.executor_commit,
                 '--server-identity', str(args.server_identity), '--endpoint', args.endpoint,
-                '--task-id', task_id, '--protocol', str(args.protocol), '--qualification', str(args.qualification)],
+                '--task-id', task_id, '--protocol', str(args.protocol), '--qualification', str(args.qualification),
+                '--prompt-profile',args.prompt_profile],
                 args.root/'logs'/f'{task_id}-prepare.log')
             inputs = raw_tasks.parent
             execute(args.executor, args.executor/'.harness-venv/bin/python', ['scripts/collect_arms.py',

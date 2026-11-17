@@ -174,6 +174,7 @@ def pair_contexts(winner, baseline, *, initial_only=False):
         if 'budget_profile' in winner:selected[-1]['budget_profile']=winner['budget_profile']
         if 'capture_protocol' in winner:selected[-1]['capture_protocol']=winner['capture_protocol']
         if 'history_profile' in winner:selected[-1]['history_profile']=winner['history_profile']
+        if 'prompt_profile' in winner:selected[-1]['prompt_profile']=winner['prompt_profile']
     if initial_only and len(selected)!=1:
         raise ValueError('one complete initial assistant decision required')
     return selected

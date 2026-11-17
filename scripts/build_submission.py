@@ -9,12 +9,14 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 import yaml
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
 from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,budget_values
+from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,profile_prompt
 
 MODELS = [f"gemma-4-{size}-it-qat-w4a16-ct" for size in ("31b", "12b", "e4b", "e2b")]
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL,budget_profile=DEFAULT_BUDGET):
+def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL,budget_profile=DEFAULT_BUDGET,
+          prompt_profile=DEFAULT_PROMPT_PROFILE):
     instructions=instruction_set(instruction_protocol)
     budget=budget_values(budget_profile)
     out = Path(out)
@@ -42,6 +44,8 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
             shutil.copyfile(source, destination / name)
         text += "adapter: particle_lora\n"
     (agent / "agent.yaml").write_text(text)
+    prompt = agent / 'prompts/system.md'
+    prompt.write_text(profile_prompt(prompt.read_text(), prompt_profile))
     if instruction:
         prompt = agent / "prompts/system.md"
         prompt.write_text(prompt.read_text().rstrip() + "\n\n" + instructions[instruction] + "\n")
@@ -64,6 +68,7 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
                "official_validation": "pending", "scorer_vllm_parity": "unmeasured", "kaggle_score": None}
     if instruction_protocol!=DEFAULT_INSTRUCTION_PROTOCOL:receipt['instruction_protocol']=instruction_protocol
     if budget_profile!=PILOT_BUDGET:receipt['budget_profile']=budget_profile
+    if prompt_profile!=DEFAULT_PROMPT_PROFILE:receipt['prompt_profile']=prompt_profile
     (out / "build.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return receipt
 
@@ -76,5 +81,6 @@ if __name__ == "__main__":
     parser.add_argument("--target-instruction", choices=TARGET_INSTRUCTIONS)
     parser.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
     parser.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
+    parser.add_argument('--prompt-profile',choices=PROMPT_PROFILES,default=DEFAULT_PROMPT_PROFILE)
     args = parser.parse_args()
-    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol,args.budget_profile), indent=2))
+    print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol,args.budget_profile,args.prompt_profile), indent=2))

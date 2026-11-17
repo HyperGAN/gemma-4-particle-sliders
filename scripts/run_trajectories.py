@@ -30,6 +30,7 @@ from gemma_particle.harness_identity import package_identity,wheel_identity,sha2
 from gemma_particle.dev import load_external_dev,validate_agent_tasks,qualified_dev_identity
 from gemma_particle.history import NO_COMPACTION,OFFICIAL_COMPACTION,HISTORY_PROFILES,history_contract,eval_history_options
 from gemma_particle.adapters import register_packaged_adapter
+from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
 from build_submission import build,MODELS
 
 
@@ -40,6 +41,7 @@ async def main():
     p.add_argument('--arm',choices=['off',*TARGET_INSTRUCTIONS],required=True)
     p.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
     p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
+    p.add_argument('--prompt-profile',choices=PROMPT_PROFILES,default=DEFAULT_PROMPT_PROFILE)
     p.add_argument('--capture-protocol',choices=CAPTURE_PROTOCOLS,default=CONTEXT_CAPTURE_PROTOCOL)
     p.add_argument('--history-profile',choices=HISTORY_PROFILES,default=OFFICIAL_COMPACTION)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
@@ -85,7 +87,7 @@ async def main():
     os.environ['KAGGLE_SANDBOX_DIR']=str((args.inputs/'sandbox').resolve())
     args.out.mkdir(parents=True,mode=0o700)
     artifact=build(args.out/'artifact',args.model,adapter=args.adapter,instruction=None if args.arm=='off' else args.arm,
-        instruction_protocol=args.instruction_protocol,budget_profile=args.budget_profile)
+        instruction_protocol=args.instruction_protocol,budget_profile=args.budget_profile,prompt_profile=args.prompt_profile)
     manifest={'schema':'gemma4-trajectory-cohort-v1','generator_kind':server_identity['kind'],
         'server_identity':server_identity,'model':args.model,'arm':args.arm,'task_ids':args.task_id,
         'visible_tasks_sha256':hashlib.sha256(args.tasks.read_bytes()).hexdigest(),
@@ -94,6 +96,7 @@ async def main():
     if args.budget_profile!=PILOT_BUDGET:manifest['budget_profile']=args.budget_profile
     if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['capture_protocol']=args.capture_protocol
     if args.history_profile!=NO_COMPACTION:manifest['history_profile']=args.history_profile
+    if args.prompt_profile!=DEFAULT_PROMPT_PROFILE:manifest['prompt_profile']=args.prompt_profile
     manager=ContainerManager(ContainerConfig(image=args.image,network_mode='none',mem_limit='4g',cpu_quota=200000))
     manifest['image_id']=manager.client.images.get(args.image).id
     manifest['environment']={'packages':package_identity(),'wheels':wheel_identity(args.wheels),
@@ -146,6 +149,9 @@ async def main():
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:manifest['contract']['capture_protocol']=args.capture_protocol
         if args.history_profile!=NO_COMPACTION:
             manifest['contract']['history']=history_contract(args.history_profile)
+        if args.prompt_profile!=DEFAULT_PROMPT_PROFILE:
+            base=(Path(__file__).resolve().parents[1]/'submission/prompts/system.md').read_text()
+            manifest['contract']['common_prompt']=prompt_identity(base,args.prompt_profile)
         if external:manifest['contract']['external_dev']=manifest['external_dev']
         if adapter_identities:manifest['contract']['candidate_adapters']=adapter_identities
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
@@ -174,6 +180,7 @@ async def main():
         if args.budget_profile!=PILOT_BUDGET:result['budget_profile']=args.budget_profile
         if args.capture_protocol!=LEGACY_CAPTURE_PROTOCOL:result['capture_protocol']=args.capture_protocol
         if args.history_profile!=NO_COMPACTION:result['history_profile']=args.history_profile
+        if args.prompt_profile!=DEFAULT_PROMPT_PROFILE:result['prompt_profile']=args.prompt_profile
         result['frozen_base_generator']=args.adapter is None and server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
         if adapter_identities:result['candidate_adapters']=adapter_identities
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']

@@ -1,0 +1,32 @@
+{
+  "schema": "gemma4-common-prompt-study-v1",
+  "name": "repair-finalize-v2",
+  "status": "prospective; no real task executed under this profile",
+  "common_prompt": {
+    "profile": "repair-finalize-v2",
+    "sha256": "f8a4089f2836eea59009a11950ebe5d5759ad2cd12a85574c4cf13908c9dba89"
+  },
+  "added_instruction": "After submit_patch returns status ok, finish with one short final text response. Do not call submit_patch again unless you made another code change after the previous submission.",
+  "applies_to": [
+    "off",
+    "reproduce",
+    "localize",
+    "verify"
+  ],
+  "behavior_protocol_sha256": "4553310d4dc57b295281a5aabeda628bd252cb5bdebe0cc74a61ee92b7362132",
+  "synthetic_control_sha256": "02da19d1dc7ac84a1e740bd50e048a7a0dd5fc8f5d3b3aff8f2b7ab445457e26",
+  "hypothesis": "An explicit final-response instruction can reduce redundant successful submit_patch loops and permit clean complete task episodes.",
+  "unchanged": [
+    "three tools-v2 teacher cues",
+    "five-level Jev rubric and admission gates",
+    "public harness semantics",
+    "full60min budget",
+    "thinking and sampling",
+    "official-compaction-v2",
+    "initial target boundary",
+    "PG recipes and full hidden-state geometry"
+  ],
+  "collection_order": "fixed qualified TRAIN manifest order, excluding reserved conversion tasks; declare exact IDs before first new episode",
+  "previous_cohort_handling": "preserve old-profile artifacts with explicit intervention status if stopped; do not silently restart or relabel",
+  "success_measurement": "fresh repository verification and actual matched DEV resolution; synthetic finalization is not a task score"
+}

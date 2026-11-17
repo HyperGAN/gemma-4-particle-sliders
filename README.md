@@ -10,6 +10,8 @@ The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/je
 
 A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its synthetic rubric and CPU admission controls pass; fresh collection, one-pass grading and offline evidence validation are implemented. No real trajectory has yet been graded or admitted under it.
 
+An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and all 104 CPU checks pass. The original prompt and ZIP bytes remain reproducible.
+
 Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cannot be merged exactly into LoRA. This project therefore preserves the native research adapter and separately fits its routed bottlenecks with the core's `fit_routed_down`. Conversion reports measure error on different calibration/probe tasks. A successful conversion still needs vLLM parity and repository-test evaluation.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.

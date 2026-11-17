@@ -13,6 +13,7 @@ from .decisions import validate_response
 from .dev import validate_agent_tasks
 from .history import OFFICIAL_COMPACTION, history_contract, is_assistant_decision
 from .harness_identity import sha256_file
+from .prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
 
 
 def load_behavior_cohort(root, visible_tasks, protocol_path):
@@ -44,6 +45,14 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
     if set(grouped) != set(ids):
         raise ValueError('terminal quartet is missing declared tasks')
     executor = Path(plan['source_checkout'])
+    profile = plan.get('prompt_profile',DEFAULT_PROMPT_PROFILE)
+    if profile not in PROMPT_PROFILES:
+        raise ValueError('unknown common prompt profile')
+    common_prompt = None
+    if profile != DEFAULT_PROMPT_PROFILE:
+        common_prompt = prompt_identity((executor/'submission/prompts/system.md').read_text(),profile)
+        if plan.get('common_prompt') != common_prompt:
+            raise ValueError('declared common prompt changed')
     if (len(plan['source_git']) != 40 or not plan['execution_sources']
             or any(sha256_file(executor / name) != sha for name, sha in plan['execution_sources'].items())):
         raise ValueError('frozen raw collection sources changed')
@@ -57,6 +66,8 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
         contract = manifest['contract']
         budget, harness = contract['budget'], contract['harness']
         if (manifest['arm'] != arm or manifest['server_identity'] != server
+                or manifest.get('prompt_profile',DEFAULT_PROMPT_PROFILE) != profile
+                or contract.get('common_prompt') != common_prompt
                 or manifest['evaluation_contract_sha256'] != digest(contract)
                 or budget['time_minutes'] != 60 or budget['tool_calls'] != 100 or budget['turns'] != 500
                 or budget['cost_usd'] is not None or budget['total_tokens'] is not None
@@ -66,6 +77,7 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
         for task_id, arms in grouped.items():
             row = arms[arm]
             if (row['evaluation_contract_sha256'] != manifest['evaluation_contract_sha256']
+                    or row.get('prompt_profile',DEFAULT_PROMPT_PROFILE) != profile
                     or row['model_identity'] != server['model_identity']
                     or row['visible_task_sha256'] != digest(lookup[task_id])
                     or row['verification']['image_id'] != manifest['image_id']):

@@ -18,6 +18,7 @@ from gemma_particle.budgets import PILOT_BUDGET,budget_values
 from gemma_particle.capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 from gemma_particle.data import read_jsonl,write_jsonl
 from gemma_particle.history import NO_COMPACTION,HISTORY_PROFILES,history_contract
+from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES
 
 
 def teacher_skip_reason(policy,off):
@@ -44,6 +45,8 @@ def main():
     args=p.parse_args()
     plan=json.loads((args.root/'plan.json').read_text())
     protocol=plan.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
+    prompt_profile=plan.get('prompt_profile',DEFAULT_PROMPT_PROFILE)
+    if prompt_profile not in PROMPT_PROFILES:raise ValueError('unknown common prompt profile')
     history_profile=plan.get('history_profile',NO_COMPACTION)
     if history_profile not in HISTORY_PROFILES:raise ValueError('unknown history profile')
     if history_profile!=NO_COMPACTION and plan.get('history')!=history_contract(history_profile):
@@ -55,7 +58,7 @@ def main():
     if capture_protocol not in (LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL):raise ValueError('unknown capture protocol')
     budget=budget_values(budget_profile)
     instructions=instruction_set(protocol)
-    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL or budget_profile!=PILOT_BUDGET or capture_protocol!=LEGACY_CAPTURE_PROTOCOL:
+    if protocol!=DEFAULT_INSTRUCTION_PROTOCOL or budget_profile!=PILOT_BUDGET or capture_protocol!=LEGACY_CAPTURE_PROTOCOL or prompt_profile!=DEFAULT_PROMPT_PROFILE:
         if plan.get('target_instructions')!=instructions:raise ValueError('declared instruction text changed')
         sources=['src/gemma_particle/curation.py','scripts/build_submission.py','scripts/run_trajectories.py','scripts/collect_arms.py']
         if budget_profile!=PILOT_BUDGET:
@@ -65,6 +68,8 @@ def main():
             sources.extend(['src/gemma_particle/capture.py','src/gemma_particle/context_budget.py','scripts/verify_trajectories.py'])
         if history_profile!=NO_COMPACTION:
             sources.extend(['src/gemma_particle/history.py','src/gemma_particle/adk_capture.py'])
+        if prompt_profile!=DEFAULT_PROMPT_PROFILE:
+            sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
         observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
         if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())
@@ -92,6 +97,7 @@ def main():
                 command.extend(['--budget-profile',budget_profile])
                 command.extend(['--capture-protocol',capture_protocol])
                 command.extend(['--history-profile',history_profile])
+                if prompt_profile!=DEFAULT_PROMPT_PROFILE:command.extend(['--prompt-profile',prompt_profile])
                 for task_id in selected:command.extend(['--task-id',task_id])
                 execute(command,logs/f'{arm}-agent.log')
             manifest=json.loads((agent/'cohort.json').read_text())
@@ -104,6 +110,8 @@ def main():
                 raise ValueError('existing arm belongs to a different capture protocol')
             if manifest.get('history_profile',NO_COMPACTION)!=history_profile:
                 raise ValueError('existing arm belongs to a different history profile')
+            if manifest.get('prompt_profile',DEFAULT_PROMPT_PROFILE)!=prompt_profile:
+                raise ValueError('existing arm belongs to a different common prompt profile')
             verified=args.root/(arm+'-verification')
             if not verified.exists():
                 command=['scripts/verify_trajectories.py','--cohort',str(agent),'--tasks',str(args.raw_tasks),
