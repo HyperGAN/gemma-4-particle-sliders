@@ -23,6 +23,8 @@ from gemma_particle.harness_identity import sha256_file
 from gemma_particle.hardware_parity import qualify_server_contracts
 from gemma_particle.lora_serving import BASE_ALIAS
 from gemma_particle.resource_dispatch import observe_slot
+from gemma_particle.dev_selection import empf_only_selection
+from gemma_particle.resource_supplement import resource_schedule
 from test_conversion_handoff import put
 from test_hardware_parity import servers
 from test_learned_effect import protocol_fixture, response
@@ -30,13 +32,25 @@ from test_learned_effect import protocol_fixture, response
 ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.mark.parametrize('mode', ['complete', 'audit_bridge', 'unqualified', 'no_effect', 'right_no_effect', 'child_failure'])
+@pytest.mark.parametrize('mode', ['complete', 'empf_only', 'audit_bridge', 'unqualified', 'no_effect', 'right_no_effect', 'child_failure'])
 def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypatch, mode):
     spec = importlib.util.spec_from_file_location('cpu_resource_controller', ROOT / 'scripts/run_resource_dev_grid.py')
     controller = importlib.util.module_from_spec(spec); spec.loader.exec_module(controller)
-    selection_path = ROOT / 'research/dev-selection-v1.json'; selection = json.loads(selection_path.read_text())
-    selection_sha = sha256_file(selection_path)
+    original_path = ROOT / 'research/dev-selection-v1.json'; original = json.loads(original_path.read_text())
+    original_sha = sha256_file(original_path)
+    selection_path, selection = original_path, original
     declared = json.loads((ROOT / 'research/dev-resource-declaration-v1.json').read_text())
+    declared['qualification_sources_sha256'] = {name: sha256_file(ROOT / name)
+                                               for name in declared['qualification_sources_sha256']}
+    declaration_path = tmp_path / 'resource-declaration.json'
+    if mode == 'empf_only':
+        selection_path = tmp_path / 'empf-only-selection.json'
+        selection = empf_only_selection(original, original_path)
+        put(selection_path, selection)
+        declared['core_selection_plan_sha256'] = sha256_file(selection_path)
+        declared['assignments'], declared['learned_waves'] = resource_schedule(selection)
+    put(declaration_path, declared)
+    selection_sha = sha256_file(selection_path)
     executor, qualifier, auditor = [tmp_path / n for n in ['generation', 'qualifier', 'auditor']]
     for directory in [executor, qualifier, auditor]: directory.mkdir()
     for directory, names in [(executor, [*declared['serving_sources_sha256'], 'scripts/run_dev_controls.py',
@@ -54,12 +68,12 @@ def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypa
         (auditor/'src/gemma_particle/dev_evidence.py').write_bytes(corrected.read_bytes())
     monkeypatch.setattr(controller, 'frozen_sources', lambda directory, commit:
         {str(p): sha256_file(p) for p in directory.rglob('*') if p.is_file()})
-    monkeypatch.setattr(controller, 'load_selection_plan', lambda path: deepcopy(selection))
+    monkeypatch.setattr(controller, 'load_selection_plan', lambda path: deepcopy(original if path == original_path else selection))
     protocol, contexts, qualification, _, _ = protocol_fixture(tmp_path)
     for path in [contexts, qualification]:
         value = json.loads(path.read_text()); value['train_manifest_sha256'] = selection['training']['train_manifest_sha256']; put(path, value)
     value = json.loads(qualification.read_text()); value['probe_sha256'] = sha256_file(contexts); put(qualification, value)
-    value = json.loads(protocol.read_text()); value.update(core_selection_plan_sha256=selection_sha,
+    value = json.loads(protocol.read_text()); value.update(core_selection_plan_sha256=original_sha,
         probe_contexts_sha256=sha256_file(contexts), probe_qualification_sha256=sha256_file(qualification)); put(protocol, value)
     conversion, controls, prior, training, pilot = [tmp_path / n for n in ['conversion', 'controls', 'prior', 'training', 'pilot']]
     for directory in [conversion, controls, prior, training, pilot]: directory.mkdir()
@@ -72,14 +86,15 @@ def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypa
     for identity in [*pair, baseline]:
         identity['sources'] = {n: sha256_file(executor / n) for n in declared['serving_sources_sha256']}
     baseline_path = tmp_path / 'base.json'; put(baseline_path, baseline)
-    put(controls / 'plan.json', {'selection_plan_sha256': selection_sha, 'server_identity': str(baseline_path),
+    put(controls / 'plan.json', {'selection_plan_sha256': original_sha, 'server_identity': str(baseline_path),
         'source_sha256': sha256_file(executor / 'scripts/run_dev_controls.py'), 'server_pid': 999999999, 'server_birth_ticks': '1'})
     producers = [{'directory': str(d), 'completed_state': state, 'binding': None} for d, state in [
         (conversion, 'prepared_complete_learned_grid'), (controls, 'complete')]]
     learned = [c for c in selection['conditions'] if c['role'] == 'learned']
-    put(prior / 'plan.json', {'selection_plan_sha256': selection_sha, 'executor': str(executor),
+    put(prior / 'plan.json', {'selection_plan_sha256': original_sha, 'executor': str(executor),
         'executor_commit': declared['serving_executor_commit'], 'learned_effect_protocol_sha256': sha256_file(protocol),
-        'producers': producers, 'condition_ids': [c['id'] for c in learned], 'tasks_per_condition': 55})
+        'producers': producers, 'condition_ids': [c['id'] for c in original['conditions'] if c['role'] == 'learned'],
+        'tasks_per_condition': 55})
     put(prior / 'progress.json', {'state': 'waiting_actual_inputs', 'finished': [], 'model_dev_inference': False})
     packets = [{'condition': c, 'adapters': adapters, 'adapter': str(tmp_path / 'CPU-adapter'),
         'conversion_report': str(tmp_path / 'CPU-conversion.json'), 'native': str(tmp_path / 'CPU-native'),
@@ -144,8 +159,11 @@ raise SystemExit(payload['exit'])
         else:
             writes = {}; exitcode = 0; destination = Path(option(argv, 'out'))
             if role.endswith('qualify_hardware_pair.py'):
+                if mode == 'empf_only':
+                    assert json.loads(Path(option(argv, 'producer-plan')).read_text())['producers'] == producers
                 writes[str(destination / 'result.json')] = {'status': 'failed' if mode == 'unqualified' else 'passed'}
             elif role.endswith('run_dev_condition.py'):
+                assert Path(option(argv, 'selection-plan')) == original_path
                 name = option(argv, 'condition'); packet = next(p for p in packets if p['condition']['id'] == name)
                 server_path = Path(option(argv, 'server-identity')); identity = json.loads(server_path.read_text())
                 writes[str(destination / 'plan.json')] = {'server_identity': str(server_path), 'endpoint': option(argv, 'endpoint')}
@@ -153,7 +171,7 @@ raise SystemExit(payload['exit'])
                     'server_identity_sha256': digest(identity), 'primary': {'total': 42}, 'secondary': {'total': 13}}
                 if mode == 'child_failure' and name == learned[0]['id']: exitcode = 9
             elif role.endswith('compare_dev_conditions.py'):
-                assert len([a for a in argv if a == '--condition-result']) == 22
+                assert len([a for a in argv if a == '--condition-result']) == len(selection['conditions'])
                 assert json.loads((out / 'plan.json').read_text())['resource_supplement']['sha256'] == sha256_file(option(argv, 'resource-supplement'))
                 writes[str(destination / 'selection.json')] = {'selected': learned[0]['id'], 'CPU-fixture': True}
             else: raise AssertionError('unexpected child ' + role)
@@ -182,7 +200,7 @@ raise SystemExit(payload['exit'])
         '--conversion', str(conversion), '--controls', str(controls), '--executor', str(executor),
         '--executor-commit', declared['serving_executor_commit'], '--qualifier', str(qualifier), '--qualifier-commit', 'CPU',
         '--auditor', str(auditor), '--auditor-commit', 'CPU', '--selection-plan', str(selection_path),
-        '--declaration', str(ROOT / 'research/dev-resource-declaration-v1.json'),
+        '--declaration', str(declaration_path),
         '--proposal', str(ROOT / 'research/dev-hardware-resource-proposal-v1.json'),
         '--probe-inputs', str(ROOT / 'research/dev-hardware-probe-inputs-v1.json'),
         '--probe-contexts', str(contexts), '--probe-qualification', str(qualification), '--effect-protocol', str(protocol),
@@ -191,7 +209,7 @@ raise SystemExit(payload['exit'])
     monkeypatch.setattr(sys, 'argv', argv)
     previous_handlers = {sig: signal.getsignal(sig) for sig in [signal.SIGTERM, signal.SIGINT]}
     try:
-        if mode in ['complete','audit_bridge']: controller.main()
+        if mode in ['complete','empf_only','audit_bridge']: controller.main()
         else:
             with pytest.raises((ValueError, RuntimeError)): controller.main()
     finally:
@@ -201,10 +219,12 @@ raise SystemExit(payload['exit'])
             child.wait()
     status = json.loads((out / 'progress.json').read_text())
     dev_calls = [call for call in spawned if call[1] == 'scripts/run_dev_condition.py']
-    if mode in ['complete','audit_bridge']:
+    if mode in ['complete','empf_only','audit_bridge']:
         assert status['state'] == 'complete_dev_choice'
         assert [r['condition_id'] for r in status['finished']] == [c['id'] for c in learned]
-        assert len(dev_calls) == 18 and len(spawned) == 40  # 20 servers,qualifier,18 panels,comparator
+        assert len(dev_calls) == len(learned) and len(spawned) == 2 * len(learned) + 4
+        if mode == 'empf_only':
+            assert [len(wave) for wave in declared['learned_waves']] == [2, 2, 2, 2, 1]
         assert all(call[0]==str(task_executor/'.harness-venv/bin/python') for call in dev_calls)
         assert all(len((out / (c['id'] + '-preflight-http.jsonl')).read_text().splitlines()) == 24 for c in learned)
     elif mode in ['unqualified', 'no_effect', 'right_no_effect']:

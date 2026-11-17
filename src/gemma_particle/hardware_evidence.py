@@ -10,9 +10,29 @@ from urllib.parse import urlsplit
 from .conversion_handoff import read
 from .data import digest
 from .dev_evidence import SERVER_SOURCES
+from .dev_selection import baseline_selection_sha256
 from .hardware_parity import (prepare_probes, qualify_server_contracts,
     validate_device_facts, compare_probe_responses)
 from .harness_identity import sha256_file
+
+
+def qualification_producers(grid, scoped, selection_sha, conversion, controls, producer_plan):
+    if scoped:
+        if producer_plan is None:
+            raise ValueError('scoped numerical qualification requires exact input producer bindings')
+        bound = read(producer_plan)
+        if (bound.get('schema') != 'gemma4-dev-qualification-inputs-v1'
+                or bound['selection_plan_sha256'] != selection_sha):
+            raise ValueError('scoped qualification producer plan differs')
+        producers = bound['producers']
+    else:
+        if producer_plan is not None:
+            raise ValueError('explicit producer plan requires a scoped selection')
+        producers = grid['producers']
+    if ([Path(item['directory']).resolve() for item in producers] != [Path(conversion).resolve(), Path(controls).resolve()]
+            or [item['completed_state'] for item in producers] != ['prepared_complete_learned_grid', 'complete']):
+        raise ValueError('complete fixed conversion and control producer bindings required')
+    return producers
 
 
 def audit_hardware_pair(directory):
@@ -26,7 +46,10 @@ def audit_hardware_pair(directory):
             or any(sha256_file(p) != value for p, value in receipt['prerequisite_progress_sha256'].items())):
         raise ValueError('complete unchanged numerical hardware observation required')
     inputs = plan['inputs']; executor = Path(inputs['executor'])
-    packet, resource, cases = prepare_probes(inputs['probe_inputs'], inputs['proposal'], plan['selection_plan_sha256'])
+    selection = read(inputs['selection_plan'])
+    scoped = bool(selection.get('selection_scope'))
+    original_sha = baseline_selection_sha256(selection, plan['selection_plan_sha256'])
+    packet, resource, cases = prepare_probes(inputs['probe_inputs'], inputs['proposal'], original_sha)
     if (sha256_file(inputs['selection_plan']) != plan['selection_plan_sha256']
             or plan['cases'] != [{k: c[k] for k in ['length', 'alias', 'request_sha256']} for c in cases]
             or plan['probe_adapter'] != resource['probe_adapter'] or plan['server_mutations'] is not False):
@@ -36,7 +59,12 @@ def audit_hardware_pair(directory):
     if grid_status.get('model_dev_inference') is not False or grid_status.get('finished'):
         raise ValueError('original stopped grid must retain zero learned DEV attempts')
     expected_progress = {str(Path(inputs['dev_grid']) / 'progress.json')}
-    for producer in grid['producers']:
+    producer_plan = inputs.get('producer_plan')
+    if producer_plan is not None and producer_plan not in plan['declaration_pins']:
+        raise ValueError('qualification producer plan must be pinned')
+    producers = qualification_producers(grid, scoped, plan['selection_plan_sha256'],
+                                        inputs['conversion'], inputs['controls'], producer_plan)
+    for producer in producers:
         path = Path(producer['directory']) / 'progress.json'; expected_progress.add(str(path))
         if read(path).get('state') != producer['completed_state']:
             raise ValueError('actual completed prerequisite producer records required')
@@ -51,9 +79,13 @@ def audit_hardware_pair(directory):
         raise ValueError('prospectively fixed parity adapter required')
     conversion = Path(inputs['conversion']); packets_path = conversion / 'candidate-packets.json'
     conversion_status = read(conversion / 'progress.json'); packets = read(packets_path)
-    expected_conditions = [c for c in read(inputs['selection_plan'])['conditions'] if c['role'] == 'learned']
-    if (conversion_status.get('state') != 'prepared_complete_learned_grid'
-            or conversion_status.get('completed_unit_conversions') != 6 or conversion_status.get('candidate_packets') != 18
+    expected_conditions = [c for c in selection['conditions'] if c['role'] == 'learned']
+    expected_conversions = {(c['preset'], c['completed_steps']) for c in expected_conditions}
+    declared_count = 9 if scoped else 18
+    if (len(expected_conditions) != declared_count or len(expected_conversions) != declared_count // 3
+            or conversion_status.get('state') != 'prepared_complete_learned_grid'
+            or conversion_status.get('completed_unit_conversions') != len(expected_conversions)
+            or conversion_status.get('candidate_packets') != len(expected_conditions)
             or conversion_status['candidate_packets_sha256'] != sha256_file(packets_path)
             or packets['selection_plan_sha256'] != plan['selection_plan_sha256']
             or [p['condition'] for p in packets['packets']] != expected_conditions

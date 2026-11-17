@@ -5,6 +5,7 @@ already stopped before any learned task, complete released input producers,
 the fixed same-adapter numerical control, and an audited resource supplement.
 """
 import argparse
+import ast
 from datetime import datetime, timezone
 import json
 import os
@@ -20,7 +21,7 @@ from gemma_particle.conversion_handoff import read, validate_training_outputs
 from gemma_particle.data import digest
 from gemma_particle.dev_dispatch import load_packets, load_control_results, candidate_preflight, process_binding, live
 from gemma_particle.dev_evidence import canonical_contract
-from gemma_particle.dev_selection import load_selection_plan
+from gemma_particle.dev_selection import baseline_selection_sha256, load_selection_plan
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.learned_effect import prepare_effect_probes, learned_effect_preflight
 from gemma_particle.resource_dispatch import pending_producers, stopped_prior_grid, observe_slot, slot_record, stop_owned, wait_wave,task_audit_bridge
@@ -42,6 +43,21 @@ def frozen_sources(root, commit):
     return {str(root / name): sha256_file(root / name) for name in names}
 
 
+def scoring_source(path):
+    tree = ast.parse(path.read_text())
+    names = {'wilson_interval', 'summarize_verified_panel', '_summarize_rows', 'paired_comparison', 'choose_learned_candidate'}
+    return {node.name: ast.dump(node) for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in names}
+
+
+def input_producer(directory, expected, pid, script):
+    progress = directory / 'progress.json'
+    complete = progress.exists() and read(progress).get('state') == expected
+    if not complete and not pid:
+        raise ValueError(f'exact live {script} producer required')
+    binding = process_binding(pid, script, directory) if pid else None
+    return {'directory': str(directory), 'completed_state': expected, 'binding': binding}
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ['prior-grid', 'conversion', 'controls', 'executor', 'qualifier', 'auditor', 'out']:
@@ -50,6 +66,8 @@ def main():
         p.add_argument('--' + name + '-commit', required=True)
     p.add_argument('--prior-pid', type=int, required=True)
     p.add_argument('--prior-birth-ticks', required=True)
+    p.add_argument('--conversion-pid', type=int)
+    p.add_argument('--controls-pid', type=int)
     p.add_argument('--task-executor',type=Path,help='separate frozen checkout with only DEV evidence-reader corrections')
     p.add_argument('--task-executor-commit')
     p.add_argument('--declaration', type=Path, default=Path('research/dev-resource-declaration-v1.json'))
@@ -75,6 +93,10 @@ def main():
     if len(set(ports)) != 2 or any(not 1024 <= port <= 65535 for port in ports):
         raise ValueError('two distinct explicit unprivileged loopback ports required')
     selection = load_selection_plan(args.selection_plan); plan_sha = sha256_file(args.selection_plan)
+    scope = selection.get('selection_scope')
+    original_sha = baseline_selection_sha256(selection, plan_sha)
+    execution_plan = Path(scope['original_plan']).resolve() if scope else args.selection_plan
+    learned_ids = [c['id'] for c in selection['conditions'] if c['role'] == 'learned']
     resource_declaration = validate_resource_declaration(args.declaration, args.selection_plan)
     effect_protocol, effect_cases = prepare_effect_probes(args.effect_protocol, args.probe_contexts,
         args.probe_qualification, selection, plan_sha)
@@ -83,14 +105,21 @@ def main():
     training = Path(conversion_plan['training']); training_plan_path = training / 'plan.json'
     pilot = Path(read(training_plan_path)['pilot']); config = args.executor / 'configs/31b-ct-shared-positional-pilot.json'
     baseline_path = Path(controls_plan['server_identity']); baseline = read(baseline_path)
-    if (any(item['selection_plan_sha256'] != plan_sha for item in [prior, controls_plan, conversion_plan])
+    if scope:
+        original_ids = [c['id'] for c in load_selection_plan(execution_plan)['conditions'] if c['role'] == 'learned']
+        producers = [input_producer(args.conversion, 'prepared_complete_learned_grid', args.conversion_pid, 'prepare_learned_sweep.py'),
+                     input_producer(args.controls, 'complete', args.controls_pid, 'run_dev_controls.py')]
+    else:
+        original_ids, producers = learned_ids, prior['producers']
+    if (prior['selection_plan_sha256'] != original_sha or controls_plan['selection_plan_sha256'] != original_sha
+            or conversion_plan['selection_plan_sha256'] != plan_sha
             or Path(prior['executor']).resolve() != args.executor or prior['executor_commit'] != args.executor_commit
             or args.executor_commit != resource_declaration['serving_executor_commit']
-            or prior['condition_ids'] != [c['id'] for c in selection['conditions'] if c['role'] == 'learned']
+            or prior['condition_ids'] != original_ids
             or prior['tasks_per_condition'] != 55
             or prior['learned_effect_protocol_sha256'] != sha256_file(args.effect_protocol)
-            or [item['directory'] for item in prior['producers']] != [str(args.conversion), str(args.controls)]
-            or [item['completed_state'] for item in prior['producers']] != ['prepared_complete_learned_grid', 'complete']
+            or [item['directory'] for item in producers] != [str(args.conversion), str(args.controls)]
+            or [item['completed_state'] for item in producers] != ['prepared_complete_learned_grid', 'complete']
             or baseline['device'] != 'cuda:0' or baseline['memory_fraction'] != .6
             or baseline.get('base_only') is not True or baseline.get('adapters')
             or controls_plan['source_sha256'] != sha256_file(args.executor / 'scripts/run_dev_controls.py')
@@ -105,9 +134,13 @@ def main():
             (args.auditor, args.auditor_commit)]:
         source_sets[executor]=frozen_sources(executor,commit);pins.update(source_sets[executor])
     audit_bridge=task_audit_bridge(args.executor,args.task_executor,source_sets[args.executor],source_sets[args.task_executor])
-    for name in ['src/gemma_particle/dev_evidence.py', 'src/gemma_particle/dev_selection.py']:
-        if sha256_file(args.task_executor / name) != sha256_file(args.auditor / name):
-            raise ValueError('original generation task audit,canonicalizer,statistics and selection required')
+    task_audit = 'src/gemma_particle/dev_evidence.py'
+    task_selection = 'src/gemma_particle/dev_selection.py'
+    if (sha256_file(args.task_executor / task_audit) != sha256_file(args.auditor / task_audit)
+            or (scope and (len(scoring_source(args.task_executor / task_selection)) != 5
+                           or scoring_source(args.task_executor / task_selection) != scoring_source(args.auditor / task_selection)))
+            or (not scope and sha256_file(args.task_executor / task_selection) != sha256_file(args.auditor / task_selection))):
+        raise ValueError('original generation task audit,canonicalizer,statistics and selection required')
     for name, value in resource_declaration['qualification_sources_sha256'].items():
         if sha256_file(args.qualifier / name) != value: raise ValueError('original declared hardware qualifier required')
     for name, value in resource_declaration['serving_sources_sha256'].items():
@@ -118,7 +151,7 @@ def main():
     own_names = subprocess.check_output(['git', 'ls-files', 'scripts', 'src'], cwd=root, text=True).splitlines()
     own_names = sorted(set(own_names) | {'scripts/run_resource_dev_grid.py', 'src/gemma_particle/resource_dispatch.py'})
     sources = {str(root / name): sha256_file(root / name) for name in own_names}
-    for path in [args.selection_plan, args.declaration, args.proposal, args.probe_inputs, args.probe_contexts,
+    for path in [args.selection_plan, execution_plan, args.declaration, args.proposal, args.probe_inputs, args.probe_contexts,
             args.probe_qualification, args.effect_protocol, args.prior_grid / 'plan.json', args.prior_grid / 'progress.json',
             args.conversion / 'plan.json', args.controls / 'plan.json', training_plan_path, baseline_path]:
         pins[str(path)] = sha256_file(path)
@@ -127,9 +160,15 @@ def main():
         stopped_prior_grid(args.prior_grid, prior_binding)
         subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=root, check=True)
     args.out.mkdir(parents=True); (args.out / 'logs').mkdir()
+    producer_plan = None
+    if scope:
+        producer_plan = args.out / 'producer-plan.json'
+        write(producer_plan, {'schema': 'gemma4-dev-qualification-inputs-v1', 'selection_plan_sha256': plan_sha,
+                              'producers': producers})
+        pins[str(producer_plan)] = sha256_file(producer_plan)
     declaration = {'schema': 'gemma4-learned-dev-grid-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
-        'executor': str(args.executor), 'executor_commit': args.executor_commit, 'producers': prior['producers'],
-        'selection_plan_sha256': plan_sha, 'condition_ids': prior['condition_ids'], 'tasks_per_condition': 55,
+        'executor': str(args.executor), 'executor_commit': args.executor_commit, 'producers': producers,
+        'selection_plan_sha256': plan_sha, 'condition_ids': learned_ids, 'tasks_per_condition': 55,
         'memory_fraction': .6, 'startup_headroom_GiB': 8, 'device_policy': 'explicit qualified physical slots0/1',
         'ports': ports, 'declaration_pins': pins, 'controller_sources': sources,
         'prior_grid': str(args.prior_grid), 'stopped_prior_dispatcher': prior_binding,
@@ -141,10 +180,12 @@ def main():
         'learned_effect_protocol_sha256': sha256_file(args.effect_protocol),
         'learned_effect_probe_task_ids': effect_protocol['probe_task_ids'],
         'resource_supplement': None, 'activation': 'only after actual numerical qualification and offline audit',
-        'scope': 'all18 full learned DEV conditions and original22-condition choice;no holdout or account requests'}
+        'scope': 'complete declared learned DEV grid and controlled choice only'}
+    if scope:
+        declaration['execution_selection_plan'] = {'path': str(execution_plan), 'sha256': original_sha}
     write(args.out / 'plan.json', declaration)
     status = {'state': 'prepared' if args.plan_only else 'waiting_actual_inputs', 'finished': [],
-        'planned_conditions': 18, 'model_dev_inference': False, 'holdout_accessed': False, 'resource_activated': False}
+        'planned_conditions': len(learned_ids), 'model_dev_inference': False, 'holdout_accessed': False, 'resource_activated': False}
 
     def publish(state, **values):
         status.update(state=state, as_of=datetime.now(timezone.utc).isoformat(), **values)
@@ -244,7 +285,7 @@ def main():
 
     try:
         while True:
-            unchanged(); pending = pending_producers(prior['producers'])
+            unchanged(); pending = pending_producers(producers)
             if not pending: break
             if status.get('waiting_for') != pending: publish('waiting_actual_inputs', waiting_for=pending)
             time.sleep(10)
@@ -267,6 +308,8 @@ def main():
             '--selection-plan', str(args.selection_plan), '--proposal', str(args.proposal), '--probe-inputs', str(args.probe_inputs),
             '--probe-contexts', str(args.probe_contexts), '--probe-qualification', str(args.probe_qualification),
             '--out', str(args.out / 'hardware-qualification')]
+        if producer_plan is not None:
+            command.extend(['--producer-plan', str(producer_plan)])
         for side, owner in [('left', left), ('right', right)]:
             command.extend(['--' + side + '-endpoint', owner['root'], '--' + side + '-identity', str(owner['identity_path']),
                 '--' + side + '-pid', str(owner['process'].pid)])
@@ -325,7 +368,7 @@ def main():
             for owner in wave:
                 name = owner['name']; packet = owner['packet']; index = owner['index']; destination = args.out / name
                 command = [str(args.task_executor / '.harness-venv/bin/python'), 'scripts/run_dev_condition.py',
-                    '--selection-plan', str(args.selection_plan), '--condition', name, '--endpoint', owner['root'] + '/v1',
+                    '--selection-plan', str(execution_plan), '--condition', name, '--endpoint', owner['root'] + '/v1',
                     '--server-identity', str(owner['identity_path']), '--out', str(destination)]
                 for option in ['adapter', 'conversion_report', 'native', 'cache']:
                     command.extend(['--' + option.replace('_', '-'), packet[option]])

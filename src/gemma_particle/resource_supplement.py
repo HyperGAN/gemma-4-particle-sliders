@@ -14,20 +14,31 @@ from .hardware_evidence import audit_hardware_pair
 from .harness_identity import sha256_file
 
 
+def resource_schedule(selection):
+    learned = [c for c in selection['conditions'] if c['role'] == 'learned']
+    indices = {condition['id']: i for i, condition in enumerate(learned)}
+    expected = []
+    for condition in selection['conditions']:
+        index = indices.get(condition['id'])
+        expected.append({'condition_id': condition['id'], 'physical_index': 0 if index is None else index % 2,
+            'wave': None if index is None else index // 2 + 1})
+    waves = [[c['id'] for c in learned[i:i + 2]] for i in range(0, len(learned), 2)]
+    return expected, waves
+
+
 def validate_resource_declaration(path, selection_path):
     declaration = read(path); selection = read(selection_path)
     learned = [c for c in selection['conditions'] if c['role'] == 'learned']
-    expected = []
-    for condition in selection['conditions']:
-        index = next((i for i, c in enumerate(learned) if c['id'] == condition['id']), None)
-        expected.append({'condition_id': condition['id'], 'physical_index': 0 if index is None else index % 2,
-            'wave': None if index is None else index // 2 + 1})
+    scoped = selection.get('selection_scope', {}).get('kind') == 'empf_only'
+    count = 9 if scoped else 18
+    expected, waves = resource_schedule(selection)
     if (declaration.get('schema') != 'gemma4-dev-resource-declaration-v1'
             or declaration.get('state') != 'inactive_preparation'
             or declaration['core_selection_plan_sha256'] != sha256_file(selection_path)
-            or len(selection['conditions']) != 22 or len(learned) != 18
+            or len(selection['conditions']) != count + 4 or len(learned) != count
+            or scoped and any(c['preset'] != 'empf' for c in learned)
             or declaration['assignments'] != expected
-            or declaration['learned_waves'] != [[c['id'] for c in learned[i:i + 2]] for i in range(0, 18, 2)]
+            or declaration['learned_waves'] != waves
             or declaration['engine_memory_fraction'] != .6 or declaration['startup_headroom_GiB'] != 8
             or declaration['cpu_threads_per_slot'] != 4 or declaration['inherited_nice'] != 10
             or set(declaration['serving_sources_sha256']) != set(SERVER_SOURCES)

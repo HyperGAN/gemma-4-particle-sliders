@@ -18,7 +18,8 @@ from gemma_particle.conversion_handoff import read, validate_training_outputs
 from gemma_particle.data import digest
 from gemma_particle.dev_dispatch import live, process_binding, load_packets, load_control_results
 from gemma_particle.dev_evidence import SERVER_SOURCES
-from gemma_particle.dev_selection import load_selection_plan
+from gemma_particle.dev_selection import baseline_selection_sha256, load_selection_plan
+from gemma_particle.hardware_evidence import qualification_producers
 from gemma_particle.hardware_parity import (prepare_probes, qualify_server_contracts,
     validate_device_facts, compare_probe_responses)
 from gemma_particle.harness_identity import sha256_file
@@ -49,7 +50,7 @@ def active_dispatchers(output):
         if not proc.name.isdigit(): continue
         try:
             argv = proc.joinpath('cmdline').read_bytes().split(b'\0')
-            if not any(a.endswith(b'/run_learned_dev_grid.py') for a in argv) or b'--out' not in argv: continue
+            if not any(a.endswith((b'/run_learned_dev_grid.py', b'/run_resource_dev_grid.py')) for a in argv) or b'--out' not in argv: continue
             target = Path(os.fsdecode(argv[argv.index(b'--out') + 1]))
             if not target.is_absolute(): target = proc.joinpath('cwd').resolve() / target
             fields = proc.joinpath('stat').read_text().split(') ', 1)[1].split()
@@ -79,6 +80,7 @@ def main():
     for name in ['dev-grid', 'conversion', 'controls', 'executor', 'out']:
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--executor-commit', required=True)
+    p.add_argument('--producer-plan', type=Path)
     p.add_argument('--proposal', type=Path, default=Path('research/dev-hardware-resource-proposal-v1.json'))
     p.add_argument('--probe-inputs', type=Path, default=Path('research/dev-hardware-probe-inputs-v1.json'))
     p.add_argument('--selection-plan', type=Path, default=Path('research/dev-selection-v1.json'))
@@ -103,17 +105,21 @@ def main():
             raise ValueError('explicit local root endpoints required')
     if urlsplit(endpoints[0]).port == urlsplit(endpoints[1]).port: raise ValueError('distinct loopback ports required')
     selection = load_selection_plan(args.selection_plan); selection_sha = sha256_file(args.selection_plan)
-    inputs, resource, cases = prepare_probes(args.probe_inputs, args.proposal, selection_sha)
+    original_sha = baseline_selection_sha256(selection, selection_sha)
+    inputs, resource, cases = prepare_probes(args.probe_inputs, args.proposal, original_sha)
     if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=args.executor, text=True).strip() != args.executor_commit:
         raise ValueError('exact frozen baseline serving executor required')
     subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=args.executor, check=True)
     grid_plan, conversion_plan, controls_plan = [read(d / 'plan.json') for d in [args.dev_grid, args.conversion, args.controls]]
-    if (any(d['selection_plan_sha256'] != selection_sha for d in [grid_plan, conversion_plan, controls_plan])
+    if (grid_plan['selection_plan_sha256'] != original_sha or controls_plan['selection_plan_sha256'] != original_sha
+            or conversion_plan['selection_plan_sha256'] != selection_sha
             or grid_plan['executor_commit'] != args.executor_commit
             or Path(grid_plan['executor']).resolve() != args.executor
             or sha256_file(args.probe_contexts) != conversion_plan['probe_sha256']
             or sha256_file(args.probe_qualification) != conversion_plan['probe_qualification_sha256']):
         raise ValueError('unchanged actual full-grid/native/baseline declarations required')
+    producers = qualification_producers(grid_plan, bool(selection.get('selection_scope')), selection_sha,
+                                        args.conversion, args.controls, args.producer_plan)
     root = Path(__file__).resolve().parents[1]
     pins = {str(path): sha256_file(path) for path in [args.selection_plan, args.proposal, args.probe_inputs,
         args.dev_grid / 'plan.json', args.conversion / 'plan.json', args.controls / 'plan.json',
@@ -128,6 +134,12 @@ def main():
         'cases': [{k: c[k] for k in ['length', 'alias', 'request_sha256']} for c in cases], 'endpoints': endpoints,
         'probe_adapter': resource['probe_adapter'], 'server_mutations': False,
         'scope': 'synthetic numerical qualification only; no resource activation or DEV/holdout task'}
+    if args.producer_plan is not None:
+        declaration['inputs']['producer_plan'] = str(args.producer_plan)
+        original_plan = Path(selection['selection_scope']['original_plan']).resolve()
+        pins.update({str(path): sha256_file(path) for path in [args.producer_plan, original_plan,
+            root / 'src/gemma_particle/hardware_evidence.py', root / 'src/gemma_particle/dev_selection.py',
+            root / 'src/gemma_particle/conversion_handoff.py', root / 'src/gemma_particle/dev_dispatch.py']})
     write(args.out / 'plan.json', declaration)
     receipt = {'schema': 'gemma4-hardware-parity-result-v1', 'status': 'prepared' if args.plan_only else 'starting',
         'plan_sha256': sha256_file(args.out / 'plan.json'), 'pairs': [], 'requests_attempted': 0, 'requests_completed': 0,
@@ -144,7 +156,7 @@ def main():
                 or live({'pid': args.dev_dispatch_pid, 'birth_ticks': args.dev_dispatch_birth_ticks})
                 or active_dispatchers(args.dev_grid)):
             raise ValueError('owned waiting DEV dispatcher must be observed stopped before any learned DEV task')
-        for producer in grid_plan['producers']:
+        for producer in producers:
             current = read(Path(producer['directory']) / 'progress.json')
             if (current.get('state') != producer['completed_state']
                     or producer['binding'] is not None and live(producer['binding'])):
@@ -188,7 +200,7 @@ def main():
         receipt.update(server_process_bindings=bindings, server_identity_sha256=[digest(i) for i in identities],
             server_command_bindings=commands, selected_packet=packet,
             prerequisite_progress_sha256={str(path): sha256_file(path) for path in [args.dev_grid / 'progress.json',
-                *[Path(p['directory']) / 'progress.json' for p in grid_plan['producers']]]},
+                *[Path(p['directory']) / 'progress.json' for p in producers]]},
             stopped_dispatcher={'pid': args.dev_dispatch_pid, 'birth_ticks': args.dev_dispatch_birth_ticks})
         save()
         clients = [httpx.Client(timeout=600, headers={'X-Gemma-Identity': digest(i)}) for i in identities]

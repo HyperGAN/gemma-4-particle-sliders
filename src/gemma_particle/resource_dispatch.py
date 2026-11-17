@@ -62,7 +62,7 @@ def stopped_prior_grid(directory, binding):
             continue
         try:
             argv = proc.joinpath('cmdline').read_bytes().split(b'\0')
-            if not any(a.endswith(b'/run_learned_dev_grid.py') for a in argv) or b'--out' not in argv:
+            if not any(a.endswith((b'/run_learned_dev_grid.py', b'/run_resource_dev_grid.py')) for a in argv) or b'--out' not in argv:
                 continue
             target = Path(os.fsdecode(argv[argv.index(b'--out') + 1]))
             if not target.is_absolute():

@@ -95,6 +95,39 @@ def hardware_fixture(root):
     return directory, pair
 
 
+def test_scoped_hardware_audit_replays_original_probes_and_new_producers(tmp_path):
+    directory, _ = hardware_fixture(tmp_path)
+    plan_path, receipt_path = directory / 'plan.json', directory / 'result.json'
+    plan = json.loads(plan_path.read_text())
+    receipt = json.loads(receipt_path.read_text())
+    selection = ROOT / 'research/dev-selection-empf-v1.json'
+    selection_sha = sha256_file(selection)
+    grid_path = Path(plan['inputs']['dev_grid']) / 'plan.json'
+    producer_path = tmp_path / 'new-producers.json'
+    put(producer_path, {'schema': 'gemma4-dev-qualification-inputs-v1',
+                        'selection_plan_sha256': selection_sha, 'producers': json.loads(grid_path.read_text())['producers']})
+    put(grid_path, {'producers': []})
+    plan['selection_plan_sha256'] = selection_sha
+    plan['inputs'].update(selection_plan=str(selection), producer_plan=str(producer_path))
+    plan['declaration_pins'].update({str(path): sha256_file(path) for path in [selection, producer_path, grid_path]})
+    put(plan_path, plan)
+    conversion = Path(plan['inputs']['conversion'])
+    packet_path, status_path = conversion / 'candidate-packets.json', conversion / 'progress.json'
+    packets = json.loads(packet_path.read_text())
+    packets['selection_plan_sha256'] = selection_sha
+    packets['packets'] = [packet for packet in packets['packets'] if packet['condition']['preset'] == 'empf']
+    put(packet_path, packets)
+    put(status_path, {'state': 'prepared_complete_learned_grid', 'completed_unit_conversions': 3,
+                      'candidate_packets': 9, 'candidate_packets_sha256': sha256_file(packet_path)})
+    receipt['prerequisite_progress_sha256'][str(status_path)] = sha256_file(status_path)
+    receipt['plan_sha256'] = sha256_file(plan_path)
+    put(receipt_path, receipt)
+    assert len(audit_hardware_pair(directory)['pairs']) == 6
+    put(producer_path, {'changed': True})
+    with pytest.raises(ValueError, match='unchanged numerical hardware'):
+        audit_hardware_pair(directory)
+
+
 @pytest.mark.parametrize('damage', [None, 'status', 'source', 'progress', 'identity', 'command', 'request', 'response',
     'missing', 'pairs', 'counters', 'gpu', 'descendants', 'packet', 'matrix'])
 def test_complete_original_hardware_journals_and_provenance_are_reaudited(tmp_path, damage):

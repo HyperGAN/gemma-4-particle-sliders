@@ -1,0 +1,126 @@
+{
+  "schema": "gemma4-dev-resource-declaration-v1",
+  "created_at": "2026-11-17T23:46:21.399027+00:00",
+  "state": "inactive_preparation",
+  "core_selection_plan_sha256": "b1f63deebb50acb29e15560fecd56b6509edbc3031d8204f37b4737eeb9b2911",
+  "core_selection_plan": "research/dev-selection-empf-v1.json",
+  "serving_executor_commit": "5a26151c63f1461fc50d95cac2273c8fa365890e",
+  "serving_sources_sha256": {
+    "scripts/serve_vllm_lora.py": "2ff62e8c45e4b8d62eb1b06a6b0efa7feeb7a8ac714a042af82c7bde1cba41b3",
+    "scripts/serve_vllm.py": "3e01f46718275708ef75110810344199556e16fe944959dc607ab685383ea1b4",
+    "configs/31b-ct-pilot.json": "916586bfd032ee1e21835f3867e3e4dfc1fe6ae4b37235fa4306e23036c0cf7c",
+    "src/gemma_particle/lora_serving.py": "b5018bb3a23b15fb7715896eaeb05c4f537ced2e9a8fc286517ca15a9aa8293b",
+    "src/gemma_particle/adapters.py": "d3776aaa7d9109c247fcedfa50e2a150b808ecad0aa1f23690ff1b003d1e28bc",
+    "src/gemma_particle/vllm_identity.py": "9c762df267351f4bf9a4f42ceb51f58ed9ba7753829b9303636e3cf88221659c"
+  },
+  "qualification_sources_sha256": {
+    "scripts/qualify_hardware_pair.py": "d6ed9ac0a34f8e032484d84826db378cfdaccf91cc10a90ebb546d6d05f401c5",
+    "src/gemma_particle/conversion_handoff.py": "33a81bb3673f064e44b5b5a3f5608e1dd21cc9383adeafb197696ab666f3ad68",
+    "src/gemma_particle/dev_dispatch.py": "afe59c9e3fccd900b53f913a491fb7448a3625f31923b9efbf6d296516149df5",
+    "src/gemma_particle/dev_selection.py": "437c9edfb8b31e14b5a4bfd93c2c3e293727026d3c74c55c2aafb4a671a55a01",
+    "src/gemma_particle/hardware_evidence.py": "f59ca775ff1c217354ffa891f44e2a19997bb422c5b5087bea29d694712929ef",
+    "src/gemma_particle/hardware_parity.py": "b7322302ceb562a72128b71ecd53cb7f7fca160f6d3995fb3e257ca17b6789ca"
+  },
+  "offline_hardware_auditor_sha256": "f59ca775ff1c217354ffa891f44e2a19997bb422c5b5087bea29d694712929ef",
+  "qualification_proposal_sha256": "00e7eac1cbe74d1f08cb973868e1987e35b4c7b374d0779fe4aa81f08fcb3286",
+  "qualification_probe_inputs_sha256": "7cd38d47b9e5bebeae34fbbdbf12cdbe5b782a8f2d5513d4fa4b62a848f7abca",
+  "assignments": [
+    {
+      "condition_id": "off",
+      "physical_index": 0,
+      "wave": null
+    },
+    {
+      "condition_id": "prompt-reproduce",
+      "physical_index": 0,
+      "wave": null
+    },
+    {
+      "condition_id": "prompt-localize",
+      "physical_index": 0,
+      "wave": null
+    },
+    {
+      "condition_id": "prompt-verify",
+      "physical_index": 0,
+      "wave": null
+    },
+    {
+      "condition_id": "empf-step256-s0p5",
+      "physical_index": 0,
+      "wave": 1
+    },
+    {
+      "condition_id": "empf-step256-s1",
+      "physical_index": 1,
+      "wave": 1
+    },
+    {
+      "condition_id": "empf-step256-s1p5",
+      "physical_index": 0,
+      "wave": 2
+    },
+    {
+      "condition_id": "empf-step512-s0p5",
+      "physical_index": 1,
+      "wave": 2
+    },
+    {
+      "condition_id": "empf-step512-s1",
+      "physical_index": 0,
+      "wave": 3
+    },
+    {
+      "condition_id": "empf-step512-s1p5",
+      "physical_index": 1,
+      "wave": 3
+    },
+    {
+      "condition_id": "empf-step1024-s0p5",
+      "physical_index": 0,
+      "wave": 4
+    },
+    {
+      "condition_id": "empf-step1024-s1",
+      "physical_index": 1,
+      "wave": 4
+    },
+    {
+      "condition_id": "empf-step1024-s1p5",
+      "physical_index": 0,
+      "wave": 5
+    }
+  ],
+  "learned_waves": [
+    [
+      "empf-step256-s0p5",
+      "empf-step256-s1"
+    ],
+    [
+      "empf-step256-s1p5",
+      "empf-step512-s0p5"
+    ],
+    [
+      "empf-step512-s1",
+      "empf-step512-s1p5"
+    ],
+    [
+      "empf-step1024-s0p5",
+      "empf-step1024-s1"
+    ],
+    [
+      "empf-step1024-s1p5"
+    ]
+  ],
+  "engine_memory_fraction": 0.6,
+  "startup_headroom_GiB": 8,
+  "cpu_threads_per_slot": 4,
+  "inherited_nice": 10,
+  "normalization": "only canonical model_identity.device:assigned qualified cuda:1 maps to cuda:0;raw physical fingerprints retained",
+  "unchanged": "all22 conditions;full42+13 panels;original rank/secondary floor;all recipes/checkpoints/strengths/cache/seed/raw weights;locked49 confirmation",
+  "confirmation_device_policy": "strict original GPU0 serving contract",
+  "failure_policy": "preserve actual observations and attempts;no automatic rerolls,threshold changes,condition reassignment or inferred task scores",
+  "activation": "requires actual predeclared same-adapter hardware control,offline audit,and explicit qualified-resource dispatch;no activation by this declaration",
+  "coordinator_question": "gemma4-dev-grid-resource-budget-question-v1 pending revision2;no reply claimed",
+  "scope": "Prospective two-card assignment for all declared EMPF conditions, preserving the original numerical probes and GPU0 confirmation contract"
+}

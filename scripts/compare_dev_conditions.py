@@ -5,7 +5,7 @@ from pathlib import Path
 
 from gemma_particle.data import digest,read_jsonl
 from gemma_particle.dev_evidence import audit_verified_task,journal_digest,validate_matching_contract
-from gemma_particle.dev_selection import load_selection_plan,summarize_verified_panel,choose_learned_candidate
+from gemma_particle.dev_selection import baseline_selection_sha256,load_selection_plan,summarize_verified_panel,choose_learned_candidate
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.lora_serving import BASE_ALIAS
 from gemma_particle.resource_supplement import (load_resource_supplement, normalize_qualified_contract,
@@ -19,6 +19,7 @@ def main():
     p.add_argument('--resource-supplement',type=Path)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();plan=load_selection_plan(args.selection_plan);plan_sha=sha256_file(args.selection_plan)
+    execution_plan_sha=baseline_selection_sha256(plan,plan_sha)
     if args.out.exists():raise FileExistsError('DEV choice is immutable')
     resource=None if args.resource_supplement is None else load_resource_supplement(args.resource_supplement)
     if resource is not None and resource['selection_plan_sha256']!=plan_sha:
@@ -27,7 +28,7 @@ def main():
     declarations={c['id']:c for c in plan['conditions']};results={};canonical={};sources=None;cache_hashes=set();files={}
     for path in args.condition_result:
         result=json.loads(path.read_text());condition=result['condition'];name=condition['id']
-        if (name in results or declarations.get(name)!=condition or result['selection_plan_sha256']!=plan_sha):
+        if (name in results or declarations.get(name)!=condition or result['selection_plan_sha256']!=execution_plan_sha):
             raise ValueError('one complete declared actual condition result required')
         if result.get('status')=='unqualified':
             evidence=Path(result['preflight_error_path'])

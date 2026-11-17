@@ -22,6 +22,9 @@ def resource_fixture(root):
     qualification, _ = hardware_fixture(root)
     plan_path = qualification / 'plan.json'; plan = json.loads(plan_path.read_text())
     declaration = json.loads((ROOT / 'research/dev-resource-declaration-v1.json').read_text())
+    declaration['offline_hardware_auditor_sha256'] = sha256_file(ROOT / 'src/gemma_particle/hardware_evidence.py')
+    declaration['qualification_sources_sha256'] = {name: sha256_file(ROOT / name)
+                                                  for name in declaration['qualification_sources_sha256']}
     executor = Path(plan['inputs']['executor'])
     declaration['serving_sources_sha256'] = {name: sha256_file(executor / name) for name in declaration['serving_sources_sha256']}
     plan['executor_commit'] = declaration['serving_executor_commit']
@@ -50,6 +53,13 @@ def test_public_assignment_precedes_learned_results_and_keeps_all_conditions_and
     assert [a['physical_index'] for a in d['assignments'][:4]] == [0] * 4
     assert [a['physical_index'] for a in d['assignments'][4:]] == [0, 1] * 9
     assert d['state'] == 'inactive_preparation' and d['confirmation_device_policy'] == 'strict original GPU0 serving contract'
+
+
+def test_empf_only_assignment_has_one_terminal_single_condition_wave():
+    declaration = validate_resource_declaration(ROOT / 'research/dev-resource-declaration-empf-v1.json',
+                                                ROOT / 'research/dev-selection-empf-v1.json')
+    assert [len(wave) for wave in declaration['learned_waves']] == [2, 2, 2, 2, 1]
+    assert declaration['assignments'][-1]['physical_index'] == 0
 
 
 @pytest.mark.parametrize('damage', ['order', 'waves', 'plan', 'memory', 'threads', 'confirmation'])

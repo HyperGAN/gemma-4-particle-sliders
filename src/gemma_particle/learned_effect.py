@@ -11,6 +11,7 @@ from pathlib import Path
 from .conversion_handoff import read
 from .data import digest
 from .dev_dispatch import candidate_preflight
+from .dev_selection import baseline_selection_sha256
 from .harness_identity import sha256_file
 from .lora_serving import BASE_ALIAS
 
@@ -25,7 +26,7 @@ def prepare_effect_probes(protocol_path, contexts_path, qualification_path, sele
     entries = contexts['entries']; ids = [e['instance_id'] for e in entries]
     lengths = [len(e['neutral_ids']) for e in entries]
     if (protocol.get('schema') != 'gemma4-learned-effect-protocol-v1'
-            or protocol['core_selection_plan_sha256'] != selection_sha256
+            or protocol['core_selection_plan_sha256'] != baseline_selection_sha256(selection, selection_sha256)
             or protocol['probe_contexts_sha256'] != sha256_file(contexts_path)
             or protocol['probe_qualification_sha256'] != sha256_file(qualification_path)
             or protocol['aliases'] != [BASE_ALIAS, 'particle_lora']
