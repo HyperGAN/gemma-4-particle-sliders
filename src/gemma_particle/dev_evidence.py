@@ -2,8 +2,9 @@
 from copy import deepcopy
 import json
 from pathlib import Path
+import re
 
-from .capture import load_requests,load_terminal_request
+from .capture import load_requests,load_terminal_request,_request,_response
 from .data import digest,read_jsonl
 from .harness_identity import sha256_file
 from .history import history_contract,OFFICIAL_COMPACTION
@@ -60,6 +61,46 @@ def journal_digest(cohort,task_id):
     return digest({p.name:sha256_file(p) for p in sorted(directory.glob('*.json'))})
 
 
+def audit_incomplete_requests(directory,captured):
+    """Retain a terminal transport retry tail without promoting it to a capture.
+
+    Generation and fresh verification remain unchanged. A retry is evidence of
+    an attempted call only; no response, successful capture, or training target
+    is inferred. The original single-terminal-request rule remains the default.
+    """
+    directory=Path(directory)
+    error=re.fullmatch(r'Sandbox execution error: litellm\.InternalServerError: '
+        r'InternalServerError: OpenAIException - Connection error\. LiteLLM Retried: ([1-5]) times',
+        str(captured.get('agent_error','')))
+    if error is None:
+        prefix,terminal=load_terminal_request(directory)
+        return [*prefix,terminal]
+    if (captured.get('capture_complete') is not False
+            or captured.get('capture_error')!='incomplete model request'):
+        raise ValueError('connection retry evidence requires the original incomplete capture')
+    paths=sorted(directory.glob('*-request.json'));prefix=[];tail=[]
+    for index,path in enumerate(paths):
+        if path.name!=f'{index:04d}-request.json':
+            raise ValueError('retry journal filenames must be dense and ordered')
+        packet=_request(path,index)
+        if (packet.get('schema')!='gemma4-model-request-v1'
+                or packet['instance_id']!=captured['instance_id'] or packet['arm']!=captured['arm']):
+            raise ValueError('retry journal task or arm changed')
+        response=directory/f'{index:04d}-response.json'
+        if response.exists():
+            if tail:raise ValueError('completed response after an unanswered retry')
+            _response(response,packet);prefix.append(packet)
+        else:tail.append(packet)
+    if (not prefix or len(tail)!=int(error.group(1))+1
+            or len(list(directory.glob('*-response.json')))!=len(prefix)):
+        raise ValueError('retry journal differs from the recorded terminal retry count')
+    first=tail[0]
+    if any({k:v for k,v in p.items() if k!='decision'}!=
+            {k:v for k,v in first.items() if k!='decision'} for p in tail):
+        raise ValueError('unanswered retries must contain identical requests and purpose')
+    return [*prefix,*tail]
+
+
 def audit_verified_task(cohort,verification,task_id,*,expected_arm,expected_alias):
     cohort,verification=Path(cohort),Path(verification)
     manifest=json.loads((cohort/'cohort.json').read_text())
@@ -90,7 +131,7 @@ def audit_verified_task(cohort,verification,task_id,*,expected_arm,expected_alia
     else:
         paths=list(journal.glob('*-request.json'))
         if paths:
-            prefix,terminal=load_terminal_request(journal);packets=[*prefix,terminal]
+            packets=audit_incomplete_requests(journal,captured)
         else:packets=[]
     allowed={expected_alias,'openai/'+expected_alias}
     for packet in packets:
