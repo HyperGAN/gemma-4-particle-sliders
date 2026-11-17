@@ -9,7 +9,7 @@ import sys
 from urllib.parse import urlsplit
 
 from gemma_particle.data import digest,read_jsonl
-from gemma_particle.dev_evidence import audit_verified_task,validate_matching_contract,journal_digest
+from gemma_particle.dev_evidence import audit_verified_task,validate_matching_contract,journal_digest,retained_case_paths
 from gemma_particle.dev_selection import load_selection_plan,summarize_verified_panel
 from gemma_particle.harness_identity import sha256_file,wheel_identity
 from gemma_particle.lora_serving import BASE_ALIAS,prepare_lora
@@ -128,7 +128,7 @@ def main():
         gap=False
         for name,panel in panels.items():
             for task in panel['tasks']:
-                task_id=task['instance_id'];cohort=previous/name/(task_id+'-agent');verification=previous/name/(task_id+'-verification')
+                task_id=task['instance_id'];cohort,verification=retained_case_paths(previous,name,task_id)
                 if not cohort.exists() and not verification.exists():gap=True;continue
                 if gap or not (cohort/task_id/'trajectory.json').is_file() or not (verification/'outcomes.jsonl').is_file():
                     raise ValueError('reuse requires the entire complete contiguous prefix; partial tasks require reconciliation')
