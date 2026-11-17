@@ -106,6 +106,18 @@ def main():
         raise ValueError('qualified TRAIN source changed')
     birth = None
     server = json.loads(args.server_identity.read_text())
+    preparation_help=subprocess.check_output([str(args.curator/'.harness-venv/bin/python'),
+        'scripts/prepare_behavior_collection.py','--help'],cwd=args.curator,text=True,
+        env=dict(os.environ,PYTHONPATH=str(args.curator/'src'),CUDA_VISIBLE_DEVICES=''))
+    preparation_options=[]
+    if '--visible-tasks' in preparation_help:
+        preparation_options.extend(['--visible-tasks',str(args.visible_tasks)])
+    elif args.visible_tasks!=(args.curator/'data/splits-v1/train.jsonl').resolve():
+        raise ValueError('frozen preparer requires its original default TRAIN manifest')
+    if '--image' in preparation_help:
+        preparation_options.extend(['--image',args.image])
+    elif args.image!='gemma-particle-sandbox:fastapi-deps-v2':
+        raise ValueError('frozen preparer requires its original qualified sandbox image')
     if args.first_cohort:
         first = json.loads((args.first_cohort/'plan.json').read_text())
         if (first['task_ids'] != [selected[0]['instance_id']] or first['server_identity'] != server
@@ -133,6 +145,7 @@ def main():
         'prompt_profile':args.prompt_profile,
         'curator':str(args.curator), 'curator_commit':args.curator_commit,
         'supervisor_sha256':sha256_file(Path(__file__)),
+        'preparation_optional_arguments':preparation_options,
         'first_existing_cohort':str(args.first_cohort) if args.first_cohort else None,
         'first_collector_pid':args.first_collector_pid, 'first_collector_birth_ticks':birth,
         'timing_disclosure':'pool order frozen after first raw quartet started, before any real trajectory grade',
@@ -184,7 +197,7 @@ def main():
                 '--executor', str(args.executor), '--executor-commit', args.executor_commit,
                 '--server-identity', str(args.server_identity), '--endpoint', args.endpoint,
                 '--task-id', task_id, '--protocol', str(args.protocol), '--qualification', str(args.qualification),
-                '--prompt-profile',args.prompt_profile, '--visible-tasks',str(args.visible_tasks),'--image',args.image],
+                '--prompt-profile',args.prompt_profile,*preparation_options],
                 args.root/'logs'/f'{task_id}-prepare.log')
             inputs = raw_tasks.parent
             execute(args.executor, args.executor/'.harness-venv/bin/python', ['scripts/collect_arms.py',
