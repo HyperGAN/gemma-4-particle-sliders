@@ -2,12 +2,14 @@
   "schema": "gemma4-current-results-v1",
   "as_of": "2026-11-17",
   "objective_achieved": false,
-  "gpu_used": false,
+  "gpu_used": true,
   "engineering": {
     "cpu_preflight": "passed; reports/cpu-preflight.json",
     "baseline_compiler": "passed against authenticated official adk-submission 0.2.13; installed Python sources verified",
-    "real_task_verifier_controls": "two local task/environment controls passed, broader Requests control still blocked; reports/verifier-controls-v2.json",
-    "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json"
+    "real_task_verifier_controls": "three task/environment controls passed; Requests full-test control remains blocked; reports/verifier-controls-v3.json",
+    "trajectory_capture": "scripted CPU protocol exercised actual ADK agent loop and separate verifier; ineligible as training data; reports/cpu-trajectory-protocol.json",
+    "native_pretrained_serving": "E2B BF16 SDPA tool calls qualified on shared GPU1, cap0.35; reports/native-serving-calibration.json",
+    "first_native_train_pilot": "TRAIN FastAPI11194: OFF timed out without patch; reproduce produced a patch that failed verification; remaining arms collecting; reports/native-train-pilot-v1.json"
   },
   "task_resolution": [
     {

@@ -25,8 +25,9 @@ def outcome(arm, resolved):
     request={'model':'gemma','messages':messages,'tools':None,'generation':{'seed':0}}
     requests=[dict(instance_id='task',arm=arm,decision=0,request=request,request_sha256=digest(request))]
     receipt = dict(instance_id="task", resolved=resolved, patch_sha256="a"*64,
-                   requests_sha256=digest(requests), stage="fresh-container-tests")
-    return dict(schema='gemma4-verified-trajectory-v2',generator_kind='gemma4',instance_id="task", arm=arm,
+                   requests_sha256=digest(requests),first_request_sha256=digest(request),stage="fresh-container-tests")
+    return dict(schema='gemma4-verified-trajectory-v3',generator_kind='gemma4',frozen_base_generator=True,instance_id="task", arm=arm,
+                first_request=request,task_budget_exhausted=False,
                 resolved=resolved,requests=requests,capture_complete=True,evaluation_contract_sha256='matched',
                 model_identity={'repo':'google/gemma-4-E2B-it','revision':'b'*40,'dtype':'bfloat16'},
                 patch_sha256="a"*64, verification=receipt, tool_calls=3, elapsed_seconds=5)
@@ -71,8 +72,21 @@ def test_curation_rejects_different_sampling_and_quantized_teacher():
     packet['request']['generation']['seed']=42
     packet['request_sha256']=digest(packet['request'])
     winner['verification']['requests_sha256']=digest(winner['requests'])
+    winner['verification']['first_request_sha256']=digest(winner['first_request'])
     with pytest.raises(ValueError,match='generation differ'):
         select_contexts(tasks,rows)
     rows=arms();rows[1]['model_identity']['dtype']='w4a16'
     with pytest.raises(ValueError,match='BF16'):
         select_contexts(tasks,rows)
+
+
+def test_task_timeout_off_control_retains_real_first_request_but_winner_must_be_complete():
+    tasks=[dict(instance_id='task',split='train')]
+    rows=arms();baseline=rows[0]
+    baseline.update(capture_complete=False,requests=[],task_budget_exhausted=True)
+    baseline['verification']['requests_sha256']=digest([])
+    assert len(select_contexts(tasks,rows))==1
+    baseline['task_budget_exhausted']=False
+    assert select_contexts(tasks,rows)==[]
+    baseline['task_budget_exhausted']=True;rows[1]['capture_complete']=False
+    assert select_contexts(tasks,rows)==[]

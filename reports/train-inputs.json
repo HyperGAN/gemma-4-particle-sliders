@@ -1,0 +1,12 @@
+{
+  "schema": "gemma4-official-train-inputs-v1",
+  "as_of": "2026-11-17T02:01:28.208837+00:00",
+  "competition": "gemma-4-developer-agent",
+  "snapshots": 67,
+  "snapshot_bytes": 16502799450,
+  "index_files": 134,
+  "files_digest": "c486f8f5b4e039ad5cdf372b1c9983c1cbf9f37ac42d8566ec669deef4b33bd8",
+  "split_manifest_sha256": "0c0ff460b133e9666a77b43d1b605331dc6aa3aaaf416fa9ee2f8efc37ad8d2c",
+  "reference_bearing_data": "private verifier process only; agent receives sanitized manifest",
+  "holdout_downloaded_by_this_job": false
+}

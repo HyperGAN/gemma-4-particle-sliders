@@ -1,0 +1,37 @@
+{
+  "schema": "gemma4-native-serving-calibration-v2",
+  "gpu_used": true,
+  "training_performed": false,
+  "model_identity": {
+    "repo": "google/gemma-4-E2B-it",
+    "revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+    "dtype": "bfloat16",
+    "attn_implementation": "sdpa"
+  },
+  "server_identity_sha256": "dd429114cc54ae5b6a0e30debe767568402d8b49b2c453da87dcadf9e7a44421",
+  "runtime": "native transformers; separate from production vLLM",
+  "device": "cuda:1",
+  "memory_fraction": 0.35,
+  "bounded_probe": {
+    "status_code": 200,
+    "seconds": 2.661109631997533,
+    "usage": {
+      "prompt_tokens": 88,
+      "completion_tokens": 36,
+      "total_tokens": 124
+    },
+    "valid_read_file_call": true,
+    "wrong_identity_rejected": true
+  },
+  "observed_during_collection": {
+    "largest_prompt_tokens": 20907,
+    "peak_allocated_gib": 13.001874923706055
+  },
+  "thinking_policy": {
+    "official_vllm_wheel_sha256": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+    "unchanged_state_methods_sha256": "769038f9f91a613f2157556e74413466218e1ca9a5e9e166487a3660809d6e28",
+    "host": "one HF sequence; native runtime has not established vLLM output parity"
+  },
+  "excluded_prior_cohort": "reports/native-memory-failure-v1.json",
+  "scope": "Native HF serving and memory qualification; no trained-adapter benefit or W4A16/vLLM parity established."
+}

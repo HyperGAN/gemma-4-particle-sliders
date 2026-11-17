@@ -1,0 +1,54 @@
+{
+  "schema": "gemma4-native-train-pilot-v1",
+  "as_of": "2026-11-17T02:03:25.641937+00:00",
+  "split": "train",
+  "task_ids": [
+    "fastapi_11194"
+  ],
+  "declared_arms": [
+    "off",
+    "reproduce",
+    "localize",
+    "verify"
+  ],
+  "finished": [
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "off",
+      "resolved": false,
+      "agent_error": "Agent exceeded session timeout (5 min)",
+      "capture_complete": false,
+      "tool_calls": 11,
+      "elapsed_seconds": 306.4342791220406
+    },
+    {
+      "instance_id": "fastapi_11194",
+      "arm": "reproduce",
+      "resolved": false,
+      "agent_error": null,
+      "capture_complete": true,
+      "tool_calls": 14,
+      "elapsed_seconds": 290.69293557701167
+    }
+  ],
+  "runtime": "native HF BF16 SDPA, shared GPU1 cap0.35",
+  "sampling": "seed0, temperature0.2, top_p0.95, output4096, thinking1024",
+  "budget": {
+    "minutes": 5,
+    "tools": 40,
+    "turns": 70
+  },
+  "unfinished_arms": [
+    "localize",
+    "verify"
+  ],
+  "admitted_contexts": null,
+  "selection": "pending completion of all four arms",
+  "training_performed": false,
+  "policy_amendment": {
+    "timing": "after OFF timeout, before any positive run",
+    "rule": "A genuine task-budget timeout remains a failed OFF result. Its hash-bound initial request supplies the OFF system/control bytes despite a canceled final request. The successful teacher trajectory must be complete. Other incomplete OFF captures cannot supply a pair.",
+    "verified_schema": "gemma4-verified-trajectory-v3"
+  },
+  "scope": "One TRAIN task only. Errors and timeouts count as unresolved. No DEV/holdout inference or official score."
+}

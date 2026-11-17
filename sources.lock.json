@@ -22,5 +22,13 @@
     "pg_python_sources_identical_to_latest_develop": true,
     "description": "Reused conditional engine, tests and build metadata; source manifest rebound to byte-identical latest develop. Released PG09 engine is preserved.",
     "gemma_host_fix": "Do not forward the BISPF/EMPF input_domain keyword to intrinsically continuous RHBI penalty."
+  },
+  "native_thinking_policy": {
+    "source": "https://www.kaggle.com/datasets/metric/gemma-4-developer-agent-wheelhouse",
+    "wheel": "vllm-0.19.1-cp38-abi3-manylinux_2_31_x86_64.whl",
+    "wheel_sha256": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+    "member": "vllm/v1/sample/logits_processor/builtin.py",
+    "source_sha256": "769038f9f91a613f2157556e74413466218e1ca9a5e9e166487a3660809d6e28",
+    "execution": "three unchanged state methods under one HF generation sequence; not production vLLM parity"
   }
 }

@@ -1,0 +1,34 @@
+{
+  "schema": "gemma4-native-serving-calibration-v1",
+  "gpu_used": true,
+  "pretrained_inference": true,
+  "training_performed": false,
+  "model_identity": {
+    "repo": "google/gemma-4-E2B-it",
+    "revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+    "dtype": "bfloat16"
+  },
+  "server_identity_sha256": "48034c55a0b96aad61df50fec6ce4c14ab924f73da054ec150b4ce00f8edc1f9",
+  "runtime": "native transformers; separate from production vLLM",
+  "device": "cuda:1",
+  "memory_fraction": 0.35,
+  "status_code": 200,
+  "wall_seconds": 5.025070259929635,
+  "requested_output_limit": 64,
+  "thinking_budget": 16,
+  "usage": {
+    "prompt_tokens": 88,
+    "completion_tokens": 36,
+    "total_tokens": 124
+  },
+  "valid_read_file_call": true,
+  "thinking_forced_tokens": 1,
+  "cuda_peak_memory_allocated": 10244380160,
+  "request_sha256": "bf5ffa45617490e424354edda1bff56c5a9f1fd5d2c0d91254913ed1eb920114",
+  "thinking_policy": {
+    "official_vllm_wheel_sha256": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+    "unchanged_state_methods_sha256": "769038f9f91a613f2157556e74413466218e1ca9a5e9e166487a3660809d6e28",
+    "host": "one HF sequence; native runtime has not established vLLM output parity"
+  },
+  "scope": "One bounded pretrained inference and native tool parsing probe. No repository-task success or production quantized parity claimed."
+}

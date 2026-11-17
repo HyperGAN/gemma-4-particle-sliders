@@ -1,0 +1,34 @@
+{
+  "schema": "gemma4-native-memory-failure-v1",
+  "gpu_used": true,
+  "model_identity": {
+    "repo": "google/gemma-4-E2B-it",
+    "revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+    "dtype": "bfloat16"
+  },
+  "attention": "eager",
+  "device": "cuda:1",
+  "memory_fraction": 0.35,
+  "status": "INVALID for coding accuracy: serving qualification failed; run interrupted",
+  "prompt_token_counts": [
+    2864,
+    4404,
+    5942,
+    6545,
+    8428,
+    8428,
+    8428,
+    8428,
+    8428,
+    8428,
+    9728
+  ],
+  "successful_model_calls_before_failure": 4,
+  "failure": "eager attention needed another 2.12 GiB under a 16.59 GiB PyTorch allocation cap; four model requests had already completed",
+  "source_log": "runs/setup/native-e2b-server-v1.log",
+  "remaining_arms": "not run under failed memory profile",
+  "endpoint_scope_correction": "A replacement SDPA startup briefly reused the first port while old retries were live. Both were stopped; the mixed run is excluded. New server uses port8018 and per-request server-identity checks.",
+  "next_cohort": "SDPA, same pinned weights and .35 cap; restart all four arms",
+  "training_performed": false,
+  "numerical_recipe_failure": false
+}

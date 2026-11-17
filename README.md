@@ -2,7 +2,7 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.0** and an experimental Particle Sliders core.
 
-**Work in progress. No pretrained Gemma task score or SOTA improvement has been measured.** Current evidence covers CPU engineering checks, the authenticated official compiler, two real-task scorer controls, and a scripted agent-to-verifier protocol probe. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
+**Work in progress. No SOTA improvement or official Kaggle score has been measured.** Current evidence includes CPU checks, the official compiler, real-task scorer controls, pretrained native tool calling, and the first timed-out TRAIN baseline. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
@@ -15,8 +15,9 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
-| Real-task scorer controls | [Passed on two task/environment combinations](reports/verifier-controls-v2.json): empty fails, reference passes, edited workspace import confirmed |
+| Real-task scorer controls | [Passed on three task/environment combinations](reports/verifier-controls-v3.json): empty fails, reference passes, edited workspace import confirmed |
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
+| Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Competition | [Authenticated downloads and leaderboard verified](reports/official-access.json) on 2026-11-17; leading public score 0.29; no scored submission yet |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
@@ -55,9 +56,9 @@ The pinned [public mirror](https://huggingface.co/datasets/HanG/gemma-4-develope
 
 The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich and HTTPX (49). This repository-disjoint split is a small engineering pilot, not an estimate of hidden competition performance. No holdout supplies targets, conversion activations, or selection feedback. Larger training-data coverage and DEV adequacy remain research work.
 
-[The experiment protocol](docs/protocol.md) describes the remaining work. `run_trajectories.py` runs sanitized TRAIN/DEV tasks and captures actual model requests. `verify_trajectories.py` is a separate process that alone reads reference-bearing tasks, validates matching environment identities and tests each patch in a fresh container. Curation requires all four declared arms, a failed OFF control and a successful instruction run from the exact pinned BF16 model. It preserves observed history, tools, ADK's appended system text and captured thinking mode. Scripted CPU probes are explicitly rejected as targets.
+[The experiment protocol](docs/protocol.md) describes the remaining work. `run_trajectories.py` runs sanitized TRAIN/DEV tasks and captures actual model requests. `verify_trajectories.py` is a separate process that alone reads reference-bearing tasks, validates matching environment identities and tests each patch in a fresh container. Curation requires all four declared arms, a failed OFF control and a complete successful instruction run from the exact pinned BF16 frozen base. Genuine OFF task timeouts retain their failure status and hash-bound initial request. It preserves observed history, tools, ADK's appended system text and captured thinking mode. Scripted CPU probes are explicitly rejected as targets.
 
-Cache/training/conversion commands require an explicit device and should only run after CPU preparation. GPU runs share existing workloads, use a memory cap, and leave unrelated jobs running. No GPU work has been started for the current receipt.
+Cache/training/conversion commands require an explicit device and should only run after CPU preparation. Native pretrained collection has started on shared GPU 1 with a .35 memory fraction; unrelated jobs remain running. [Native serving instructions](docs/native-serving.md) describe the qualified controls, explicit SDPA cohort, excluded eager-memory episode and request identity checks. No learned adapter has been trained yet.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:

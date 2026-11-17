@@ -26,8 +26,10 @@ def select_contexts(tasks, outcomes):
         task_id = row["instance_id"]
         if task_id not in allowed:
             raise ValueError("non-TRAIN outcome")
-        if row.get('schema') != 'gemma4-verified-trajectory-v2' or row.get('generator_kind') != 'gemma4':
+        if row.get('schema') != 'gemma4-verified-trajectory-v3' or row.get('generator_kind') != 'gemma4':
             raise ValueError('only verified Gemma model runs may supply targets; CPU protocol probes are forbidden')
+        if not row.get('frozen_base_generator'):
+            raise ValueError('curation targets require the frozen base generator')
         if type(row.get("resolved")) is not bool:
             raise ValueError("resolved must be a boolean, not a string or score")
         if row["arm"] != "off" and row["arm"] not in TARGET_INSTRUCTIONS:
@@ -42,6 +44,7 @@ def select_contexts(tasks, outcomes):
         receipt = row["verification"]
         if (receipt["instance_id"] != task_id or receipt["patch_sha256"] != row["patch_sha256"]
                 or receipt["requests_sha256"] != digest(row["requests"])
+                or receipt['first_request_sha256'] != digest(row['first_request'])
                 or receipt["resolved"] is not row["resolved"] or receipt["stage"] != "fresh-container-tests"):
             raise ValueError("outcome is not bound to the verified patch/trajectory")
         arms = by_task.setdefault(task_id, {})
@@ -59,18 +62,20 @@ def select_contexts(tasks, outcomes):
             raise ValueError('curation arms have unmatched model identities')
         if baseline["resolved"]:
             continue
-        if not baseline.get('capture_complete') or not baseline['requests']:
+        if not baseline.get('first_request'):
+            continue
+        if not baseline.get('capture_complete') and not baseline.get('task_budget_exhausted'):
             continue
         candidates = [row for arm, row in arms.items() if arm != "off" and row["resolved"] and row.get('capture_complete')]
         if not candidates:
             continue
         # Fixed tie break, declared before observing results.
         winner = min(candidates, key=lambda r: (r["tool_calls"], r["elapsed_seconds"], r["arm"]))
-        off_messages=baseline['requests'][0]['request']['messages']
+        off_messages=baseline['first_request']['messages']
         if not off_messages or off_messages[0]['role']!='system':
             raise ValueError('captured OFF system prompt required')
         base_system=off_messages[0]['content']
-        off_request=baseline['requests'][0]['request']
+        off_request=baseline['first_request']
         insertion='\n\n'+TARGET_INSTRUCTIONS[winner['arm']]
         for packet in winner["requests"]:
             request=packet['request']

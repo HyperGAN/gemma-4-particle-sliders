@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import time
+import httpx
 from urllib.parse import urlsplit
 
 from adk_submission import ModelRegistry
@@ -62,6 +63,9 @@ async def main():
         identity=server_identity.get('model_identity',{})
         if not identity.get('repo') or len(identity.get('revision',''))!=40 or not identity.get('dtype'):
             raise ValueError('pinned model revision and precision required')
+        health=httpx.get(args.endpoint.rstrip('/').removesuffix('/v1')+'/health',timeout=5).json()
+        if health.get('identity_sha256')!=digest(server_identity):
+            raise ValueError('live endpoint differs from the declared server identity')
     os.environ['KAGGLE_SANDBOX_DIR']=str((args.inputs/'sandbox').resolve())
     args.out.mkdir(parents=True,mode=0o700)
     artifact=build(args.out/'artifact',args.model,instruction=None if args.arm=='off' else args.arm)
@@ -91,6 +95,7 @@ async def main():
         client=RecordingClient(journal,delegate=delegate)
         models=ModelRegistry()
         models.register(args.model,LiteLlm(model='openai/'+args.model,api_base=args.endpoint,api_key='local',
+                                         extra_headers={'X-Gemma-Identity':digest(server_identity)} if not args.cpu_protocol_fixture else {},
                                          num_retries=5,llm_client=client))
         config=EvalConfig(tasks_path=args.tasks,snapshots_dir=args.inputs/'snapshots',results_dir=folder,
             submission_dir=args.out/'artifact/agent',models=models,wheels_dir=args.wheels,
@@ -121,6 +126,7 @@ async def main():
         result['visible_task_sha256']=digest(row)
         result['snapshot_sha256']=sha256_file(args.inputs/'snapshots'/f'{task_id}.tgz')
         result['model_identity']=server_identity.get('model_identity')
+        result['frozen_base_generator']=server_identity.get('strength')==0 and server_identity.get('native_checkpoint') is None
         result['evaluation_contract_sha256']=manifest['evaluation_contract_sha256']
         result['capture_complete']=capture_error is None
         result['capture_error']=capture_error

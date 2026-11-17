@@ -1,0 +1,10 @@
+{
+  "schema": "gemma4-pinned-weights-v1",
+  "repo": "google/gemma-4-E2B-it",
+  "revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+  "file": "model.safetensors",
+  "bytes": 10246621918,
+  "sha256": "2db5482b20d746879bb3ef79b5203e9075a2e2b98f54ec7c2f281c1477ddc550",
+  "matches_hub_lfs_sha256": true,
+  "gpu_used_for_verification": false
+}

@@ -21,7 +21,10 @@ def model_identity(config):
     revision = config.get("model_revision")
     if not isinstance(revision, str) or len(revision) != 40:
         raise ValueError("model revision must be a pinned commit")
-    return {"repo": config["model"], "revision": revision, "dtype": "bfloat16"}
+    attention=config.get('attn_implementation','eager')
+    if attention not in ('eager','sdpa'):
+        raise ValueError('qualified attention implementation must be eager or sdpa')
+    return {"repo": config["model"], "revision": revision, "dtype": "bfloat16", 'attn_implementation':attention}
 
 
 def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
@@ -35,7 +38,7 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     elif device.type != 'cpu':
         raise ValueError("CPU or explicitly shared CUDA device required")
     model = AutoModelForImageTextToText.from_pretrained(identity['repo'], revision=identity['revision'],
-        dtype=torch.bfloat16, attn_implementation='eager', device_map=str(device))
+        dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device))
     return Native(model, identity=identity, checkpointing=checkpointing, rank=config['rank'], alpha=config['alpha'],
                   particles=config['particles'], particle_width=config['particle_width'], seed=config['seed'])
 

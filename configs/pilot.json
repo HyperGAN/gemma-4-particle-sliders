@@ -2,6 +2,7 @@
   "seed": 0,
   "model": "google/gemma-4-E2B-it",
   "model_revision": "4adf15748de9e1a0097b6274cee9c15836c41c37",
+  "attn_implementation": "sdpa",
   "research_presets": [
     "rhbi_optimized",
     "empf"
@@ -27,5 +28,5 @@
   "ema_decay": null,
   "response": "full native final hidden state at matched assistant decisions",
   "gpu_policy": "CPU preparation first; share existing GPUs; explicit memory fraction and bounded workload",
-  "status": "draft, requires model revision, harness parity and CPU gates before GPU execution"
+  "status": "native SDPA pilot; CPU gates and two local task controls qualified; real Gemma task outcomes remain unmeasured"
 }

@@ -71,6 +71,14 @@ async def main():
             raise ValueError('request capture changed')
         if any(r['instance_id']!=task_id or r['arm']!=captured['arm'] for r in requests):
             raise ValueError('captured request belongs to a different task or arm')
+        first_path=folder/'requests/0000-request.json'
+        first_request=None
+        if first_path.exists():
+            first=json.loads(first_path.read_text())
+            if (first['instance_id']!=task_id or first['arm']!=captured['arm'] or first['decision']!=0
+                    or first['request_sha256']!=digest(first['request'])):
+                raise ValueError('initial model request identity changed')
+            first_request=first['request']
         destination=args.out/task_id;destination.mkdir(mode=0o700)
         isolate_sandbox_cache(destination/'tmp')
         package={'psf/requests':'requests','fastapi/fastapi':'fastapi'}[task.repo]
@@ -85,13 +93,19 @@ async def main():
         (destination/'test-output.txt').write_text(result.test_output or '')
         receipt={'stage':'fresh-container-tests','instance_id':task_id,'patch_sha256':captured['patch_sha256'],
             'requests_sha256':digest(requests),'resolved':result.resolved,'test_exit_code':result.test_exit_code,
+            'first_request_sha256':digest(first_request),
             'error':result.error,'image_id':manifest['image_id'],'origin_checks':manager.origin_checks,
             'evaluation_contract_sha256':manifest['evaluation_contract_sha256'],
             'tasks_sha256':sha256_file(args.tasks),'test_output_sha256':sha256_file(destination/'test-output.txt')}
+        receipt['verification_script_sha256']=sha256_file(Path(__file__))
         if result.resolved and (not manager.origin_checks or not all(r['workspace'] for r in manager.origin_checks)):
             raise ValueError('passing score must test the edited workspace')
-        outcome={**captured,'schema':'gemma4-verified-trajectory-v2','resolved':result.resolved,
-            'requests':requests,'verification':receipt}
+        timeout=(str(captured.get('agent_error','')).startswith('Agent exceeded session timeout')
+            and captured['elapsed_seconds']>=contract['budget']['time_minutes']*60)
+        outcome={**captured,'schema':'gemma4-verified-trajectory-v3','resolved':result.resolved,
+            'requests':requests,'first_request':first_request,'task_budget_exhausted':timeout,'verification':receipt,
+            'model_calls_attempted':len(list((folder/'requests').glob('*-request.json'))),
+            'model_calls_completed':len(list((folder/'requests').glob('*-response.json')))}
         outcomes.append(outcome)
         (destination/'verification.json').write_text(json.dumps(receipt,indent=2)+'\n')
         write_jsonl(args.out/'outcomes.jsonl',outcomes)
