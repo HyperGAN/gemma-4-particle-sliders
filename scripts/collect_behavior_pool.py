@@ -18,6 +18,7 @@ from gemma_particle.behavior_protocol import load_behavior_protocol
 from gemma_particle.data import read_jsonl, write_jsonl
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES
+from gemma_particle.pool_recovery import reconcile_pool_prefix
 
 
 def checked_checkout(path, expected):
@@ -62,6 +63,8 @@ def main():
     p.add_argument('--first-cohort', type=Path)
     p.add_argument('--first-collector-pid', type=int)
     p.add_argument('--stop-server-pid', type=int)
+    p.add_argument('--recover-from',type=Path,help='preserve an interrupted pool and revalidate its complete prefix')
+    p.add_argument('--interruption-receipt',type=Path)
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
@@ -73,6 +76,8 @@ def main():
         args.first_cohort = args.first_cohort.resolve()
     if bool(args.first_cohort) != bool(args.first_collector_pid):
         raise ValueError('adoption requires both the existing cohort and its exact PID')
+    if bool(args.recover_from)!=bool(args.interruption_receipt) or args.recover_from and args.first_cohort:
+        raise ValueError('recovery requires an interruption receipt and excludes live adoption')
     endpoint = urlsplit(args.endpoint)
     if (endpoint.scheme != 'http' or endpoint.hostname not in ('localhost','127.0.0.1','::1')
             or endpoint.path.rstrip('/') != '/v1' or endpoint.username or endpoint.password
@@ -80,7 +85,10 @@ def main():
         raise ValueError('explicit local OpenAI endpoint ending in /v1 required')
     checked_checkout(args.executor, args.executor_commit)
     checked_checkout(args.curator, args.curator_commit)
-    if Path(__file__).resolve().parent.parent != args.curator:
+    controller=Path(__file__).resolve().parent.parent
+    controller_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=controller,text=True).strip()
+    checked_checkout(controller,controller_commit)
+    if controller != args.curator and not args.recover_from:
         raise ValueError('pool supervisor must run from the frozen curator checkout')
     protocol = load_behavior_protocol(args.protocol)
     if sha256_file(args.curator/'research/jev-evidence-loop-v1.json') != sha256_file(args.protocol):
@@ -114,7 +122,6 @@ def main():
             raise RuntimeError('first collector is gone without a complete quartet')
     if args.root.exists():
         raise FileExistsError('pool run is immutable; do not restart incomplete collection')
-    args.root.mkdir(parents=True, mode=0o700); (args.root/'logs').mkdir()
     plan = {'schema':'gemma4-behavior-pool-plan-v1', 'created_at':datetime.now(timezone.utc).isoformat(),
         'behavior_study':protocol['name'], 'protocol_sha256':sha256_file(args.protocol),
         'task_ids':[r['instance_id'] for r in selected],
@@ -131,6 +138,12 @@ def main():
         'timing_disclosure':'pool order frozen after first raw quartet started, before any real trajectory grade',
         'stop_rule':'first completed quartet bringing admitted initial contexts to at least two distinct TRAIN tasks',
         'scope':'adaptive TRAIN collection only; preserve all failures; no DEV/holdout or official score'}
+    recovered=[];recovery=None
+    if args.recover_from:
+        recovered,recovery=reconcile_pool_prefix(args.recover_from,plan,args.interruption_receipt)
+        plan.update(recovery=recovery,controller_commit=controller_commit,
+            recovery_source_sha256=sha256_file(controller/'src/gemma_particle/pool_recovery.py'))
+    args.root.mkdir(parents=True, mode=0o700); (args.root/'logs').mkdir()
     write_json(args.root/'plan.json', plan)
     env = dict(os.environ, PYTHONPATH=str(args.curator/'src'), OMP_NUM_THREADS='4', MKL_NUM_THREADS='4', CUDA_VISIBLE_DEVICES='')
     python = args.curator/'.harness-venv/bin/python'
@@ -142,7 +155,24 @@ def main():
         if r.returncode:
             raise RuntimeError(f'pipeline exit {r.returncode}; preserve and reconcile {log}')
     contexts, finished = [], []
+    for record in recovered:
+        task_id=record['instance_id'];curated=args.root/(task_id+'-revalidated')
+        execute(args.curator,python,['scripts/curate_behavior_cohort.py','--cohort',record['cohort'],
+            '--grades',record['grades'],'--visible-tasks',str(args.visible_tasks),'--protocol',str(args.protocol),
+            '--out',str(curated)],args.root/'logs'/f'{task_id}-revalidate.log')
+        admitted=read_jsonl(curated/'jev-contexts.jsonl')
+        if (sha256_file(curated/'jev-contexts.jsonl')!=record['contexts_sha256']
+                or len(admitted)!=record['admitted_contexts'] or len(admitted)>1
+                or any(r['instance_id']!=task_id or r['decision']!=0 for r in admitted)):
+            raise ValueError('recovered prefix differs from original one-pass curation')
+        contexts.extend(admitted);finished.append(record)
+    if recovery:
+        write_json(args.root/'progress.json',{'state':'collecting','finished':finished,
+            'planned':len(selected),'admitted_contexts':len(contexts),'interrupted_tasks':[recovery['interrupted_task']],
+            'recovery':'complete prefix revalidated offline; interrupted task retained without reroll'})
     for index, record in enumerate(selected):
+        if recovery and index<=len(recovered):continue
+        checked_checkout(controller,controller_commit)
         checked_checkout(args.executor, args.executor_commit)
         checked_checkout(args.curator, args.curator_commit)
         task_id = record['instance_id']
