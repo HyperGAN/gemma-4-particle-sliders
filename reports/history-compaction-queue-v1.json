@@ -1,0 +1,23 @@
+{
+  "schema": "gemma4-history-compaction-queue-v1",
+  "as_of": "2026-11-17T05:54:20.893386+00:00",
+  "root": "runs/31b-vllm-13713-official-compaction-v2",
+  "queue_pid": 1933482,
+  "queue_state": {
+    "state": "waiting_for_live_predecessor",
+    "at": "2026-11-17T05:52:26.513736+00:00",
+    "previous_pid": 1623050,
+    "plan_sha256": "fc30eedabe43a5076db0d07f44634e8faa3bdb8e21c4440be8191fc2aee7238a",
+    "executor_commit": "d3ae4698b871a991f91949b278f5c8d80ea6756c"
+  },
+  "plan_sha256": "fc30eedabe43a5076db0d07f44634e8faa3bdb8e21c4440be8191fc2aee7238a",
+  "source_commit": "d3ae4698b871a991f91949b278f5c8d80ea6756c",
+  "task_ids": [
+    "fastapi_13713"
+  ],
+  "history_profile": "official-compaction-v1",
+  "all_ten_frozen_source_hashes_verified": true,
+  "qualified_environment_control_sha256": "c4ca30169cccb0b45823caba31e094de94d3ec96af52312560dc1345007112af",
+  "old_queue_withdrawn_before_inference": "runs/31b-vllm-13713-official-compaction-v1/withdrawal.json",
+  "scope": "fresh matched TRAIN attempt queued behind currently live collector; no compacted pretrained result or learned update yet"
+}
