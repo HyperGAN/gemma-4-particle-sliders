@@ -36,6 +36,12 @@ def _decompress(state,scheme,dtype):
     return PackedQuantizationCompressor.decompress(state,scheme)['weight'].to(dtype=dtype)
 
 
+def _compute_state(state,device):
+    # Storage transfer only: keep packed integers/scales and decompress with the
+    # same public implementation on the activation device. No dense CPU cache.
+    return {name:value.to(device=device) for name,value in state.items()}
+
+
 class _FrozenPackedFunction(torch.autograd.Function):
     @staticmethod
     def forward(ctx,x,bias,module):
@@ -43,15 +49,16 @@ class _FrozenPackedFunction(torch.autograd.Function):
         ctx.shape=(module.out_features,module.in_features)
         ctx.scheme=module.quantization_scheme
         ctx.input_dtype=x.dtype
+        ctx.input_device=x.device
         ctx.save_for_backward(*(getattr(module,name) for name in ctx.keys))
-        state={name:getattr(module,name) for name in ctx.keys}
+        state=_compute_state({name:getattr(module,name) for name in ctx.keys},x.device)
         state['weight_shape']=ctx.shape
         weight=_decompress(state,ctx.scheme,x.dtype)
         return F.linear(x,weight,bias.to(dtype=x.dtype) if bias is not None else None)
 
     @staticmethod
     def backward(ctx,grad_output):
-        state=dict(zip(ctx.keys,ctx.saved_tensors))
+        state=_compute_state(dict(zip(ctx.keys,ctx.saved_tensors)),ctx.input_device)
         state['weight_shape']=ctx.shape
         weight=_decompress(state,ctx.scheme,ctx.input_dtype)
         # This is the derivative of y = x W^T + b for constant dequantized W.
@@ -60,8 +67,11 @@ class _FrozenPackedFunction(torch.autograd.Function):
 
 class FrozenCTLinear(nn.Module):
     """Explicitly supported symmetric group-32 INT4 CT linear task host."""
-    def __init__(self,state,scheme,*,compute_dtype=None):
+    def __init__(self,state,scheme,*,compute_dtype=None,packed_storage='device'):
         super().__init__()
+        if packed_storage not in ('device','cpu'):
+            raise ValueError('packed storage must be device or cpu')
+        self.packed_storage=packed_storage
         weights=scheme.weights
         value=lambda x:getattr(x,'value',x)
         if (weights is None or weights.num_bits!=4 or value(weights.type)!='int'
@@ -78,25 +88,30 @@ class FrozenCTLinear(nn.Module):
         if 'weight_packed' not in self._packed_names or 'weight_scale' not in self._packed_names:
             raise ValueError('packed weights and scales required')
         if state['weight_packed'].dtype!=torch.int32:raise ValueError('CT packed INT32 storage required')
-        for name in self._packed_names:self.register_buffer(name,state[name].detach())
-        self.register_buffer('bias',state['bias'].detach() if state.get('bias') is not None else None)
+        compute_device=state['weight_packed'].device
+        storage_device='cpu' if packed_storage=='cpu' else compute_device
+        for name in self._packed_names:self.register_buffer(name,state[name].detach().to(device=storage_device))
+        self.register_buffer('bias',state['bias'].detach().to(device=storage_device) if state.get('bias') is not None else None)
         dtype=compute_dtype or state['weight_scale'].dtype
         if not dtype.is_floating_point:raise ValueError('floating activation dtype required')
         # TinyParticleProjection reads only host weight device/dtype at creation.
         # This empty descriptor never substitutes for the actual packed matrix.
-        self.register_buffer('weight',torch.empty(0,device=self.weight_packed.device,dtype=dtype))
+        self.register_buffer('weight',torch.empty(0,device=compute_device,dtype=dtype))
 
     @classmethod
-    def from_compressed_module(cls,module):
+    def from_compressed_module(cls,module,*,packed_storage='device'):
         names=('weight_packed','weight_scale','weight_shape','weight_zero_point','weight_g_idx','bias')
         state={n:getattr(module,n) for n in names if getattr(module,n,None) is not None}
-        return cls(state,module.quantization_scheme)
+        return cls(state,module.quantization_scheme,packed_storage=packed_storage)
 
     def forward(self,x):
-        return _FrozenPackedFunction.apply(x,self.bias,self)
+        if self.packed_storage=='cpu' and any(getattr(self,name).device.type!='cpu' for name in self._packed_names):
+            raise ValueError('CPU packed storage moved away from its declared device')
+        bias=self.bias.to(device=x.device) if self.bias is not None else None
+        return _FrozenPackedFunction.apply(x,bias,self)
 
 
-def replace_compressed_linears(model):
+def replace_compressed_linears(model,*,packed_storage='device'):
     """Replace only loaded packed Linear modules; never patch shared classes."""
     quantizer=getattr(model,'hf_quantizer',None)
     if quantizer is None:raise ValueError('a loaded CT model is required')
@@ -105,9 +120,10 @@ def replace_compressed_linears(model):
     replacements=[]
     for name,module in selected:
         if type(module) is not nn.Linear:raise ValueError('unsupported compressed module type')
-        replacements.append((name,FrozenCTLinear.from_compressed_module(module)))
+        replacements.append((name,FrozenCTLinear.from_compressed_module(module,packed_storage=packed_storage)))
     quantizer.compressor.remove_decompression_hook(model)
     for name,replacement in replacements:model.set_submodule(name,replacement)
     return {'profile':'frozen-ct-w4g32-public-decompression-exact-input-gradient-v1',
             'modules':{name:[m.out_features,m.in_features] for name,m in replacements},
-            'saved_backward_state':'original packed constants only; no dense base weights'}
+            'saved_backward_state':'original packed constants only; no dense base weights',
+            **({'packed_storage':packed_storage} if packed_storage!='device' else {})}

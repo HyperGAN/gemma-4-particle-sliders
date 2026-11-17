@@ -1,0 +1,20 @@
+{
+  "schema": "gemma4-cpu-packed-weight-cuda-control-v1",
+  "status": "passed",
+  "pytest_exit_code": 0,
+  "device": "cuda:1",
+  "allocator_cap_fraction": 0.03,
+  "context_kind": "tiny random Gemma4 CT architecture; forbidden as training targets",
+  "training_updates": 0,
+  "tests": 4,
+  "scope": "exact GPU output/all-adapter-gradient equality against public dense decompression for device/CPU packed storage with direct/nested checkpoint profiles",
+  "seconds": 7.456453558057547,
+  "peak_allocated_bytes": 10129408,
+  "peak_reserved_bytes": 23068672,
+  "sources": {
+    "src/gemma_particle/ct_linear.py": "910b3efdc7e716ac6aae6087984396d97c3320b37b75135df1a3d490e8d34511",
+    "src/gemma_particle/model.py": "5d589fdbf39714816c7d34949312a7d5c695895ca7437647aab18e092cd7fc8c",
+    "tests/test_ct_linear.py": "08fbad3d1f8bf3c799b76886e3774168a561fb5a18b163cc29727b94fb53b33b"
+  },
+  "log_sha256": "9d713c48e8223f6752dbbdcf6840a566d32812b88a203f9edf9c5aaa69df5ff7"
+}

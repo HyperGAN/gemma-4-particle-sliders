@@ -1,4 +1,5 @@
 import importlib.util
+import os
 
 import pytest
 import torch
@@ -49,7 +50,8 @@ def test_exact_derivative_and_no_saved_dense_matrix():
 
 
 @pytest.mark.parametrize('checkpoint_profile',['none','nested_attention_mlp'])
-def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path,checkpoint_profile):
+@pytest.mark.parametrize('packed_storage',['device','cpu'])
+def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decompression(tmp_path,checkpoint_profile,packed_storage):
     from copy import deepcopy
     from compressed_tensors.compressors.pack_quantized import PackedQuantizationCompressor
     from gemma_particle.ct_linear import replace_compressed_linears
@@ -72,14 +74,22 @@ def test_native_quantized_gemma_forward_and_adapter_gradients_match_dense_decomp
     qconfig=QuantizationConfig(config_groups={'group_0':scheme},ignore=['lm_head'],quantization_status='compressed')
     model.config.quantization_config={**qconfig.model_dump(mode='json'),'quant_method':'compressed-tensors'}
     checkpoint=tmp_path/'ct-checkpoint';model.save_pretrained(checkpoint)
-    model=AutoModelForCausalLM.from_pretrained(checkpoint,dtype=torch.float32,
+    device=torch.device(os.environ.get('GEMMA_CT_TEST_DEVICE','cpu'))
+    if device.type=='cuda':
+        torch.cuda.set_device(device)
+        torch.cuda.set_per_process_memory_fraction(.03,device)
+    reference=reference.to(device)
+    model=AutoModelForCausalLM.from_pretrained(checkpoint,dtype=torch.float32,device_map=str(device),
         quantization_config=CompressedTensorsConfig(run_compressed=True))
-    profile=replace_compressed_linears(model)
+    profile=replace_compressed_linears(model,packed_storage=packed_storage)
     assert len(profile['modules'])==19 and not hasattr(model,'ct_decompress_hook')
     options={} if checkpoint_profile=='none' else dict(checkpointing=True,activation_storage='cpu',checkpoint_profile=checkpoint_profile)
     a=Native(model,identity={'fixture':'packed-gemma4'},host_profile='frozen-ct-w4g32',**options)
     b=Native(reference,identity={'fixture':'decompressed-gemma4'})
     try:
+        assert a.metadata().get('packed_weight_storage','device')==packed_storage
+        if packed_storage=='cpu':
+            assert all(getattr(m,n).device.type=='cpu' for m in model.modules() if hasattr(m,'_packed_names') for n in m._packed_names)
         with torch.no_grad():
             for _,_,adapter in a.slider.hosts:adapter.lora_up.weight.fill_(.01)
             b.network.load_state_dict(a.network.state_dict())

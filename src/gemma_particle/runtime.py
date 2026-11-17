@@ -44,6 +44,9 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     identity = model_identity(config)
     device = torch.device(device)
     quantized=config.get('frozen_quantization')=='ct-w4g32'
+    packed_storage=config.get('packed_weight_storage','device')
+    if packed_storage not in ('device','cpu') or (packed_storage!='device' and not quantized):
+        raise ValueError('CPU packed weight storage requires the frozen CT host')
     quant_options={}
     if quantized:
         from .ct_linear import verify_ct_sources,replace_compressed_linears
@@ -63,7 +66,7 @@ def load_native(config, *, device, memory_fraction=.25, checkpointing=True):
     model = AutoModelForImageTextToText.from_pretrained(identity['repo'], revision=identity['revision'],
         dtype=torch.bfloat16, attn_implementation=identity['attn_implementation'], device_map=str(device),**quant_options)
     if quantized:
-        replace_compressed_linears(model)
+        replace_compressed_linears(model,packed_storage=packed_storage)
     return Native(model, identity=identity, checkpointing=checkpointing, activation_storage=activation_storage,
                   checkpoint_profile=checkpoint_profile,
                   rank=config['rank'], alpha=config['alpha'],

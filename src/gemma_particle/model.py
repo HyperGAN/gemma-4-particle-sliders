@@ -123,6 +123,12 @@ class Native:
         self.checkpoint_profile=checkpoint_profile
         self.last_activation_storage=None
         self.model, self.identity = model, dict(identity)
+        self.packed_weight_storage='device'
+        if slider_options.get('host_profile')=='frozen-ct-w4g32':
+            from .ct_linear import FrozenCTLinear
+            profiles={module.packed_storage for module in model.modules() if isinstance(module,FrozenCTLinear)}
+            if len(profiles)!=1:raise ValueError('one consistent packed weight storage profile required')
+            self.packed_weight_storage=profiles.pop()
         self._flags = [(p, p.requires_grad) for p in model.parameters()]
         self._modes = [(m, m.training) for m in model.modules()]
         self._handles = []
@@ -182,6 +188,7 @@ class Native:
                 "host_profile":self.slider.host_profile,
                 "target_convention": "same question and observed history; teacher has selected behavioral system instruction",
                 "ema_decay": None,
+                **({'packed_weight_storage':self.packed_weight_storage} if self.packed_weight_storage!='device' else {}),
                 **({'checkpoint_profile':self.checkpoint_profile} if self.checkpoint_profile != 'block' else {})}
 
     def close(self):
