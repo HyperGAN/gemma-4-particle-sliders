@@ -1,0 +1,73 @@
+{
+  "schema": "gemma4-identified-public-record-correction-v1",
+  "created_at": "2026-11-17T17:14:36.156880+00:00",
+  "status": "CPU correction verified;no actual learned score or publishing mutation",
+  "problem": "f39ca8b allowed a completed high but unlisted score to set verified_strict_public_record before ranked submission identity was established",
+  "behavior": "high unlisted score remains provisional;watch keeps same ID;only exact numeric ID in sole leading public entry with strict prior/other-team gain can verify a public record;private final standing remains unproven",
+  "source_sha256": {
+    "src/gemma_particle/official_results.py": "f1188e6900ef47e5f728c40caec681479f89de5c542a5fc59d9f3286a8f9f21a",
+    "scripts/monitor_selected_submission.py": "d3cbed5374048b4b33a2819ece1b8597ce8c56938dd3e9d76ebc496db53ef572",
+    "tests/test_official_results.py": "c2dda32b02b16354e258bc7d28a96c873725cec96bb50318ad24e62f9aafb9ee"
+  },
+  "tests": {
+    "focused_passed": 66,
+    "full_public_source_CPU_passed": 393,
+    "skipped": 3,
+    "equal_public_python_files": 165,
+    "private_data_or_dist_present": false,
+    "focused_log_sha256": "6be764ac3ac6a594ceb65a03de42bc2fb7f6f97b9225d77b878d82b7b01dd84f",
+    "full_log_sha256": "ff0a98b1b490f5e87ab422b17a3357022d7aa90e3e33f767343e9e849a73d511",
+    "added_controls": [
+      "unlisted0.35 versus public0.29 is provisional,not verified",
+      "private0.99 with public0.29 cannot win public comparison",
+      "real watch loop with supplied science/publication/runtime boundaries:pending -> provisional -> exact ranked ID;three reads ofsame701,no mutation methods,two60second waits simulated",
+      "existing distinct-ID,finite-score,tie,error,prior/current stronger-record and archive/publication controls retained"
+    ]
+  },
+  "primary_scoring_sources": [
+    {
+      "title": "Official public leaderboard",
+      "url": "https://www.kaggle.com/competitions/gemma-4-developer-agent/leaderboard",
+      "finding": "public leaderboard covers a test subset"
+    },
+    {
+      "title": "Official competition rules",
+      "url": "https://www.kaggle.com/competitions/gemma-4-developer-agent/rules",
+      "finding": "final standings use private results;public ranking is a separate claim"
+    }
+  ],
+  "metric_source": "downloaded official HARNESS_README.md:resolution requires clean fresh-container required tests with nonempty validated JUnit results;existing full locked confirmation remains required",
+  "source_bridge": {
+    "schema": "gemma4-identified-public-record-source-bridge-v1",
+    "reference_commit": "f39ca8b1799d1600fb0c1a30aba6d6e75c2a3fb6",
+    "whole_files_equal": {
+      "scripts/publish_selected_candidate.py": true,
+      "src/gemma_particle/kaggle_publication.py": true,
+      "src/gemma_particle/selected_publication.py": true,
+      "scripts/prepare_selected_candidate.py": true,
+      "scripts/run_resource_dev_grid.py": true,
+      "scripts/collect_behavior_pool.py": true,
+      "scripts/wait_and_train_pilot.py": true,
+      "src/gemma_particle/dev_evidence.py": true,
+      "src/gemma_particle/dev_selection.py": true,
+      "src/gemma_particle/confirmation.py": true,
+      "src/gemma_particle/confirmation_results.py": true,
+      "src/gemma_particle/confirmation_environments.py": true,
+      "src/gemma_particle/learned_effect.py": true
+    },
+    "unchanged_official_helpers_AST": {
+      "score_value": true,
+      "leaderboard_snapshot": true,
+      "audit_publication": true,
+      "official_submission": true,
+      "observe_official_record": true
+    },
+    "scope": "only public-record verdict and observer waiting-state handling changed;named scientific,publishing and observation helpers retained;not full semantic equivalence"
+  },
+  "actual_model_updates": 0,
+  "actual_learned_submissions": 0,
+  "actual_learned_scores": 0,
+  "new_GPU_work": false,
+  "goal_marked_complete": false,
+  "remaining": "actual second target,full native training,conversion,matched complete DEV and locked confirmation,learned official submission and identified strict public record;full objective audit separate"
+}

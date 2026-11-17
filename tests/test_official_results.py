@@ -11,7 +11,7 @@ from requests.exceptions import Timeout
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.kaggle_publication import publish_once
 from gemma_particle.official_results import (score_value, leaderboard_snapshot, audit_publication,
-    compare_official_record, observe_official_record)
+    compare_official_record, observe_official_record, official_submission)
 from test_kaggle_candidate import module
 from test_kaggle_publication import prepared, FakeAPI
 
@@ -33,7 +33,7 @@ def submission(score='0.35', status='COMPLETE'):
         'status': status, 'public_score': score, 'error_present': False, 'date': NOW, 'team_name': 'CPU team1'}
 
 
-@pytest.mark.parametrize('mode,expected', [('unlisted', True), ('own_displayed', True), ('wrong_member', False),
+@pytest.mark.parametrize('mode,expected', [('unlisted', False), ('own_displayed', True), ('wrong_member', False),
     ('tie', False), ('new_other_record', False), ('old_stronger_reference', False), ('decimal_tie', False),
     ('control', None), ('wrong_id', None), ('error', False), ('pending', False), ('unknown', False), ('complete_error', False)])
 def test_strict_official_record_cannot_be_a_tie_control_pending_or_wrong_submission(mode, expected):
@@ -54,6 +54,10 @@ def test_strict_official_record_cannot_be_a_tie_control_pending_or_wrong_submiss
     else:
         result = compare_official_record(reference, row, current, members)
         assert result['verified_strict_public_record'] is expected and result['goal_marked_complete'] is False
+        assert result['verified_private_record'] is False
+        if mode == 'unlisted':
+            assert result['state'] == 'waiting_public_leaderboard_identity'
+            assert result['score_above_observed_public_values'] is True
         if mode in ['pending', 'unknown']: assert result['state'] == 'waiting_official_evaluation'
 
 
@@ -142,3 +146,55 @@ def test_monitor_rejects_unreleased_access_before_account_or_publication_reads(t
     else:
         with pytest.raises(ValueError, match='completed explicit confirmation access'): monitor.main()
         assert not out.exists()
+
+
+def test_private_score_cannot_supply_a_public_record():
+    raw = NS(ref=701, status='COMPLETE', description=binding()['message'], file_name='submission.zip',
+        public_score='0.29', private_score='0.99', error_description='', date=NOW, team_name='CPU team1')
+    row = official_submission(raw)
+    result = compare_official_record(binding(), row, snapshot([(1, '0.29'), (2, '0.24')]),
+        {1: [{'submission_id': 701, 'public_score': '0.29'}]})
+    assert 'private_score' not in row
+    assert not result['verified_strict_public_record'] and not result['verified_private_record']
+
+
+def test_watch_retains_same_submission_through_provisional_rank_publication(tmp_path, monkeypatch):
+    """Real observer loop; science/publication/runtime validation are supplied boundaries."""
+    import subprocess
+    import sys
+    observer = module('official_monitor_provisional_watch', 'monitor_selected_submission.py')
+    root = Path(__file__).resolve().parents[1]; monkeypatch.chdir(root)
+    reference = {**binding(), 'publication_files': {}}
+    readiness = tmp_path / 'readiness.json'; readiness.write_text('CPU fixture')
+    candidate = {'experiment_pins': {}}
+    monkeypatch.setattr(observer, 'audit_selected_publication', lambda *a: candidate)
+    monkeypatch.setattr(observer, 'audit_publication', lambda *a: reference)
+    monkeypatch.setattr(observer, 'load_script', lambda path, name:
+        NS(notebook_source=lambda *a: None) if 'payload' in name else
+        NS(validate_runtime=lambda *a: ({'versions': {'CPU-fixture': 'not real SDK'}}, {})))
+    monkeypatch.setattr(observer.subprocess, 'run', lambda *a, **kw: subprocess.CompletedProcess(a, 0))
+    ids = []; pauses = []
+    class API:
+        def get_submission(self, identifier):
+            ids.append(identifier); value = submission(status='PENDING' if len(ids) == 1 else 'COMPLETE')
+            return NS(ref=identifier, status=value['status'], description=value['description'],
+                file_name='submission.zip', public_score=value['public_score'], error_description='', date=NOW, team_name='CPU team1')
+        def competition_leaderboard_view(self, *args, **kwargs):
+            values = [(2, '0.29'), (3, '0.24')] if len(ids) == 2 else [(1, '0.35'), (2, '0.29')]
+            return [NS(team_id=i, team_name='CPU team' + str(i), score=s, submission_date=NOW) for i, s in values]
+        def competition_team_submissions(self, team_id):
+            assert len(ids) == 3 and team_id == 1
+            return [NS(id=701, public_score='0.35')]
+    monkeypatch.setitem(sys.modules, 'kaggle', NS(api=API()))
+    monkeypatch.setattr(observer.time, 'sleep', lambda seconds: pauses.append(seconds))
+    out = tmp_path / 'out'; argv = ['observe']
+    for name in ['publication', 'access', 'environments', 'pair', 'comparison']:
+        argv += ['--' + name, str(tmp_path / name)]
+    argv += ['--readiness', str(readiness), '--out', str(out), '--watch']
+    monkeypatch.setattr(sys, 'argv', argv); observer.main()
+    states = [json.loads(p.read_text()) for p in sorted(out.glob('observation-*.json'))]
+    assert [r['state'] for r in states] == ['waiting_official_evaluation',
+        'waiting_public_leaderboard_identity', 'verified_learned_public_record']
+    assert [r['verified_strict_public_record'] for r in states] == [False, False, True]
+    assert ids == [701, 701, 701] and pauses == [60, 60]
+    assert all(r['goal_marked_complete'] is False and r['verified_private_record'] is False for r in states)

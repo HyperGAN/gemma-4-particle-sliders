@@ -36,7 +36,7 @@ The [explicit resource declaration and comparison support](docs/dev-resource-sup
 
 The [prepared learned publication runner](docs/learned-publication.md) continues from an actually evaluated selected payload to a private dataset, an exact offline CPU notebook version and one competition request. It verifies downloaded archive bytes and actual quota, and stops after ambiguous publishing results. Preparation has made no learned account mutation or official score claim.
 
-The [prepared official-result observer](docs/official-result-verification.md) reads the exact learned submission and compares finite decimal scores against the preceding and fresh public records. A displayed own entry requires numeric submission-ID evidence. It makes no submission or model request and leaves full goal completion to a separate evidence audit.
+The [prepared official-result observer](docs/official-result-verification.md) reads the exact learned submission and compares finite decimal scores against the preceding and fresh public records. A high unlisted score stays provisional; a public record requires the exact numeric submission ID in the ranked entries. It makes no submission or model request and leaves private final standings and full goal completion unproven.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.
 

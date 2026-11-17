@@ -88,7 +88,8 @@ def compare_official_record(binding, submission, current, public_submissions):
         'submission_id': submission['submission_id'], 'artifact_sha256': binding['artifact_sha256'],
         'submission': submission, 'prior_best_score': binding['prior_best_score'],
         'verified_strict_public_record': False, 'goal_marked_complete': False,
-        'scope': 'official learned score versus observed public records only;full goal completion remains a separate audit'}
+        'score_above_observed_public_values': False, 'verified_private_record': False,
+        'scope': 'identified public leaderboard record only;private final standing and full goal completion remain unproven'}
     if submission['status'] != 'COMPLETE':
         result['state'] = 'official_error' if submission['status'] == 'ERROR' else 'waiting_official_evaluation'
         return result
@@ -113,12 +114,16 @@ def compare_official_record(binding, submission, current, public_submissions):
     current_threshold = max(other_values) if other_values else best
     # If the only listed entry is our candidate, do not invent an unobserved
     # other-team threshold; a real preceding reference must still be exceeded.
-    strict = score > before and (score > best or own_entry is not None and bool(other_values) and score > current_threshold)
-    result.update(state='verified_learned_public_record' if strict else 'complete_without_verified_strict_record',
+    above_values = score > before and score > best
+    strict = score > before and own_entry is not None and bool(other_values) and score > current_threshold
+    state = ('verified_learned_public_record' if strict else 'waiting_public_leaderboard_identity'
+        if above_values else 'complete_without_verified_strict_record')
+    result.update(state=state,
         public_score=submission['public_score'], current_best_score=current['best_score'],
         public_leaderboard=current, public_team_submissions=public_submissions,
         displayed_candidate_team_id=own_entry, verified_strict_public_record=strict,
-        threshold_policy='strictly above prior all-team best and fresh other-team best;displayed own entry requires numeric submission-ID evidence')
+        score_above_observed_public_values=above_values,
+        threshold_policy='ranked public entry must identify the exact submission;strictly above prior all-team and fresh other-team best;unlisted scores remain provisional')
     return result
 
 

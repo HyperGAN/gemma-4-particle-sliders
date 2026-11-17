@@ -92,7 +92,7 @@ def main():
         write(args.out / 'progress.json', result)
         print(json.dumps({'state': result['state'], 'submission_id': binding['submission_id'],
             'verified_strict_public_record': result['verified_strict_public_record']}), flush=True)
-        if not args.watch or result['state'] != 'waiting_official_evaluation': return
+        if not args.watch or result['state'] not in ['waiting_official_evaluation', 'waiting_public_leaderboard_identity']: return
         time.sleep(60); cycle += 1
 
 
