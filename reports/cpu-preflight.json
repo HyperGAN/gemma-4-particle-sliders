@@ -22,7 +22,7 @@
         ".deps/particle-sliders-0101/packages/particle-sliders-core/tests/test_pg0100_integration.py"
       ],
       "exit_code": 0,
-      "output_sha256": "c4c7c134339346ad2fd2b78009f118d6495decdbb7052ee85d95e58bc5a29dc9"
+      "output_sha256": "279fd222945dd67e980ace60a241a8fc8770c36c00b572c5dd60f1a95f0b870e"
     },
     {
       "command": [
@@ -92,6 +92,7 @@
     "tests/test_gemma_binding.py": "b0ba126255bdbf8a019675c953efb8fa7309f1b2cb630edf4e1cf305ff00f583",
     "tests/test_generation.py": "82ed6fd2ce349c590b8509807b1b033875a7ebbef0359636a09e50de2ec5d0b4",
     "tests/test_history.py": "8b2691110dcc888508fa968ac499a4fa606d0db8eec2c029701baf144bcc5e62",
+    "tests/test_kaggle_candidate.py": "f255017bb7ff11f2eb5e690bd630628f06ef9a28514c7c1ec3d84e0e59df426f",
     "tests/test_lora_serving.py": "d999b737878d0605bd423dd83e9522cc712836a37ade069fe85c7e5bdb515dcf",
     "tests/test_prompt_profiles.py": "766dfcce4137328651a62a09c2f4db7affffd1450beb27a162d9f666a378e9f6",
     "tests/test_prompting.py": "55de9cee02099357adaf2437a47bc366b6a4bacbcaffbc0c1e4546a7247666a0",
@@ -101,7 +102,7 @@
     "tests/test_train_pool.py": "a5b3da5d42f18f216ece36a472605e484d151967185d587e23b5c3fd5abd0123",
     "tests/test_transport.py": "5adabb71043e74f5cee802c6190f45af315c45b0fb85f517b76dc1799c415bfb",
     "scripts/bootstrap.py": "7092dc9fdd3086fa40c3500d75caac22248707d71765eabea6b0b3a0d62975bc",
-    "scripts/build_submission.py": "aa0fc9a78987f521684e5f930c7953eada5f25cebb487559d641384a08469528",
+    "scripts/build_submission.py": "d444b6a6c91e62893a0e064e517dd45dd62f1cc9cf676530cd3dc4de1e2dd8ad",
     "scripts/cache_contexts.py": "a74cfeb94caba6ed41df4c1205d82b81cef2d7f77f386b79a261430c900b2f7f",
     "scripts/collect_arms.py": "51671f9ff2646bff91469949364ba8289e72143121b7c56adfb42a886d0c56df",
     "scripts/collect_behavior_pool.py": "1381a4eb8542a9ba61af09e76bc0dcce1ad7afc24fc60a0f37c1de50021a699f",
@@ -118,6 +119,7 @@
     "scripts/prepare_behavior_collection.py": "dc4c74fdfbf24a949c43a2326c6fcf5c6741d0cd4bf28e1fca3d0d3ffbf2835a",
     "scripts/prepare_conversion_probe.py": "86f6436f90292867b9b6ce4472038d98578fdf9d593d02fa4c783f77b97ec585",
     "scripts/prepare_external_dev.py": "c472cbb657ad7eac1fc40ff5d5d9ca3d1a20f0cfc5ee67f9954740afc7344081",
+    "scripts/prepare_kaggle_candidate.py": "d7c8c28da70f2927ff839a497b86c04592c4ce8aee094a7f01a44a67c5b52060",
     "scripts/prepare_kaggle_notebook.py": "d85baa5edea0427fa71976699e92b769d52d4dfcdf2bc568374c8d7a77449f5d",
     "scripts/prepare_lora_transport_fixtures.py": "0f568b39382093ef7e9f82eae4a45c045e409a4d4210b0718fa7042ed95125ad",
     "scripts/prepare_task_wheels.py": "1d8a7bc76d8ea01d6ed3f2f33d9e2418ea4520e2d69309f6293e053ee8d79e82",
@@ -142,6 +144,7 @@
     "scripts/verify_external_dev.py": "ef08f4d47563f14b53db8a899f40fd3a1839941d7918028a2ca338a7c4cb1b00",
     "scripts/verify_train_environments.py": "8d622ca937201b7a3c19d44ccb2b217a8ada000c806c42803fc64ab1d4d470fb",
     "scripts/verify_trajectories.py": "d8d22ab0c9facc63ce3fab651a78606812ebec50f6124c484fb3042cff0660ff",
+    "scripts/wait_and_train_pilot.py": "537e7ac2a1958b13ff44607db0ad6f99e38c40f025a62767d04d5e66e67a9bd7",
     "submission/agent.yaml": "49e4c9f5662c83b18d585bd5fb16cb8eef006d46610c13d1f725240d30c883c0",
     "submission/configs/sampling.yaml": "8f0116a1dc4e64b6eb78af99bc675f76030fa262708d7232cd62ecac1bea91f5",
     "submission/eval_config.yaml": "a06db12a351296c8a8407a9ccd0d93b2aed18d557eb036fff4946e167d576bcf",

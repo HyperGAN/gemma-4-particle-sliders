@@ -1,0 +1,27 @@
+{
+  "schema": "gemma4-kaggle-candidate-packaging-control-v1",
+  "status": "passed",
+  "created_at": "2026-11-17T09:00:54.420713+00:00",
+  "cpu_targeted_checks": 6,
+  "targeted_log_sha256": "6009185efe2152f8daa3498d8d7a089de8889a62a9ebd5f6dd541a958d926465",
+  "licensed_official_compiler_adk_control_sha256": "89bce42d062de5ea687babbbe66336a98c6c3da03cf86a54a779b40fcb64f36f",
+  "large_bundle_over_inline_limit": true,
+  "emitted_zip_byte_identical": true,
+  "corrupted_payload_rejected": true,
+  "changed_native_provenance_rejected": true,
+  "dataset_uploads": 0,
+  "kaggle_notebook_executions": 0,
+  "pretrained_optimizer_updates": 0,
+  "licenses": {
+    "model": "Apache-2.0",
+    "code": "MIT",
+    "upstream_license_file_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "sources": {
+    "scripts/build_submission.py": "d444b6a6c91e62893a0e064e517dd45dd62f1cc9cf676530cd3dc4de1e2dd8ad",
+    "scripts/prepare_kaggle_candidate.py": "d7c8c28da70f2927ff839a497b86c04592c4ce8aee094a7f01a44a67c5b52060",
+    "tests/test_kaggle_candidate.py": "f255017bb7ff11f2eb5e690bd630628f06ef9a28514c7c1ec3d84e0e59df426f",
+    "licenses/Gemma4-APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "scope": "CPU synthetic artifact consistency/emission and official compiler routing only; no actual learned31B candidate or official score"
+}

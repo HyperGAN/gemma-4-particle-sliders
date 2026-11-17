@@ -42,6 +42,13 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
             if source.is_symlink() or not source.is_file():
                 raise ValueError("adapter must contain real PEFT files")
             shutil.copyfile(source, destination / name)
+        shutil.copyfile(ROOT/'licenses/Gemma4-APACHE-2.0.txt', destination/'LICENSE-weights.txt')
+        shutil.copyfile(ROOT/'LICENSE', agent/'LICENSE-code.txt')
+        (destination/'NOTICE.txt').write_text(
+            'Gemma 4 derived LoRA weights; base model by Google DeepMind, Apache License 2.0.\n'
+            'https://huggingface.co/'+config['base_model_name_or_path']+'\n'
+            'Particle Sliders integration and agent code: HyperGAN contributors, MIT License.\n'
+            'https://github.com/HyperGAN/gemma-4-particle-sliders\n')
         text += "adapter: particle_lora\n"
     (agent / "agent.yaml").write_text(text)
     prompt = agent / 'prompts/system.md'
