@@ -1,0 +1,62 @@
+{
+  "schema": "gemma4-runtime-interruption-recovery-v1",
+  "created_at": "2026-11-17T21:33:16.187768+00:00",
+  "status": "Recovered collection/evaluation and dependent waiting supervisors; no learned result claimed",
+  "problem": "Historical status files outlived their supervisors after a runtime interruption of unknown cause. One unfinished TRAIN episode has no terminal capture. A DEV connection error left six identical unanswered retries which the single-terminal evidence reader rejected. A previously reused DEV case lives in an earlier immutable run.",
+  "behavior": {
+    "train": "Revalidate all nine completed fixed-order groups with original one-pass grades and frozen curator293; retain one initial target; preserve interrupted task14262 ungraded and do not reroll it; continue original46-task unattempted suffix from14266 with all four arms and original stop/admission rules.",
+    "dev": "Validate and retain all25 completed OFF cases, including the original failed connection-error case. Recognize only an authentic bounded identical unanswered retry tail, validate all raw hashes/order/identities, retain capture_complete=false and agent_error. Follow hash-bound prior reuse receipts so no completed inference repeats.",
+    "resource": "Bind a separate frozen task evidence executor and matching offline auditor. Serving sources/commit, actual generation/fresh verification, model identity, numerical hardware qualification, effects gate, sharing limits, all22conditions and untouched confirmation stay unchanged. Every differing tracked script/source is restricted to the two prior audit-only entrypoints.",
+    "account": "Restore the original one-shot deferred OFF watcher after checking old process absence, absence of any old intent/request, fresh account submissions and exact archive/control hashes; retain duplicate/pending gates."
+  },
+  "source_sha256": {
+    "scripts/collect_behavior_pool.py": "bf719c16701cb49e27b0485915fc1a8a953ff6f906b0b48e79584f205679c22a",
+    "src/gemma_particle/pool_recovery.py": "10cea75b576a61752e2d0057a5032f4b161d7a62666aea1f84e11996ecb65bfa",
+    "src/gemma_particle/dev_evidence.py": "fafb89f0bd6f4614b6168942257d67eb4332097b3752bf7cb6ca59839651ab83",
+    "scripts/run_dev_condition.py": "07f7c68092906e77f29a955f50e757748dbee251aaac9921cc39cafc0ae081bc",
+    "scripts/run_resource_dev_grid.py": "8abc8adb0f01507025d432575a74054df67e6f8892acc9a566c6d316c906c8fa",
+    "src/gemma_particle/resource_dispatch.py": "1246836553a82e09b3943cbd49c199a7eec519a0c6a1bfc1f9eafbbdfcc0b9a4",
+    "tests/test_dev_transport_retries.py": "a76d4c38439da49d6332777a910c845f12eab7f2a864967193f254f3cbc9f475",
+    "tests/test_dev_retained_paths.py": "208f3d9f05d4d5b0ab863e07c7eccb5179430c3bbbca6c4ccb52dd9dde1e22d6",
+    "tests/test_pool_recovery.py": "96198194bb3bf913009369a836eb7b1340b65b62a45483555e43c4a6d5cba849",
+    "tests/test_task_audit_bridge.py": "9a3715aed6a43e84f22454ca4f6033603a58e06b5d57c6d6441c38944ada597c",
+    "tests/test_resource_controller.py": "3daa49e4d59011106c4d9798b2088e42ae61d1c4f153fa386a46731dd9353f11"
+  },
+  "tests": {
+    "focused_recovery_controls_passed": 44,
+    "full_CPU_passed": 430,
+    "skipped": 2,
+    "full_log_sha256": "39e2035193e5bf159eeca4c0a05a8e50c6fe575aa11056f19c4dc6810fde7dc7",
+    "environment": "existing .train-venv; ParticleGAN0.10.1 pinned source53f5ff37; CUDA hidden; nice10; one CPU thread for tests",
+    "initial_wrong_environment": "Earlier .venv suite rejected incompatible locked core source; rerun in correct pinned environment passed. No environments or locked packages changed."
+  },
+  "actual_reconciliation": {
+    "completed_train_quartets_retained": 9,
+    "accepted_initial_contexts": 1,
+    "interrupted_train_task": "fastapi_14262",
+    "unattempted_suffix_count": 46,
+    "next_task": "fastapi_14266",
+    "completed_off_dev_cases_retained": 25,
+    "resolved_off_dev_cases": 9,
+    "original_generation_and_verification_not_repeated": true,
+    "recovered_supervisors": 7,
+    "healthy_local_apis": 2,
+    "memory_target_per_serving_gpu": 0.6,
+    "startup_headroom_GiB": 8,
+    "process_nice": 10,
+    "training_updates": 0,
+    "native_conversions": 0,
+    "learned_dev_attempts": 0,
+    "confirmation_accesses": 0,
+    "new_submission_requests": 0,
+    "actual_off_submission_id": 58457991,
+    "actual_off_submission_status": "PENDING",
+    "fresh_public_best_score": "0.29",
+    "goal_complete": false
+  },
+  "retained_failed_recovery_attempts": [
+    "First recovery supervisor passed offline prefix revalidation but original curator CLI rejected later optional arguments before creating any new cohort or model request. Probe pinned CLI and retain original default paths/image before restarting into a new output root.",
+    "First OFF watcher launcher referenced a missing interpreter link; nice exited127 before Python or any output/account call. Correct the interpreter to existing pinned main Kaggle environment; no ambiguous submission retry."
+  ],
+  "remaining": "A genuine second accepted context, original2048 native updates, measured conversions, complete22-condition DEV, locked49-pair confirmation, learned official submission and contemporaneously verified strict record are still required."
+}
