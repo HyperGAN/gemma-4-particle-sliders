@@ -8,13 +8,13 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 import yaml
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
-from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,budget_values
+from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,budget_values
 
 MODELS = [f"gemma-4-{size}-it-qat-w4a16-ct" for size in ("31b", "12b", "e4b", "e2b")]
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL,budget_profile=PILOT_BUDGET):
+def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAULT_INSTRUCTION_PROTOCOL,budget_profile=DEFAULT_BUDGET):
     instructions=instruction_set(instruction_protocol)
     budget=budget_values(budget_profile)
     out = Path(out)
@@ -45,8 +45,7 @@ def build(out, model, adapter=None, instruction=None, instruction_protocol=DEFAU
     if instruction:
         prompt = agent / "prompts/system.md"
         prompt.write_text(prompt.read_text().rstrip() + "\n\n" + instructions[instruction] + "\n")
-    if budget_profile!=PILOT_BUDGET:
-        (agent/'eval_config.yaml').write_text(yaml.safe_dump({'evaluation':budget},sort_keys=False))
+    (agent/'eval_config.yaml').write_text(yaml.safe_dump({'evaluation':budget},sort_keys=False))
     files = sorted(p for p in agent.rglob("*") if p.is_file())
     if sum(p.stat().st_size for p in files) >= 3 * 1024**3:
         raise ValueError("unpacked submission must be smaller than 3 GiB")
@@ -76,6 +75,6 @@ if __name__ == "__main__":
     parser.add_argument("--adapter", type=Path)
     parser.add_argument("--target-instruction", choices=TARGET_INSTRUCTIONS)
     parser.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
-    parser.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=PILOT_BUDGET)
+    parser.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
     args = parser.parse_args()
     print(json.dumps(build(args.out, args.model, args.adapter, args.target_instruction,args.instruction_protocol,args.budget_profile), indent=2))

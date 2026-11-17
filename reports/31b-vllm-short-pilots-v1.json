@@ -1,0 +1,454 @@
+{
+  "schema": "gemma4-31b-vllm-short-pilots-v1",
+  "as_of": "2026-11-17T04:12:36.932151+00:00",
+  "status": "complete",
+  "cohorts": [
+    {
+      "name": "31b-vllm-11194-v1",
+      "progress_sha256": "c9249cbff4deefb12e203b16db1b1cef21cfcf4abb509fdeab3dece0e59f7a0e",
+      "instruction_protocol": "behavior-v1",
+      "arms": [
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "off",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 24,
+          "elapsed_seconds": 307.4260921709938,
+          "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+          "patch_sha256": "bf48bb099067432a12df271bf3fd9c756b873c1aa729d48b0c4d308f0961f8ac",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "bf48bb099067432a12df271bf3fd9c756b873c1aa729d48b0c4d308f0961f8ac",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "ae0f910a5a9f09d08ed1507be316abd465df23a9c20a869c632e2594fbd7d7b0",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "c0fad46afbacc40f0fb13e5b67021e15487ed5ae2825d659aa7ec8cc71b33a82",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "104e748cacc4a2a9021d3bc7fe8507c72d855fdf53d8736d0acf3983f132a99e",
+          "outcomes_sha256": "45172edef88c35ccebf6a3e931a9485d251e99721747527deb20540a973853d8"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "reproduce",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 24,
+          "elapsed_seconds": 308.1678279719781,
+          "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+          "patch_sha256": "f2ae16eb99b6ca4c25840f6e89a45df44ba6d98bcff69d729b51ccfdec3ca7c6",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "f2ae16eb99b6ca4c25840f6e89a45df44ba6d98bcff69d729b51ccfdec3ca7c6",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "8b1c626aa71afccd68dc6f29e6af76e8a1228cf62c4b5146a970db20ae94e397",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "7c7be0c148f2d49be031aee2a69948e8f93238b7139fc82ee35f5e490c3bf3ce",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "70059003f15d172236e7d294cf3f5dad87c9498c4d6633337d87c7e8d849740e",
+          "outcomes_sha256": "d89d44cbdac87dbdd23742dd9a39feafce29f01cd6560472ba41eb41b3070cdc"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "localize",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 22,
+          "elapsed_seconds": 306.9887327810284,
+          "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+          "patch_sha256": "1547a6137622663ee1971ff7d5e212fa481fed1a8274dd0f9892edd1768c6f17",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "1547a6137622663ee1971ff7d5e212fa481fed1a8274dd0f9892edd1768c6f17",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "55f4ab72d250b8967258375f97611e0ab9a6b089cebc460999a46dd8012297c0",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "e61addbd3770d6c4fa28867fe30799aba028219a2ae22dd820ed2b00303bc59b",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "81a5475f10bdf60a9b9d014de7dabd79d4f735d54ecc1d2c2c6751f252260f0a",
+          "outcomes_sha256": "3b38fd7ae6b317a67eb7e2e7fb107a7ed1841aadb9936b80aaa63e03188b6163"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "verify",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 21,
+          "elapsed_seconds": 308.82808832998853,
+          "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+          "patch_sha256": "32cc3ff0dbfcf9054334a597c61bd4284ad561944b2a9063af0902833880ed9b",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "32cc3ff0dbfcf9054334a597c61bd4284ad561944b2a9063af0902833880ed9b",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "e402a8dbc523c3315a4a83cc3e5de08acc088babb7f9d6aca915b4cdf0b21139",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "2e378029bba0512f17404d1b24886fb984c9b505d7d700602e8a85aa39c8ff01",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "94bf70a57402d066257e9ceaa50c64ff02845495c713652244510b9f8d21cf6f",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "40591f185ee97951101b2d1fe7ed37a5f0ce430de17176c132919656be6aa188",
+          "outcomes_sha256": "5608d62578f95b8bbc3f8c617eeb6f1d87cc161d583bd6aa8d3e082798ce4b92"
+        }
+      ]
+    },
+    {
+      "name": "31b-vllm-11355-v1",
+      "progress_sha256": "6b7d7fff31e9369b8713418fdb85eff6cbd43c7b37cac8c047fbc9781a1aa1a4",
+      "instruction_protocol": "behavior-v1",
+      "arms": [
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "off",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 21,
+          "elapsed_seconds": 307.8536933430005,
+          "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+          "patch_sha256": "0b1b046c7cc9a432848acbdecdd26a41066f8bd49b862dc7480f623183f1b2ef",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11355",
+            "patch_sha256": "0b1b046c7cc9a432848acbdecdd26a41066f8bd49b862dc7480f623183f1b2ef",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "44d67995d80ae3e7de0c1be93ebd90319f16725e2df9111eefe6991d81fe3060",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "808f7ac42fa459405405e8bf3621d55246e726319ff912ece054d6784b6beae9",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "a418fb124e701c605ac6105200e87bc3a6da8be942d07a75bb222fca495c02a7",
+          "outcomes_sha256": "04bd70e89d4460912c69c9d502286f7f40f52c4f323f773d32aa592bd716a5ac"
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "reproduce",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 35,
+          "elapsed_seconds": 307.2180573119549,
+          "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+          "patch_sha256": "ba7f903bedd867aaf99f495ac70323734f2353ddcb0b9f76a8e3267547934d6d",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11355",
+            "patch_sha256": "ba7f903bedd867aaf99f495ac70323734f2353ddcb0b9f76a8e3267547934d6d",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "a67df3a9f85f6a23d6148b49a879a3c869e49c753dea1d877c61f4426dbc5e12",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "288565d626bd11e542374887947e7d29cb67ce6be88d9b6c66ffe325a448b19d",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "860f67715de1d409fb22fec0f02d56442f6af473a1425e1d8569a31c67d0e6bc",
+          "outcomes_sha256": "9dfe10f5263e8594e321d4147b0b860907f0d270d8fe137dee1334e6da5e2942"
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "localize",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 24,
+          "elapsed_seconds": 306.9233439840609,
+          "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+          "patch_sha256": "4133962bf33cae52ca7c740929016e979359bd3fb09ee5b02fcbc3661ef1aa6b",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11355",
+            "patch_sha256": "4133962bf33cae52ca7c740929016e979359bd3fb09ee5b02fcbc3661ef1aa6b",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "5b1258a2d65452f4c365502c3d22476146c648368ea2a081aa398cfc725d6df6",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "c2ed390e2c8ac8c34f10149f13a6294c2a5a08d8b48bb8c800dd4a45b4afedd0",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "31b19dc0d347a7beb4bbbe4e49525450478909b682eda3b33318118b455cf167",
+          "outcomes_sha256": "5f183333f7d8535c5445724f9bbfb7fbbf1e27fa53362cd151aa68d91e6c619a"
+        },
+        {
+          "instance_id": "fastapi_11355",
+          "arm": "verify",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 25,
+          "elapsed_seconds": 307.62360766297206,
+          "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+          "patch_sha256": "a32889dbc7a52df813cc69c7439d27948cf374c2cad7e79dcc8083eef62bd9a1",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11355",
+            "patch_sha256": "a32889dbc7a52df813cc69c7439d27948cf374c2cad7e79dcc8083eef62bd9a1",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "668a9e045a41a47b856b443504c95f5c168df82fce190604ce89b75b0c3777e3",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "f47cc4409e668c800fb649b8bb9c9b54b90582717c2159ba5d36841d5389c4ba",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "f61bae487a7e8baeae286fb45b2f14cdd637dae3e9aaa953e03b88508fe042cb",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "80cae8b8f1be2d3d91265f8ce698f13be9e3c59a10d2a7cb3b5b3d531ed70bb1",
+          "outcomes_sha256": "e3591a3ad329fd917daba371df8375310c676376e13725d3434f4eb3695407ba"
+        }
+      ]
+    },
+    {
+      "name": "31b-vllm-11194-tools-v2",
+      "progress_sha256": "9dc459627e5cf9fb5d361a829ea83567e5db8df759336cbee115abc98b1c6927",
+      "instruction_protocol": "tools-v2",
+      "arms": [
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "off",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 25,
+          "elapsed_seconds": 310.9615331819514,
+          "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+          "patch_sha256": "bf48bb099067432a12df271bf3fd9c756b873c1aa729d48b0c4d308f0961f8ac",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "bf48bb099067432a12df271bf3fd9c756b873c1aa729d48b0c4d308f0961f8ac",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "ae0f910a5a9f09d08ed1507be316abd465df23a9c20a869c632e2594fbd7d7b0",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "10054fc96b2960c0105b4b1342e8f1edfd0afbd8a9fff0f6f0163c1ea4c25b63",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "0f12f32e6ba328d6cc3226c4fb2904446c857e23b16292cff048c77c39a5e133",
+          "outcomes_sha256": "c806ffa6477b2dfafa80367c8185c8d5706a660758e5154a9145ece1ff9ce4a6"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "reproduce",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 26,
+          "elapsed_seconds": 308.2096482909983,
+          "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+          "patch_sha256": "4d51d1a828bc2dbc0e77f66819fb73ea3881f3b7f42277e893e7a3921bc1a772",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "4d51d1a828bc2dbc0e77f66819fb73ea3881f3b7f42277e893e7a3921bc1a772",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "245f9626a012817406a475159e7c10b45f59cd019f51f5b24c27efb3e432c0e1",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "6b5280d22ac824bb908fa3d38c7583eb99bb888062a8c44ea2375cc6a691bd26",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "8f1878bd0a0b79de9dab90ae7491d4599ee6ae6407cabeefa06274dd8e31d5db",
+          "outcomes_sha256": "10165a8b0f096c7b9598fbee396ff0f56ac2d8427b9f9a6280a4fdef722aaa68"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "localize",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 29,
+          "elapsed_seconds": 306.935400136048,
+          "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+          "patch_sha256": "3e86fc9dd837df6ea74f2ffd59da73737f555a3c1345ba4e74be592086950635",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "3e86fc9dd837df6ea74f2ffd59da73737f555a3c1345ba4e74be592086950635",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "a8bcc6c32901b6ed81855036e39a412d150734f33d25384f6a182be6c683ee67",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "0c8e99ab6e333a2b782bb82e438b0c254be6d93ab4c5578a36fd45a83ae00af8",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "091ee92c76682b0ecc209a399e273a29175a53982fbedee801e5e12d42db9c62",
+          "outcomes_sha256": "771524e87e2f89609e3c7a56de909e8a163f722d6457cac3ee4fdc45f6f0bf84"
+        },
+        {
+          "instance_id": "fastapi_11194",
+          "arm": "verify",
+          "resolved": false,
+          "agent_error": "Agent exceeded session timeout (5 min)",
+          "capture_complete": false,
+          "tool_calls": 21,
+          "elapsed_seconds": 306.3430293450365,
+          "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+          "patch_sha256": "f82e1bb42a9181b95ea44480ddf3ce9f57e682734a24bbeffc5c467c7cbc1c32",
+          "verification": {
+            "stage": "fresh-container-tests",
+            "instance_id": "fastapi_11194",
+            "patch_sha256": "f82e1bb42a9181b95ea44480ddf3ce9f57e682734a24bbeffc5c467c7cbc1c32",
+            "requests_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "resolved": false,
+            "test_exit_code": 1,
+            "first_request_sha256": "9aa4313624e5fc742faf024766871c8cef19072b9a7b2b8afe86218e38ce35b8",
+            "error": null,
+            "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+            "origin_checks": [
+              {
+                "package": "fastapi",
+                "origin": "/workspace/fastapi/__init__.py",
+                "workspace": true
+              }
+            ],
+            "evaluation_contract_sha256": "7b1c6523f11532bb8e81367759a3b6b5227390e0b4054b386e97611fcef229dd",
+            "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+            "test_output_sha256": "e586fbae91d98ca208aeec773d5836ce48b33bea32b1809396697eb298efd3a2",
+            "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+          },
+          "cohort_sha256": "dba13b75da9b3397b39c67f8d5f4844634012ddecbf1b979598ab94b67f14653",
+          "outcomes_sha256": "09fe01894462c1f0a481bf782734b0f14406f22fa13ed8588c2ef5d88f9059ba"
+        }
+      ]
+    }
+  ],
+  "attempts": 12,
+  "verified_resolved": 0,
+  "admitted_contexts": 0,
+  "optimizer_updates": 0,
+  "scope": "TRAIN only under former local five-minute pilot budget. No full-budget capability conclusion; no DEV, holdout or official Kaggle score.",
+  "replacement": "Fresh original-prompt four-arm fastapi_11194 trial running with documented60min/100tools/500turns/300scommand defaults, from frozen f59faf6 code."
+}

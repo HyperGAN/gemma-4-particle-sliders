@@ -32,7 +32,9 @@ def main():
     args=p.parse_args()
     plan=json.loads((args.root/'plan.json').read_text())
     protocol=plan.get('instruction_protocol',DEFAULT_INSTRUCTION_PROTOCOL)
-    budget_profile=plan.get('budget_profile',PILOT_BUDGET)
+    if 'budget_profile' not in plan:
+        raise ValueError('new collection plans must explicitly declare their operational budget')
+    budget_profile=plan['budget_profile']
     budget=budget_values(budget_profile)
     instructions=instruction_set(protocol)
     if protocol!=DEFAULT_INSTRUCTION_PROTOCOL or budget_profile!=PILOT_BUDGET:
@@ -62,7 +64,7 @@ def main():
                     '--model',identity['served_model'],'--endpoint',args.endpoint,'--server-identity',str(args.server_identity),
                     '--inputs',str(args.inputs),'--wheels',str(args.wheels),'--image',args.image,'--out',str(agent)]
                 if protocol!=DEFAULT_INSTRUCTION_PROTOCOL:command.extend(['--instruction-protocol',protocol])
-                if budget_profile!=PILOT_BUDGET:command.extend(['--budget-profile',budget_profile])
+                command.extend(['--budget-profile',budget_profile])
                 for task_id in selected:command.extend(['--task-id',task_id])
                 execute(command,logs/f'{arm}-agent.log')
             manifest=json.loads((agent/'cohort.json').read_text())

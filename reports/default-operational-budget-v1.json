@@ -1,0 +1,36 @@
+{
+  "schema": "gemma4-default-operational-budget-v1",
+  "as_of": "2026-11-17T04:12:36.842241+00:00",
+  "status": "passed",
+  "default_budget_profile": "official-default-60m-v1",
+  "actual_runtime_budget": {
+    "time_minutes": 60,
+    "tool_calls": 100,
+    "turns": 500,
+    "cost_usd": null,
+    "total_tokens": null
+  },
+  "actual_runtime_harness": {
+    "command_timeout_seconds": 300,
+    "max_stdout_chars": 5000,
+    "max_file_lines": 150,
+    "max_file_chars": 10000,
+    "verification_timeout_seconds": 300
+  },
+  "probe_generator": "cpu_protocol_fixture",
+  "probe_cli_budget_flag_omitted": true,
+  "probe_cohort_sha256": "132a0cb81a225f15478d42df7e3127978a9c6ea69b4f489bdd1144e6f03da7a9",
+  "evaluation_contract_sha256": "b13013110a20254d070121ff964f87859e9935c8e235facffa82ec9135ceeb70",
+  "compiler_log_sha256": "b50c081e8c7fe16d7aae3c93eab914b9803ff364e143d119566d88c202191e89",
+  "cpu_preflight_sha256": "73e12afcccd6ba7e0cab94499c390d98be365f7c392a11e37c41b7fdfa1ca9aa",
+  "execution_sources": {
+    "src/gemma_particle/budgets.py": "ac3c8173b0d6eb868c724b277d52253eb73de8fdc0585c30ffb01a0858eaaf47",
+    "scripts/build_submission.py": "e551c7146faabf9dc4f102b0fadf7319fc54a6bb365128a534b310b7da26fdd3",
+    "scripts/run_trajectories.py": "5af5ec9d5de07db408573b3cf086f994418676c71e337b64730d634c4437aa9e",
+    "scripts/collect_arms.py": "0d634dfcf6963f83d5c94130dc29b96302ecb3aba2acc148bfbacba514c6281c",
+    "submission/eval_config.yaml": "a06db12a351296c8a8407a9ccd0d93b2aed18d557eb036fff4946e167d576bcf",
+    "tests/test_budget_artifact.py": "0e5e90cde033b969402f3a8fd3625f5d322ef3ea1d025ebed1b7a6e9f78c4b8e"
+  },
+  "historical_profile": "retained only as explicit opt-in for artifact reproduction; no further short-budget trials planned",
+  "scope": "default CLI, real CPU harness contract and official compiler; no model inference or accuracy in this control"
+}

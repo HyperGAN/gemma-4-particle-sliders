@@ -24,7 +24,7 @@ from swegemma.sandbox import ContainerConfig, ContainerManager
 from gemma_particle.adk_capture import RecordingClient
 from gemma_particle.capture import RequestJournal,load_requests
 from gemma_particle.curation import TARGET_INSTRUCTIONS,INSTRUCTION_PROTOCOLS,DEFAULT_INSTRUCTION_PROTOCOL,instruction_set
-from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,budget_values
+from gemma_particle.budgets import BUDGET_PROFILES,PILOT_BUDGET,DEFAULT_BUDGET,budget_values
 from gemma_particle.data import read_jsonl,digest
 from gemma_particle.sandbox import isolate_sandbox_cache
 from gemma_particle.harness_identity import package_identity,wheel_identity,sha256_file
@@ -37,7 +37,7 @@ async def main():
     p.add_argument('--task-id',action='append',required=True)
     p.add_argument('--arm',choices=['off',*TARGET_INSTRUCTIONS],required=True)
     p.add_argument('--instruction-protocol',choices=INSTRUCTION_PROTOCOLS,default=DEFAULT_INSTRUCTION_PROTOCOL)
-    p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=PILOT_BUDGET)
+    p.add_argument('--budget-profile',choices=BUDGET_PROFILES,default=DEFAULT_BUDGET)
     p.add_argument('--model',choices=MODELS,default=MODELS[0])
     p.add_argument('--endpoint',default='http://127.0.0.1:8000/v1')
     p.add_argument('--server-identity',type=Path)
@@ -117,6 +117,7 @@ async def main():
                 instruction_set_sha256=digest(instruction_set(args.instruction_protocol)))
         if args.budget_profile!=PILOT_BUDGET:manifest['contract']['budget_profile']=args.budget_profile
         manifest['evaluation_contract_sha256']=digest(manifest['contract'])
+        (args.out/'cohort.json').write_text(json.dumps(manifest,indent=2)+'\n')
         start=time.perf_counter()
         patch,error,trace=await run_agent_sandbox(manager,config,task,args.inputs/'snapshots'/f'{task_id}.tgz')
         (folder/'agent.patch').write_text(patch)
