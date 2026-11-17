@@ -14,6 +14,7 @@ from gemma_particle.confirmation import validate_dev_choice, build_confirmation_
 from gemma_particle.conversion_handoff import read
 from gemma_particle.dev_selection import load_selection_plan
 from gemma_particle.harness_identity import sha256_file
+from gemma_particle.resource_dispatch import task_audit_bridge
 from gemma_particle.resource_supplement import bind_resource_choice
 
 
@@ -41,29 +42,46 @@ def main():
             or grid_plan['selection_plan_sha256'] != plan_sha or packet_plan['selection_plan_sha256'] != plan_sha
             or sha256_file(args.manifest) != plan['confirmation']['manifest_sha256']):
         raise ValueError('original generation executor,packets,selection and locked manifest required')
-    source_files = []
-    for executor, commit in [(args.dev_executor, args.dev_executor_commit), (args.resource_auditor, args.resource_auditor_commit)]:
+    task_executor = Path(grid_plan.get('task_evidence_executor', args.dev_executor)).resolve()
+    task_commit = grid_plan.get('task_evidence_executor_commit', args.dev_executor_commit)
+    source_sets = {}
+    for executor, commit in [(args.dev_executor, args.dev_executor_commit), (task_executor, task_commit),
+            (args.resource_auditor, args.resource_auditor_commit)]:
         if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=executor, text=True).strip() != commit:
             raise ValueError('exact clean frozen generation and offline audit sources required')
         subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=executor, check=True)
         names = subprocess.check_output(['git', 'ls-files', 'scripts', 'src', 'configs', 'submission', 'sources.lock.json'],
             cwd=executor, text=True).splitlines()
-        source_files.extend(executor / name for name in names)
+        source_sets[executor] = {str(executor / name): sha256_file(executor / name) for name in names}
+    bridge = task_audit_bridge(args.dev_executor, task_executor, source_sets[args.dev_executor], source_sets[task_executor])
+    if 'task_audit_bridge' in grid_plan:
+        if (grid_plan['task_audit_bridge'] != bridge
+                or Path(grid_plan['offline_auditor']).resolve() != args.resource_auditor
+                or grid_plan['offline_auditor_commit'] != args.resource_auditor_commit
+                or any(grid_plan['declaration_pins'].get(path) != value
+                    for scope in source_sets.values() for path, value in scope.items())):
+            raise ValueError('original frozen DEV task and offline audit bindings required')
+    elif task_executor != args.dev_executor or task_commit != args.dev_executor_commit:
+        raise ValueError('separate task evidence executor requires a declared audit bridge')
     for name in ['src/gemma_particle/dev_evidence.py', 'src/gemma_particle/dev_selection.py']:
-        if sha256_file(args.dev_executor / name) != sha256_file(args.resource_auditor / name):
-            raise ValueError('original task audit,statistics,selection helpers and ordinary canonicalizer must be unchanged')
+        if sha256_file(task_executor / name) != sha256_file(args.resource_auditor / name):
+            raise ValueError('offline auditor must match the declared DEV task audit and selection helpers')
     pins = {str(path): sha256_file(path) for path in [args.selection_plan, args.dev_grid / 'plan.json',
-        args.packets / 'plan.json', *source_files]}
+        args.packets / 'plan.json']}
+    for scope in source_sets.values(): pins.update(scope)
     if args.resource_supplement.exists(): pins[str(args.resource_supplement)] = sha256_file(args.resource_supplement)
     root = Path(__file__).resolve().parents[1]
     sources = {str(root / name): sha256_file(root / name) for name in ['scripts/unlock_resource_confirmation.py',
-        'src/gemma_particle/confirmation.py', 'src/gemma_particle/resource_supplement.py']}
+        'src/gemma_particle/confirmation.py', 'src/gemma_particle/resource_supplement.py',
+        'src/gemma_particle/resource_dispatch.py']}
     args.out.mkdir(parents=True)
     declaration = {'schema': 'gemma4-confirmation-access-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
         'dev_grid': str(args.dev_grid), 'packet_producer': str(args.packets),
         'dev_executor_commit': args.resource_auditor_commit,
         'offline_auditor': str(args.resource_auditor),
         'generation_executor': str(args.dev_executor), 'generation_executor_commit': args.dev_executor_commit,
+        'task_evidence_executor': str(task_executor), 'task_evidence_executor_commit': task_commit,
+        'task_audit_bridge': bridge,
         'resource_supplement': str(args.resource_supplement), 'selection_plan_sha256': plan_sha,
         'holdout_manifest_sha256': sha256_file(args.manifest), 'declaration_pins': pins, 'sources': sources,
         'gpu_used': False, 'model_inference': False, 'holdout_task_contents_parsed': False,
