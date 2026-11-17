@@ -1,0 +1,1921 @@
+{
+  "schema": "gemma4-train-environment-qualification-v1",
+  "as_of": "2026-11-17T04:41:00.310405+00:00",
+  "planned": 67,
+  "finished": 67,
+  "qualified": 45,
+  "status": "complete with failures retained",
+  "classes": {
+    "passed": 45,
+    "failed: negative control did not distinguish a fix": 1,
+    "blocked: reference control did not pass": 2,
+    "blocked before verifier receipt": 19
+  },
+  "plan_sha256": "509acb3f0ea9ce0025ee290cc9fe8612082edb482846c0864a1fbb146160e142",
+  "summary_sha256": "884f98d351679915d96b69c690fe196cfc2bea96fe096f4cd6d4bdf73a693a2d",
+  "source_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+  "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+  "controls": [
+    {
+      "instance_id": "fastapi_11194",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi-official-v1/result.json",
+      "receipt_sha256": "b18aa2674e0fea0b50ea968869db6ef87b16dc8e10603a3baabd72e4fc60fdd3",
+      "wheels": "data/task-wheels/fastapi_11194-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.552611441002227
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.665854429011233
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "21e42341f416904a0e464cac84f227ff8351bb652d522192212737e6dec663d1"
+    },
+    {
+      "instance_id": "fastapi_11355",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi11355-official-v2/result.json",
+      "receipt_sha256": "a4f2b32f9b434e4183b48228f8f031c910d7293cc7fadcd644a2d09e06ca2f46",
+      "wheels": "data/task-wheels/fastapi_11355-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.974015097948723
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.564932210952975
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "221c813ac48ec99474ff8c2805e0f4e8f86a978be78760b609f0c15e25c5ec18"
+    },
+    {
+      "instance_id": "fastapi_12942",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi12942-official-v1/result.json",
+      "receipt_sha256": "81e15fc933b969260b2d29e9d9cdd65fea9c1242afd552839b18178edd38db13",
+      "wheels": "data/task-wheels/fastapi_12942-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 20.402779083000496
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.082232893910259
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "68f9786237a6b5cc811190e95f8d45045d850aa09f77cb8be71e6bfd8e900a2a"
+    },
+    {
+      "instance_id": "fastapi_13207",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/verifier-fastapi13207-official-v1/result.json",
+      "receipt_sha256": "3650db1ed79cee23c693494f1e1d37c8eafd11807416863d409bbfc7612be1e7",
+      "wheels": "data/task-wheels/fastapi_13207-v1",
+      "execution_script_sha256": "2505384887518698d049c2a8790736c2947debf8d21a1af27b4bf67c1e5515af",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 20.498892360017635
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.065716411918402
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "6c60db4ffb645e8ca686e82e997127ea3f7744a2fddda510ec03653110813b4c"
+    },
+    {
+      "instance_id": "fastapi_13537",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/next-train-controls-v1/fastapi_13537/result.json",
+      "receipt_sha256": "f054f08849aa9551dc0cc2589c360244ac9afad92963c23d9fd4c0bef4bb8163",
+      "wheels": "data/task-wheels/fastapi_13537-v1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.97012348298449
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.056886343983933
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "8b343478bbf8c89247effd611e24c139d256deb20693db15a160d7af60ffa3c9"
+    },
+    {
+      "instance_id": "fastapi_13713",
+      "status": "passed",
+      "reused": true,
+      "receipt": "runs/next-train-controls-v1/fastapi_13713/result.json",
+      "receipt_sha256": "c4ca30169cccb0b45823caba31e094de94d3ec96af52312560dc1345007112af",
+      "wheels": "data/task-wheels/fastapi_13713-v1",
+      "execution_script_sha256": "58410e8989521da28e0e8ec671a1a4f50990fcb90e930c7116cb770dbd3c61f9",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.147601224016398
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 13.478300729999319
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "12518dc0f275c8a41025dc27af43ff7981a44cc118f8f9fadb8b920af8064bad"
+    },
+    {
+      "instance_id": "fastapi_13920",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_13920/result.json",
+      "receipt_sha256": "2b3d08bc1d20e338bc6eba61a46702d4ce329db6f09f3181fa512a7d80a48821",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_13920",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.503644388983957
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.605977614992298
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "00e9d064207581224fec0f6f49eba3ab334909c2b4c16bfdd1dd9520f090aa2e"
+    },
+    {
+      "instance_id": "fastapi_13786",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_13786/result.json",
+      "receipt_sha256": "584a141ddbdbe006ee02abd75b7565b4ed74c0ad18d5d8c94c66115201e55b97",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_13786",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.655163821997121
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.739168678061105
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "f6a2b3fe75e54cac68642f542932a236c9d95502b7cecf7444a401ccc59bc7a6"
+    },
+    {
+      "instance_id": "fastapi_14077",
+      "status": "failed: negative control did not distinguish a fix",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14077/result.json",
+      "receipt_sha256": "d101922e05a5b19eb9d204d2ecd0c6996691c549a5da0eec7662b2c29f29e533",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14077",
+      "arms": {
+        "empty": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.931836904026568
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.542042626999319
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "1c65517e393733a25b94abea2f54aff24f543ee7899d9aecf3403ccf4d0705b5"
+    },
+    {
+      "instance_id": "fastapi_14099",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14099/result.json",
+      "receipt_sha256": "c7911f4b418e243a05078c7d0e1ee200dcca4fb6d89b05cc67b7cfe5252b621c",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14099",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.00910768203903
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.55739795404952
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "531132dc5d789eda866dc99a0239d5fd5c911b247aec7d1cf1debb27810d8f55"
+    },
+    {
+      "instance_id": "fastapi_14246",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14246/result.json",
+      "receipt_sha256": "39ef658354fcc61a9b918f36773129232a67e668dc83f8a107a2123716331a12",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14246",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.751893702079542
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.115429206984118
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "04ebf28f666680ffb0f515153d90fb580a7e6f0e0356e9b52de3917f9cbf0c1d"
+    },
+    {
+      "instance_id": "fastapi_14186",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14186/result.json",
+      "receipt_sha256": "336aa81b2995aeebb38b954ff3028abd1064f3af8f9e890a66e3d8024645997b",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14186",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 14.683926293044351
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 0,
+          "error": "Required test node did not pass: test_model_description_escaped_with_formfeed",
+          "wall_seconds": 12.114691174007021
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "520fd9eefa0dd456b5890060a0c81233a00e4265a40bb7ad59c27353265ddb73"
+    },
+    {
+      "instance_id": "fastapi_14258",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14258"
+    },
+    {
+      "instance_id": "fastapi_14266",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14266/result.json",
+      "receipt_sha256": "cb921dd8838c7c731b51a8507a7e8b9c4b18a1212d0bb808dd4326dfa76e89e8",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14266",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.109680710942484
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.146010520984419
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "ad0ea388809562bb74d3b9bff453ce9d4cf4459b771f5fcecc8031f31b65d935"
+    },
+    {
+      "instance_id": "fastapi_14262",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14262/result.json",
+      "receipt_sha256": "412d9bf0700efd46e56b6d79bedbd0160b70f97fbc4dbb2bea30b4210210c32b",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14262",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 16.270211318973452
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.133926721988246
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "40bf4271b23d5e094e5365474de25ca2509f5e0ad8adc1292055b9852da49311"
+    },
+    {
+      "instance_id": "fastapi_14297",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14297/result.json",
+      "receipt_sha256": "6d7c549bcdb1b55ef0b1fba6ac5931190b1c33448041cde7a000652bc1e76aa6",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14297",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.055214805994183
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 17.313822583062574
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "faf251417cee0c2119c8dcaed978ca394abd35bd6c719ca9be175ed49688a595"
+    },
+    {
+      "instance_id": "fastapi_14301",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14301/result.json",
+      "receipt_sha256": "8ae019623f1cfe14268b7803bb465493bf385b5afa7d9169267f6889013ac6b0",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14301",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.294260789058171
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 17.020026660058647
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "bd0ceaa0d2060c9d29aea4c863ffb97f3f80776f2a38b36b0a8786d2585aaf7e"
+    },
+    {
+      "instance_id": "fastapi_14303",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14303/result.json",
+      "receipt_sha256": "18d8ae629a679d66c7e93e1bf2dbadc5812a8deb38cd4189891024c68eb757f2",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14303",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.795111135928892
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.437134142965078
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "20ae33bebb2bb75ebf4a30abc0c860ed231dcab56ef33d40c31e214ed65fe6e5"
+    },
+    {
+      "instance_id": "fastapi_14306",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14306/result.json",
+      "receipt_sha256": "9bf7b24337058ca86fcbc0130133fc476a76e2f2a78d21986b5d16b7da57f08c",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14306",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.855828340980224
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.436427000095136
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "5a305fba65f0d2f2bf4b6470ab4d13b68ff699d75f6264fa421d166974d1fef5"
+    },
+    {
+      "instance_id": "fastapi_14349",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14349/result.json",
+      "receipt_sha256": "6597f88d364aff698d14752f9c69ea679242b50f82bd49568f80d050ebfc5b0e",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14349",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.08727236208506
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.419404531945474
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "e72bbdf63c215f098c4292b9a86a2fe51ffcc5620822c0fa0405d02086b3dd21"
+    },
+    {
+      "instance_id": "fastapi_14356",
+      "status": "blocked: reference control did not pass",
+      "returncode": 2,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14356/result.json",
+      "receipt_sha256": "410982a1e2187b85b0fd0e130cace1cb9ffe78cf8dca31984ecfe001561d9d4d",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14356",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.19203788402956
+        },
+        "reference": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.437915646936744
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "ca4f623e0567628a004a139d710af127ff02e80f80e12357f2288496021f527c"
+    },
+    {
+      "instance_id": "fastapi_14360",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14360/result.json",
+      "receipt_sha256": "563c659ca74ea263a387304720415cb01d53cd580620903d4eb8cb8987bf925e",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14360",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.82118892192375
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.901560914935544
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "67b9aa2226446ec7623598dfc6fe7d4d1451d4f96a2fa16358fbae7cd6be0e0d"
+    },
+    {
+      "instance_id": "fastapi_14361",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14361/result.json",
+      "receipt_sha256": "5c6e5a1b6d6f317d40592ee7d86daf2c3987017e915cab87b6016e7427002938",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14361",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.770485326997004
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.874486246961169
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "f23db16d3302d32fd72676605938fbdc9a78f31d9861e642c81b15e6ef990bec"
+    },
+    {
+      "instance_id": "fastapi_14372",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14372/result.json",
+      "receipt_sha256": "b70c7bc3e18b034e22a2b83205c9c33df19d94ec15b222c0cd735a6e65347f05",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14372",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 13.423948660027236
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.27788937301375
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "ef5a2ef81194ed078a8bb31ed5614e47faeaef137e85953dba9d8227b9816390"
+    },
+    {
+      "instance_id": "fastapi_14371",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14371/result.json",
+      "receipt_sha256": "9cddae5fd83c770138303bfd0de659d54730e8e942e34cad95cede1fe3607290",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14371",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 16.365501452004537
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.185409029014409
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "4906c80c268d4bca86b07fdbc7b5ee25c0162f3a884e4ea26541a3492039ca57"
+    },
+    {
+      "instance_id": "fastapi_14419",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14419/result.json",
+      "receipt_sha256": "b448feddbbb3ec03fdd0aa7342ddd23681e9f68221e5f133a1fe38211143b955",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14419",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.400175311020575
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.518175470060669
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "a406f6a3b53a9dee9306b3cf21a8f0cd75b105946f2ac48a7f45cbae5f82cbb5"
+    },
+    {
+      "instance_id": "fastapi_14430",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14430/result.json",
+      "receipt_sha256": "fc300742e7d1f46c3b4682c0a8a126b048a1469e586362b5027168223a551a6a",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14430",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.065718683064915
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 9.506529614096507
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "6bd46e4af0547496b96102c89f27fc0332870ff7dd023ede892349c52e529f26"
+    },
+    {
+      "instance_id": "fastapi_14455",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14455/result.json",
+      "receipt_sha256": "56b22ff546e480383f37f074231a0fb98fd2b6711708dd356e7b6e7cc75df0ea",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14455",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.17022127902601
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 9.961510578054003
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "63a127bb606974ce7dfb2029195233bfeeb029beb90fd35dddc006e47429e867"
+    },
+    {
+      "instance_id": "fastapi_14448",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14448/result.json",
+      "receipt_sha256": "bc96334c5eb147102328fd5ae4168158ad2c9ccb8f3a9e04e3301355bda1539b",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14448",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.50257427804172
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 9.975263342959806
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "e55e18bfe8898bc48d5d4bef142df124ffeb8177195794065504d125b63b4ce6"
+    },
+    {
+      "instance_id": "fastapi_14458",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14458/result.json",
+      "receipt_sha256": "5984823b3737dd0383b2acecc28c25ab4f45ca34b46ed2b2caa6f979a9fffea1",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14458",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 16.990466731018387
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.978821216966026
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "d4c5aa2a97aa9852be358ada0abf0556af9b4d498acf2c3ba3738bed2815d6e5"
+    },
+    {
+      "instance_id": "fastapi_14459",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14459/result.json",
+      "receipt_sha256": "5e9a6cebab0d09e50554bee962376e975143b1deef1117a48586295599babd28",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14459",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 17.059478127979673
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.97435862896964
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "4c86d13f13ce750207fbeb2c8c9434cf106b64547c33621d89aebf1e88ba0aa1"
+    },
+    {
+      "instance_id": "fastapi_14479",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14479/result.json",
+      "receipt_sha256": "565c7347e1468c0e1d129531b34c222927878cddafa393e6b5fee0b1342771ae",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14479",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 14.087801374029368
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.736935882014222
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "24f21d72321d3dc6e7a6258e4bee0ffd169d0b449f518a0c72fd141b6989c0b8"
+    },
+    {
+      "instance_id": "fastapi_14463",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14463/result.json",
+      "receipt_sha256": "522e6f6ffbec148ad27641aa5f954923907c8665cf8f8943dba448061bc79d4a",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14463",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 13.959765987936407
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.740526946028695
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "22c6e5cbe1d1a2ebc72766f6e92003187db7bc6ebbe8c69d18416a308b52d35e"
+    },
+    {
+      "instance_id": "fastapi_14482",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14482/result.json",
+      "receipt_sha256": "e498a17035f17030bdb3ce085316320292ef084ac73a631507b840259676838f",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14482",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.958684822078794
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.145184037042782
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "e3cb99873c9dd0bd2e415d1bd94e4798ab2dad3cb58e26c659f2f968bd87030b"
+    },
+    {
+      "instance_id": "fastapi_14485",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14485/result.json",
+      "receipt_sha256": "bd8d9771cd6c6f95ee4c1888ea6d160f8b6cb602e4418037f37d5398f83ac85f",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14485",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 15.945417918963358
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.137653607060201
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "af4c6db6689c3337791c7e3a411153f9d57579271a44f94937d2a4747919a09f"
+    },
+    {
+      "instance_id": "fastapi_14492",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14492/result.json",
+      "receipt_sha256": "75d5a4b163da013d4f452d1e7662361b5bc08a1b48944401434fecdbafc25381",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14492",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.319945010938682
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.781875981017947
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "fa019abdb1ebb5197112f89b193c63d6989b9c2194ff4aefecd44325ac611ec1"
+    },
+    {
+      "instance_id": "fastapi_14487",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14487/result.json",
+      "receipt_sha256": "7c28a221a73b4e79698ff368709af69e2abe19b24dbc062aa9891ae7f73441ff",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14487",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.541245014057495
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.790088773006573
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "722bb1695638689fd562f3a82c3ff883110e8df6f222c2000ba854d12abaa538"
+    },
+    {
+      "instance_id": "fastapi_14512",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14512/result.json",
+      "receipt_sha256": "0e9b0ebcc7663d6f3c3975d30d0a90dcf0b7fc585f03f16d92c582d243bfbff5",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14512",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.489856185973622
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.659633110044524
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "90bdf5e33538d219332fd9fce144e23bc48bf476ae08d7782de329dc14d2d41a"
+    },
+    {
+      "instance_id": "fastapi_14583",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14583/result.json",
+      "receipt_sha256": "e381c74f345e5318fc8a58a0d82a3f05c276a7ab8565b4d5a8327cd8428efb59",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14583",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.411545731010847
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.665692663984373
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "b61a5ac5e44bd54a097962f2398c125247ce5a34c606b091a293040d219fba53"
+    },
+    {
+      "instance_id": "fastapi_14609",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14609/result.json",
+      "receipt_sha256": "9208a73929aa2570d2174faf75407815b30c9fde40106f9f803a8783a5c57279",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14609",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 13.958493862999603
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.58271532994695
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "fbd74e5018f12d923162e332b2e57332b9fe8b58a74a779400ed58c847a431be"
+    },
+    {
+      "instance_id": "fastapi_14605",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14605/result.json",
+      "receipt_sha256": "4b16af801ff066aca7c5c7820e33f5d22e2c60c3ca3e86d4369d3e00ac24fe57",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14605",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 2,
+          "error": null,
+          "wall_seconds": 14.024398469016887
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 11.571688465075567
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "8dce7856071d5d78e6a1c6e6fa31495d4c22b7a6cb8b82d094d84b79a0ffe85d"
+    },
+    {
+      "instance_id": "fastapi_14616",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14616"
+    },
+    {
+      "instance_id": "fastapi_14786",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14786/result.json",
+      "receipt_sha256": "c5ee1d2b1e82d9a9c17dc4ef17cad39986844593c35de428e5b91a88326da320",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14786",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.018140505999327
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 16.021720346063375
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "f61245555280454c043454f59f852e6fb10d5390bc7ddade0e8136684cf360d5"
+    },
+    {
+      "instance_id": "fastapi_14791",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14791/result.json",
+      "receipt_sha256": "df09d501adc3a6c71422df4df8850a70d2df0363d763dcdc30fc5b785eaa5031",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14791",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 23.145625871955417
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 12.614357028040104
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "88b592fd3ed4bb8f37aba5752f16a689cc4d88223dad53c9773a88f19559e555"
+    },
+    {
+      "instance_id": "fastapi_14851",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14851"
+    },
+    {
+      "instance_id": "fastapi_14873",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14873"
+    },
+    {
+      "instance_id": "fastapi_14953",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14953"
+    },
+    {
+      "instance_id": "fastapi_14962",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14962"
+    },
+    {
+      "instance_id": "fastapi_14964",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14964"
+    },
+    {
+      "instance_id": "fastapi_14978",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14978"
+    },
+    {
+      "instance_id": "fastapi_14986",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14986"
+    },
+    {
+      "instance_id": "fastapi_15023",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15023"
+    },
+    {
+      "instance_id": "fastapi_15030",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15030"
+    },
+    {
+      "instance_id": "fastapi_15280",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15280"
+    },
+    {
+      "instance_id": "fastapi_15588",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15588"
+    },
+    {
+      "instance_id": "fastapi_15589",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15589"
+    },
+    {
+      "instance_id": "fastapi_15661",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15661"
+    },
+    {
+      "instance_id": "fastapi_14794",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_14794/result.json",
+      "receipt_sha256": "76b651d8303ce39dd714b88bece5cbd126e0920c1f8d4661a3dc87b5a296b917",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_14794",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.039165260037407
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 9.935931446030736
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "2c884208305059c5b6954d0a8a270c725fa5ec088a19abc6ee0e26b9379288ce"
+    },
+    {
+      "instance_id": "fastapi_15745",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15745"
+    },
+    {
+      "instance_id": "fastapi_15763",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15763"
+    },
+    {
+      "instance_id": "fastapi_15785",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15785"
+    },
+    {
+      "instance_id": "fastapi_15800",
+      "status": "blocked before verifier receipt",
+      "returncode": 1,
+      "reused": false,
+      "receipt": null,
+      "receipt_sha256": null,
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_15800"
+    },
+    {
+      "instance_id": "fastapi_5624",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_5624/result.json",
+      "receipt_sha256": "c44bd84ba57de28ffbec7ce891f693f0c84fa6bd5e7732342df0dba18bd3fbb2",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_5624",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.298794786911458
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.575466009089723
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "afdbc4ad0cd83a28385f0f507eef2518607e0378d2ded690334e70ca10ed25b4"
+    },
+    {
+      "instance_id": "fastapi_5077",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_5077/result.json",
+      "receipt_sha256": "683f8a38948bab57a68575662f200680b5928ddac353ea4fd0d1d2efeae4c532",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_5077",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 10.923268862999976
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 14.81038102589082
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "3dd1240032ef7253cb3de857a68167eebfae91ae573f30d5366ee3d52c78a2cc"
+    },
+    {
+      "instance_id": "fastapi_9425",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_9425/result.json",
+      "receipt_sha256": "11394271ebda31ea57db4a9889c669e777cedcf746474237d4d1b6dd865e6169",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_9425",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.021375598968007
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.970605734968558
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "3d41f5bc2078d5273755832584039823e20aa05c6c8528b93da61a628b3cbeb2"
+    },
+    {
+      "instance_id": "fastapi_9555",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_9555/result.json",
+      "receipt_sha256": "cbe6d80bbd5bc2f9b9b3eea945d64fdb7c4e9fb2e0916fcfb15edb6cb74ac602",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_9555",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.074487761943601
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 10.98270982305985
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "48715c28849faf52e6ec972fa17968ef9ec2f5e61f31dd389f1bdcff9b34f5b1"
+    },
+    {
+      "instance_id": "fastapi_9753",
+      "status": "passed",
+      "returncode": 0,
+      "reused": false,
+      "receipt": "runs/full-train-environments-v1/fastapi_9753/result.json",
+      "receipt_sha256": "393fe721fd2da897263de50f869fedb19d3aca250e46941b37a6efe3f1dc18f6",
+      "wheels": "runs/full-train-environments-v1/wheel-profiles/fastapi_9753",
+      "arms": {
+        "empty": {
+          "resolved": false,
+          "test_exit_code": 1,
+          "error": null,
+          "wall_seconds": 11.114952486008406
+        },
+        "reference": {
+          "resolved": true,
+          "test_exit_code": 0,
+          "error": null,
+          "wall_seconds": 15.6213206629036
+        }
+      },
+      "origin_checks": [
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        },
+        {
+          "package": "fastapi",
+          "origin": "/workspace/fastapi/__init__.py",
+          "workspace": true
+        }
+      ],
+      "snapshot_sha256": "528a9458de0cb03acfd0c8f552354a2960e33ca62063406db2e02eb32110c3ee"
+    }
+  ],
+  "dependency_repair_selection_sha256": "f25a6a1b9adbe8bbce8abca1f554eeded29abe5454683e3cb60a7aac8b9f25dc",
+  "scope": "CPU environments only;6explicit prior controls reused,61new controls attempted.19missing-dependency tasks enter a separate repaired cohort. Original failures retained. No model score or learned target."
+}

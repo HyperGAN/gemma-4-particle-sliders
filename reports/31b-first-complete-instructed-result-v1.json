@@ -1,0 +1,49 @@
+{
+  "schema": "gemma4-first-complete-instructed-train-result-v1",
+  "as_of": "2026-11-17T04:41:00.348659+00:00",
+  "instance_id": "fastapi_11194",
+  "arm": "localize",
+  "resolved": true,
+  "agent_error": null,
+  "capture_complete": true,
+  "model_calls": 33,
+  "tool_calls": 32,
+  "elapsed_seconds": 543.4184361860389,
+  "model_identity": {
+    "repo": "google/gemma-4-31B-it-qat-w4a16-ct",
+    "revision": "52f3f65bc7a02d555763bc923bd1d9094898219d",
+    "dtype": "bfloat16",
+    "weight_format": "ct-w4g32",
+    "attn_implementation": "vllm:auto"
+  },
+  "evaluation_contract_sha256": "cc12228e8b67fe932b5951ee0867e3e7324a363b4749bd05f9bd6f98f2d8b646",
+  "verification": {
+    "stage": "fresh-container-tests",
+    "instance_id": "fastapi_11194",
+    "patch_sha256": "f6ba6a59cec96f75dba56e05e65d5574a68ba832b84775f0b4d32c6f94c71041",
+    "requests_sha256": "8a9722de1e7949590554db35b1d839cbf10152dbfdbee55f11d5045a568d753b",
+    "resolved": true,
+    "test_exit_code": 0,
+    "first_request_sha256": "1b6f2f6913a87efbe1d403879e1bb42ce6dfee20f63762ebd629bc158f9b00d9",
+    "error": null,
+    "image_id": "sha256:49684f44294cdb093a79b710857e51138f2074ff8981747cb1f4fb35270b519c",
+    "origin_checks": [
+      {
+        "package": "fastapi",
+        "origin": "/workspace/fastapi/__init__.py",
+        "workspace": true
+      }
+    ],
+    "evaluation_contract_sha256": "cc12228e8b67fe932b5951ee0867e3e7324a363b4749bd05f9bd6f98f2d8b646",
+    "tasks_sha256": "e4b3fd60f69dbc2b9213e54eeb9636db78aefe92c1d06269d73d9f5f8f3c8ad6",
+    "test_output_sha256": "764bc290cb06e0774997f79d34a597ed90a3e22ecb06e3266a0eb5ff5a1afbeb",
+    "verification_script_sha256": "e62a60170588aa33a12b47100c50560ccc420e241a1132273b6f4ae095b74509"
+  },
+  "cohort_sha256": "c8b07ec7d85fa30e9435cf34184025925fab397932f862826f6cae70975aedae",
+  "requests_sha256": "8a9722de1e7949590554db35b1d839cbf10152dbfdbee55f11d5045a568d753b",
+  "exact_declared_system_insertion": true,
+  "same_off_tools_and_generation": true,
+  "admitted_contexts": 0,
+  "optimizer_updates": 0,
+  "scope": "One complete instruction-guided TRAIN solve. OFF also passes, so this task cannot supply targets. No learned quality, DEV/holdout result or official score."
+}

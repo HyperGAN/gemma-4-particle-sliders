@@ -13,6 +13,8 @@ Matching prior controls can be explicitly reused. Reuse checks their dataset, sn
 
 Omit reuse flags for a new local qualification. The cohort directory is immutable and a terminal failure returns a nonzero exit code. A live process is not restarted after an observation timeout.
 
-The initial sweep remains running under its original wheel pool. Observed failures include an empty patch that already passes, a required test that skips, snapshot-output incompatibility under the installed Pydantic version, and a missing declared dependency. None has been repaired by changing tests or reference patches.
+The initial sweep completed with 45 of 67 environments qualified under its original wheel pool ([receipt](../reports/train-environment-qualification-v1.json)). It retains all 22 failures: one empty control already passes, two reference controls fail, and 19 lack a declared dependency. Observed failures include an empty patch that already passes, a required test that skips, snapshot-output incompatibility under the installed Pydantic version, and a missing declared dependency. None has been repaired by changing tests or reference patches.
 
 An explicit second wheel pool adds the unchanged PyPI `typing-inspection==0.4.2` wheel, the minimum required by newer snapshots. Its SHA256 is `4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7`. The initial `fastapi_14258` control passes with this dependency present. Its earlier failure remains recorded. This is a separate task/environment condition; the running original sweep and previously qualified wheel profiles are unchanged.
+
+All 19 tasks blocked solely by the missing wheel now form a separate, fixed dependency-repair cohort with the added wheel. The already passing `fastapi_14258` control is reused explicitly; the other 18 controls are running on two CPU workers. Previously passing environments are not rerun.
