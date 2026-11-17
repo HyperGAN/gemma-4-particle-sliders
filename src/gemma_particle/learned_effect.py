@@ -5,9 +5,12 @@ An effect is neither a task-quality score nor native-conversion fidelity.
 """
 import math
 import re
+import json
+from pathlib import Path
 
 from .conversion_handoff import read
 from .data import digest
+from .dev_dispatch import candidate_preflight
 from .harness_identity import sha256_file
 from .lora_serving import BASE_ALIAS
 
@@ -109,3 +112,25 @@ def learned_effect_preflight(client, root, identity, packet, cases, call):
         'native_metadata_sha256': packet['native_metadata_sha256'], 'cache_index_sha256': packet['cache_index_sha256'],
         'conversion_report_sha256': packet['conversion_report_sha256'],
         'scope': 'fixed disjoint TRAIN prefix effect only; no DEV score,native fidelity,confirmation or official result'}
+
+
+def audit_learned_effect(path, journal, identity, packet, cases, protocol_sha256):
+    """Recompute alias and effect observations from every original HTTP exchange."""
+    entries = [json.loads(line) for line in Path(journal).read_text().splitlines()]
+    cursor = 0
+    def replay(client, root, endpoint, payload=None):
+        nonlocal cursor
+        if cursor + 2 > len(entries):
+            raise ValueError('complete original learned preflight HTTP exchanges required')
+        attempt, response = entries[cursor:cursor + 2]; cursor += 2
+        if (attempt != {'phase': 'attempt', 'path': endpoint, 'request': payload}
+                or response.get('phase') != 'response' or response.get('path') != endpoint
+                or response.get('status_code') != 200):
+            raise ValueError('exact original successful learned preflight request/response order required')
+        return response['response']
+    candidate_preflight(None, 'offline-journal', identity, replay)
+    expected = learned_effect_preflight(None, 'offline-journal', identity, packet, cases, replay)
+    expected.update(protocol_sha256=protocol_sha256, http_journal_sha256=sha256_file(journal))
+    if cursor != len(entries) or expected != read(path) or expected['status'] != 'passed':
+        raise ValueError('actual complete stable learned-effect observation and unchanged journal required')
+    return expected

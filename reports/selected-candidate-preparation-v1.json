@@ -1,0 +1,69 @@
+{
+  "schema": "gemma4-selected-candidate-preparation-v1",
+  "as_of": "2026-11-17T15:17:07.372427+00:00",
+  "status": "cpu_preparation_passed_actual_candidate_not_released",
+  "source_base_commit": "a3fd0598e34f0404a9d0a9e96dc5bebbef81eb1b",
+  "sources_sha256": {
+    "scripts/prepare_selected_candidate.py": "84ab00f1933c888ea088996838a31d016fd795d451afca3f5c637bab84ebe1af",
+    "src/gemma_particle/selected_candidate.py": "f342e4d678ac2bf45d685ca569c9e21fa01261af2c0fcdffd0401e537546ee50",
+    "src/gemma_particle/learned_effect.py": "8312ae43a52a0265c8ea3ba4a8f28fb4d8dcbd4fcdcd64a10324787f1352a309",
+    "tests/test_selected_candidate.py": "80c91f8df31fd027f082e0d8a0800c5ff5460c88441a408e3b9396349cb47f91"
+  },
+  "checks": {
+    "focused_passed": 40,
+    "focused_log_sha256": "1ff39ecaac4801317de169510b7a20718da21b0666ac0b25f800f4f7e20850ec",
+    "full_public_source_passed": 260,
+    "full_public_source_skipped": 3,
+    "full_public_source_log_sha256": "507c734eb6821734f53a8b005b7e16e4de641a931fda4eb4749e18af9ddb7a61",
+    "public_python_files_compared": 145,
+    "public_python_source_differences": 0,
+    "private_data_directory_present": false,
+    "prebuilt_dist_directory_present": false,
+    "fixture_scope": "synthetic evaluated LoRA archive and DEV/confirmation receipts;changed archive,local prompt,DEV build,profiles,sampling,budget,prompt hash or adapter rejected;all24 HTTP exchanges replayed;changed request,response,extra call,aggregate,protocol rejected;actual CLI rejects incomplete access before other protected inputs",
+    "skip_scope": [
+      "two explicit opt-in CUDA resume controls",
+      "official downloaded-wheel byte check"
+    ]
+  },
+  "actual_plan_only": {
+    "plan_sha256": "ecd5fb0250d9f5359200a299bf4280ee9ad161bb01f55a0838e12a1f98f9426c",
+    "log_sha256": "a8a125a077911382e88bdcd35236dae19e5176e9c5121850feafc81970da3d83",
+    "protected_inputs_opened": false,
+    "account_requests": false,
+    "model_inference": false
+  },
+  "live_effect_function_bridge": {
+    "scope": "existing learned-effect qualification function syntax unchanged;new offline reader only;not a full semantic equivalence proof",
+    "functions": [
+      "prepare_effect_probes",
+      "_distribution",
+      "_difference",
+      "learned_effect_preflight"
+    ],
+    "existing_functions_AST_equal": true,
+    "live_frozen_source_sha256": "8366cc54a9592c7ba0a717556ba433d7fdbe8695406cec794a05ffc5941205ba",
+    "current_source_sha256": "8312ae43a52a0265c8ea3ba4a8f28fb4d8dcbd4fcdcd64a10324787f1352a309",
+    "python_files": 145,
+    "public_source_matches": true
+  },
+  "policy": {
+    "requires_complete_original_DEV_choice": true,
+    "requires_complete_49_plus_49_confirmation_audit": true,
+    "replays_original_selected_effect_HTTP_journal": true,
+    "uses_existing_evaluated_archive": true,
+    "all_selected_DEV_and_confirmation_build_receipts_equal": true,
+    "same_prompt_sampling_tools_budget_and_adapter": true,
+    "confirmation_outcomes_do_not_select_or_retune": true,
+    "uploads_or_submissions": false,
+    "local_payload_only": true
+  },
+  "actual_learned_effect_completions": 0,
+  "actual_learned_DEV_conditions": 0,
+  "actual_confirmation_attempts": 0,
+  "actual_candidate_payloads": 0,
+  "new_gpu_model_work": false,
+  "actual_account_requests": 0,
+  "official_score": null,
+  "remaining": "actual training and learned effects;full DEV choice;released access/assets/calibration;complete paired confirmation;production payload/upload/offline Kaggle emitter;official learned score above contemporaneous SOTA",
+  "scope": "CPU software and synthetic artifact-consistency controls only;cannot authenticate fabricated artifacts or establish actual model quality"
+}
