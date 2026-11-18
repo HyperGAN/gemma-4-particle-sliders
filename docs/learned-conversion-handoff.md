@@ -1,4 +1,35 @@
-# Prepare the complete learned conversion grid
+# Distill and serve a trained Particle Slider
+
+Train the native EMPF slider first. `FULL-*.pt` saves the optimizer and sampler state for resuming training. `RAW-*/` contains the trained slider tensors used for distillation. To produce a standard PEFT LoRA, the exporter fits each nonlinear routed bottleneck with a linear projection and measures the approximation on separate TRAIN probes. The report records the source checkpoint, response cache, sample counts and error per layer.
+
+## Distill one 31B EMPF checkpoint
+
+Use a sealed raw export, its original TRAIN response cache, and the disjoint issue-only packet from `prepare_conversion_probe.py`. The example uses update 256. Run it from the repository root with the pinned model and wheelhouse available and sufficient headroom on the chosen device.
+
+```bash
+PYTHONPATH=src HF_HUB_OFFLINE=1 .train-venv/bin/python scripts/convert_to_peft.py \
+  --config configs/31b-ct-shared-positional-pilot.json \
+  --native runs/empf-production/empf/RAW-0256 \
+  --cache runs/empf-pilot/cache \
+  --probe-contexts data/conversion-probe-v1/contexts.json \
+  --device cuda:0 --memory-fraction .50 --out runs/empf-peft
+```
+
+The output directory contains `adapter_config.json` and `adapter_model.safetensors`. The adjacent `runs/empf-peft-conversion.json` records the approximation. Share the two PEFT files and the receipt with anyone who wants to use this repository's vLLM launcher. They can serve the `particle_lora` alias on the pinned base directly from those files.
+
+```bash
+PYTHONPATH=src .vllm-venv/bin/python scripts/serve_vllm_lora.py \
+  --adapter runs/empf-peft --conversion-report runs/empf-peft-conversion.json \
+  --device cuda:0 --port 8027 --out runs/empf-peft-server
+```
+
+Kaggle packages the same PEFT files under `adapters/<alias>/`, with the agent YAML selecting that alias. The official starter's four-L4 command accepts a fixture matching the rank and all 230 attention projection shapes. The CPU check verified adapter discovery and command construction, including rank 8, tensor parallelism 4, and the CUDA graph memory profiler setting. Hosted adapter behavior requires a real inference result. [Official starter](https://www.kaggle.com/code/ryanholbrook/getting-started-gemma-4-developer-agent) · [Kaggle staff clarification](https://www.kaggle.com/competitions/gemma-4-developer-agent/discussion/749191)
+
+## Prepare all nine EMPF evaluation conditions
+
+Run `scripts/prepare_learned_sweep.py` with `--selection-plan research/dev-selection-empf-v1.json`. It verifies the three native checkpoints at 256, 512 and 1,024, then fits one adapter per checkpoint and derives strengths 0.5, 1 and 1.5. To convert completed checkpoints while native training continues on the other GPU, supply the staged controls root and the matching process IDs with `--staged-controls`, `--staged-controls-pid` and `--training-pid`. The dispatcher waits for the controls to finish and release the conversion GPU. Use the resulting candidate packets with the matched DEV plan and [prepare a selected Kaggle submission](kaggle-candidate-packaging.md) after evaluation.
+
+## Original two-preset grid
 
 `scripts/prepare_learned_sweep.py` waits for the actual full native training producer before preparing the eighteen learned conditions in the frozen [DEV plan](../research/dev-selection-v1.json). It does not run DEV tasks, open the holdout, select a winner, or submit to Kaggle.
 
