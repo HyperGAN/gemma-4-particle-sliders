@@ -16,7 +16,9 @@ The [EMPF execution plan](research/dev-selection-empf-v1.json) compares four con
 
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
-Kaggle accepts PEFT LoRA adapters. After native training, this project distills the slider's routed bottlenecks into a rank-eight PEFT LoRA for the same frozen Gemma 4 31B checkpoint. [Run the distilled adapter with vLLM](docs/learned-conversion-handoff.md#run-the-distilled-adapter) or [distill a native EMPF checkpoint](docs/learned-conversion-handoff.md#distill-one-31b-empf-checkpoint).
+To run the learned adapter once its weights are available, load its two PEFT files in vLLM with the pinned Gemma 4 31B base. [Serving quickstart](docs/learned-conversion-handoff.md#run-the-distilled-adapter)
+
+To reproduce the adapter, prepare the paired TRAIN cache, run the 31B EMPF learning-rate screen, and continue training from the selected checkpoint. Distill a resulting raw slider export to rank-eight PEFT LoRA for the same base model. [Train the 31B EMPF slider](docs/empf-learning-rate.md#running-the-screen) · [Distill the slider](docs/learned-conversion-handoff.md#distill-one-31b-empf-checkpoint)
 
 [CPU dose derivation](docs/lora-strength-derivation.md) reuses each measured unit-strength conversion for .5 and 1.5, avoiding repeated GPU fitting. Nonzero CPU fixture weights match separate native exports exactly; learned 31B quality remains unmeasured.
 
@@ -110,6 +112,8 @@ Cache, training and conversion commands require an explicit device after CPU pre
 The first four E2B TRAIN tasks completed all four arms without a verified fix and supplied zero contexts. This is a result under the project's former five-minute pilot budget. [Collection receipts](reports/e2b-native-collection-v1.json) preserve failures and timeouts. New artifacts and trajectory runs default to the documented 60-minute budget; see [operational budgets](docs/operational-budgets.md).
 
 Three official-vLLM 31B short-pilot cohorts completed with zero verified fixes and zero admitted targets ([receipts](reports/31b-vllm-short-pilots-v1.json)). The first baseline in a fresh 60-minute trial produced a patch that passed fresh tests after an 11-minute attempt ([receipt](reports/31b-first-full-budget-result-v1.json)); its context-limit error and incomplete capture are retained. The `localize` arm also completed a [verified solve with full capture](reports/31b-first-complete-instructed-result-v1.json) in about nine minutes; OFF already passes, so this task supplies no targets. The [full cohort is complete](reports/31b-first-full-budget-cohort-v1.json). [Its protocol](docs/vllm-collection.md) preserves the exact official prompt tokens while computing native hidden targets independently. A [supplementary 42-task DEV cohort](docs/supplementary-dev.md) was fixed across 24 repositories before inference; all 42 tasks passed independent negative/reference environment controls with workspace imports confirmed ([receipt](reports/supplementary-dev-qualification-v1.json)). The [CPU handoff](reports/supplementary-dev-handoff-v1.json) also passes. No model score has been measured on this cohort. The original Requests DEV results and Rich/HTTPX holdout remain intact.
+
+The commands below use the Gemma 4 E2B engineering pilot.
 
 ```bash
 # After complete TRAIN runs have genuine fresh-container verification receipts:
