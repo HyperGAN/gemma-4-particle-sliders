@@ -96,9 +96,15 @@ def continue_screen_winner(args):
         raise ValueError('exact predeclared rate screen and a fresh native output root required')
     screen_plan = load_plan(screen)
     settings, qualification = read(config), read(qualification_path)
+    cache = Path(screen_plan['cache'])
+    pilot = cache.parent
+    cache_sha = sha256_file(cache / 'index.json')
+    original = read(pilot / 'progress.json')
     if (sha256_file(config) != sha256_file(screen_plan['config'])
             or settings['updates'] != CHECKPOINTS[-1] or qualification['status'] != 'passed'
-            or qualification['memory_fraction'] != .5):
+            or qualification['memory_fraction'] != .5 or cache.name != 'cache'
+            or original.get('state') != 'completed_one_update'
+            or original.get('cache_index_sha256') != cache_sha):
         raise ValueError('the screen and production must use the same qualified native config')
     for name in ('scripts/train.py', 'src/gemma_particle/model.py', 'src/gemma_particle/runtime.py'):
         matches = [digest for path, digest in screen_plan['pins'].items() if path.endswith('/' + name)]
@@ -125,10 +131,10 @@ def continue_screen_winner(args):
         'schema': 'gemma4-screen-selected-empf-continuation-v1', 'presets': ['empf'],
         'executor_commit': commit, 'device': DEVICE, 'memory_fraction': .5,
         'config_sha256': sha256_file(config), 'horizon': CHECKPOINTS[-1], 'checkpoints': list(CHECKPOINTS),
-        'screen': str(screen), 'screen_plan_sha256': args.screen_plan_sha256, 'screen_supervisor': binding,
+        'pilot': str(pilot), 'screen': str(screen),
+        'screen_plan_sha256': args.screen_plan_sha256, 'screen_supervisor': binding,
         'screen_tie_policy': 'keep default if tied; otherwise lowest tied rate',
     })
-    cache_sha = sha256_file(Path(screen_plan['cache']) / 'index.json')
     state = {'cache_index_sha256': cache_sha, 'finished': [], 'training_updates': 0,
              'completed_steps_by_preset': {'empf': 0}, 'preset': 'empf'}
 
