@@ -39,6 +39,8 @@ def main():
         'protocol_sha256': protocol_sha, 'outcomes_sha256': sha256_file(args.cohort / 'outcomes.jsonl'),
         'created_at': datetime.now(timezone.utc).isoformat(), 'source_sha256': sha256_file(Path(__file__)),
         'eligible': [binding for _, _, binding in prepared], 'automatic_paid_retries': False}
+    if 'collection' in protocol:
+        claim['collection_plan_sha256'] = protocol['collection']['plan_sha256']
     if args.out.exists():
         raise FileExistsError('grading output is immutable')
     write_json(args.cohort / 'jev-grading-claim.json', claim)

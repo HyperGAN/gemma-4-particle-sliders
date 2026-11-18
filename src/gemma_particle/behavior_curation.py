@@ -13,6 +13,7 @@ from .decisions import validate_response
 from .dev import validate_agent_tasks
 from .history import OFFICIAL_COMPACTION, history_contract, is_assistant_decision
 from .harness_identity import sha256_file
+from .paired_collection import PAIR, QUARTET, load_collection_pilot
 from .prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
 
 
@@ -21,15 +22,25 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
     root, protocol_path = Path(root), Path(protocol_path)
     protocol = load_behavior_protocol(protocol_path)
     protocol_sha = sha256_file(protocol_path)
-    plan = json.loads((root / 'plan.json').read_text())
+    plan_path = root / 'plan.json'
+    plan = json.loads(plan_path.read_text())
+    arms = tuple(plan.get('arms', []))
+    pilot = plan.get('collection_pilot')
+    if pilot:
+        rows = load_collection_pilot(pilot['path'], pilot['sha256'], visible_tasks)
+        declared = {row['instance_id']: tuple(row['planned_arms']) for row in rows}
+        if len(plan['task_ids']) != 1 or declared.get(plan['task_ids'][0]) != arms:
+            raise ValueError('behavior cohort differs from the fixed collection pilot')
+        protocol['collection'] = {'arms': list(arms), 'pilot_sha256': pilot['sha256'],
+            'plan_sha256': sha256_file(plan_path)}
     if (plan.get('behavior_study') != protocol['name'] or plan.get('behavior_protocol_sha256') != protocol_sha
             or sha256_file(root / 'behavior-protocol.json') != protocol_sha
-            or plan.get('teacher_policy') != 'all-four'
-            or plan.get('arms') != ['off', 'reproduce', 'localize', 'verify']
+            or plan.get('teacher_policy') != ('paired-verify' if arms == PAIR else 'all-four')
+            or (not pilot and arms != QUARTET)
             or plan.get('budget_profile') != OFFICIAL_BUDGET
             or plan.get('budget') != budget_values(OFFICIAL_BUDGET)
             or plan.get('history') != history_contract(OFFICIAL_COMPACTION)):
-        raise ValueError('fresh prospective quartet declaration required; old cohorts cannot be relabeled')
+        raise ValueError('fresh prospective collection declaration required')
     tasks = read_jsonl(visible_tasks)
     validate_agent_tasks(tasks)
     ids = plan['task_ids']
@@ -43,7 +54,7 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
     outcomes = read_jsonl(root / 'outcomes.jsonl')
     grouped, _ = eligible_arms(tasks, outcomes, protocol)
     if set(grouped) != set(ids):
-        raise ValueError('terminal quartet is missing declared tasks')
+        raise ValueError('terminal collection is missing declared tasks')
     executor = Path(plan['source_checkout'])
     profile = plan.get('prompt_profile',DEFAULT_PROMPT_PROFILE)
     if profile not in PROMPT_PROFILES:
@@ -74,6 +85,9 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
                 or harness['command_timeout_seconds'] != 300
                 or contract.get('history') != plan['history']):
             raise ValueError('actual collector model/budget/history contract differs')
+        if pilot and read_jsonl(root / (arm + '-verification') / 'outcomes.jsonl') != [
+                grouped[task_id][arm] for task_id in ids]:
+            raise ValueError('paired pilot outcomes differ from the actual fresh verifier output')
         for task_id, arms in grouped.items():
             row = arms[arm]
             if (row['evaluation_contract_sha256'] != manifest['evaluation_contract_sha256']
@@ -93,7 +107,9 @@ def clean_capture(row):
 
 def eligible_arms(tasks, outcomes, protocol):
     validate_agent_tasks(tasks)
-    grouped = validate_context_outcomes(tasks, outcomes)
+    collection = protocol.get('collection')
+    grouped = validate_context_outcomes(tasks, outcomes,
+        paired_verify=bool(collection and tuple(collection['arms']) == PAIR))
     eligible = []
     for task_id, arms in sorted(grouped.items()):
         if task_id in protocol['cohort_policy']['excluded_fit_tasks']:
@@ -184,6 +200,7 @@ def load_verified_grades(cohort, grade_directory, tasks, outcomes, protocol, pro
             or result.get('claim_sha256') != sha256_file(claim_path)
             or claim['out'] != str(grade_directory.resolve())
             or claim['protocol_sha256'] != protocol_sha256
+            or claim.get('collection_plan_sha256') != protocol.get('collection', {}).get('plan_sha256')
             or claim['outcomes_sha256'] != sha256_file(cohort / 'outcomes.jsonl')
             or json.loads((grade_directory / 'claim.json').read_text()) != claim):
         raise ValueError('grading claim/result differs from the declared immutable pass')
@@ -248,5 +265,7 @@ def select_behavior_contexts(tasks, outcomes, grades, protocol, protocol_sha256)
         pair.update(behavior_study=protocol['name'], behavior_protocol_sha256=protocol_sha256,
             boundary='initial-assistant-decision', quality_rubric=deepcopy(protocol['question']),
             behavior_grades={'off': deepcopy(off), 'teacher': deepcopy(teacher)})
+        if 'collection' in protocol:
+            pair['collection'] = deepcopy(protocol['collection'])
         selected.append(pair)
     return selected

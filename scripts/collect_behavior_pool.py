@@ -1,4 +1,4 @@
-"""Collect fresh fixed-order TRAIN quartets until two initial targets qualify.
+"""Collect fresh TRAIN cohorts and curate initial training targets.
 
 Raw collection and Jev curation run from independently frozen checkouts. An
 already-running first quartet can be adopted by exact process/root identity;
@@ -17,6 +17,7 @@ from collect_train_pool import select_tasks, stop_owned_server, write_json
 from gemma_particle.behavior_protocol import load_behavior_protocol
 from gemma_particle.data import read_jsonl, write_jsonl
 from gemma_particle.harness_identity import sha256_file
+from gemma_particle.paired_collection import PILOT_QUARTET, load_collection_pilot
 from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES
 from gemma_particle.pool_recovery import reconcile_pool_prefix
 
@@ -69,6 +70,9 @@ def main():
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
     p.add_argument('--image', default='gemma-particle-sandbox:fastapi-deps-v2')
+    p.add_argument('--collection-pilot', type=Path)
+    p.add_argument('--collection-pilot-sha256')
+    p.add_argument('--plan-only', action='store_true')
     args = p.parse_args()
     for name in ('root', 'executor', 'curator', 'server_identity', 'protocol', 'qualification', 'visible_tasks'):
         setattr(args, name, getattr(args, name).resolve())
@@ -78,6 +82,10 @@ def main():
         raise ValueError('adoption requires both the existing cohort and its exact PID')
     if bool(args.recover_from)!=bool(args.interruption_receipt) or args.recover_from and args.first_cohort:
         raise ValueError('recovery requires an interruption receipt and excludes live adoption')
+    if bool(args.collection_pilot) != bool(args.collection_pilot_sha256):
+        raise ValueError('collection pilot requires its path and pinned hash')
+    if args.collection_pilot and (args.recover_from or args.first_cohort):
+        raise ValueError('collection pilot requires fresh planned tasks')
     endpoint = urlsplit(args.endpoint)
     if (endpoint.scheme != 'http' or endpoint.hostname not in ('localhost','127.0.0.1','::1')
             or endpoint.path.rstrip('/') != '/v1' or endpoint.username or endpoint.password
@@ -101,6 +109,18 @@ def main():
     visible_ids = {r['instance_id'] for r in visible}
     reserved = protocol['cohort_policy']['excluded_fit_tasks']
     selected = select_tasks(visible, qualification, [task for task in reserved if task in visible_ids])
+    pilot = None
+    if args.collection_pilot:
+        if args.executor != controller:
+            raise ValueError('paired collection requires the frozen pilot executor')
+        args.collection_pilot = args.collection_pilot.resolve()
+        rows = load_collection_pilot(args.collection_pilot, args.collection_pilot_sha256,
+            args.visible_tasks, args.qualification)
+        pilot = {row['instance_id']: row['planned_arms'] for row in rows}
+        allowed = {r['instance_id']: r for r in selected}
+        if not pilot.keys() <= allowed.keys():
+            raise ValueError('pilot contains a reserved or unqualified TRAIN task')
+        selected = [allowed[task_id] for task_id in pilot]
     raw_tasks = args.visible_tasks.parent.parent/'kaggle-official/tasks.jsonl'
     if sha256_file(raw_tasks) != qualification['source_sha256']:
         raise ValueError('qualified TRAIN source changed')
@@ -118,6 +138,9 @@ def main():
         preparation_options.extend(['--image',args.image])
     elif args.image!='gemma-particle-sandbox:fastapi-deps-v2':
         raise ValueError('frozen preparer requires its original qualified sandbox image')
+    if pilot:
+        preparation_options.extend(['--collection-pilot', str(args.collection_pilot),
+            '--collection-pilot-sha256', args.collection_pilot_sha256])
     if args.first_cohort:
         first = json.loads((args.first_cohort/'plan.json').read_text())
         if (first['task_ids'] != [selected[0]['instance_id']] or first['server_identity'] != server
@@ -156,6 +179,18 @@ def main():
         recovered,recovery=reconcile_pool_prefix(args.recover_from,plan,args.interruption_receipt)
         plan.update(recovery=recovery,controller_commit=controller_commit,
             recovery_source_sha256=sha256_file(controller/'src/gemma_particle/pool_recovery.py'))
+    if pilot:
+        plan.update(collection_pilot={'path': str(args.collection_pilot), 'sha256': args.collection_pilot_sha256,
+            'arms_by_task': pilot, 'trajectories': sum(map(len, pilot.values()))},
+            timing_disclosure='task and arm order declared before raw collection or grading',
+            stop_rule='complete all twelve declared TRAIN tasks and preserve each arm and grade outcome')
+    if args.plan_only:
+        args.root.mkdir(parents=True, mode=0o700)
+        write_json(args.root/'plan.json', plan)
+        write_json(args.root/'progress.json', {'state':'prepared', 'planned':len(selected),
+            'model_inference':False, 'decision_model_requests':False})
+        print(json.dumps({'state':'prepared', 'tasks':len(selected), 'pilot':bool(pilot)}))
+        return
     args.root.mkdir(parents=True, mode=0o700); (args.root/'logs').mkdir()
     write_json(args.root/'plan.json', plan)
     env = dict(os.environ, PYTHONPATH=str(args.curator/'src'), OMP_NUM_THREADS='4', MKL_NUM_THREADS='4', CUDA_VISIBLE_DEVICES='')
@@ -222,23 +257,41 @@ def main():
         if len(admitted)>1 or any(r['instance_id']!=task_id or r['decision']!=0 for r in admitted):
             raise ValueError('pool requires one genuine initial target per distinct TRAIN task')
         contexts.extend(admitted)
-        finished.append({'instance_id':task_id, 'cohort':str(cohort), 'grades':str(grades),
+        completed = {'instance_id':task_id, 'cohort':str(cohort), 'grades':str(grades),
             'grade_result_sha256':sha256_file(grades/'result.json'),
-            'contexts_sha256':sha256_file(curated/'jev-contexts.jsonl'), 'admitted_contexts':len(admitted)})
+            'contexts_sha256':sha256_file(curated/'jev-contexts.jsonl'), 'admitted_contexts':len(admitted)}
+        if pilot:
+            raw = json.loads((cohort/'progress.json').read_text())
+            if [row['arm'] for row in raw['finished']] != pilot[task_id]:
+                raise ValueError('terminal arm accounting differs from the pilot')
+            audit = json.loads((curated/'result.json').read_text())
+            completed.update(audit_sha256=sha256_file(curated/'result.json'),
+                pilot_comparison=audit['pilot_comparison'], arms=pilot[task_id],
+                agent_seconds=sum(row['elapsed_seconds'] for row in raw['finished']))
+        finished.append(completed)
         write_json(args.root/'progress.json', {'state':'collecting', 'finished':finished,
             'planned':len(selected), 'admitted_contexts':len(contexts)})
         print(json.dumps(finished[-1]), flush=True)
-        if len(contexts)>=2:
+        if (pilot and index + 1 == len(selected)) or (not pilot and len(contexts)>=2):
             if len({r['instance_id'] for r in contexts}) != len(contexts):
                 raise ValueError('distinct initial target tasks required')
             context_path = args.root/'jev-contexts.jsonl'; write_jsonl(context_path, contexts)
             transport = args.root/'prompt-transport.json'
-            execute(args.curator, args.curator/'.train-venv/bin/python', ['scripts/tokenize_contexts.py',
-                '--contexts', str(context_path), '--server-identity', str(args.server_identity),
-                '--endpoint', args.endpoint, '--out', str(transport)], args.root/'logs'/'tokenize.log')
-            result = {'state':'target_ready', 'finished':finished, 'admitted_contexts':len(contexts),
-                'contexts':str(context_path), 'prompt_transport':str(transport),
-                'prompt_transport_sha256':sha256_file(transport), 'scope':plan['scope']}
+            result = {'state':'pilot_complete' if pilot else 'target_ready',
+                'finished':finished, 'admitted_contexts':len(contexts),
+                'contexts':str(context_path), 'scope':plan['scope']}
+            if contexts:
+                execute(args.curator, args.curator/'.train-venv/bin/python', ['scripts/tokenize_contexts.py',
+                    '--contexts', str(context_path), '--server-identity', str(args.server_identity),
+                    '--endpoint', args.endpoint, '--out', str(transport)], args.root/'logs'/'tokenize.log')
+                result.update(prompt_transport=str(transport), prompt_transport_sha256=sha256_file(transport))
+            if pilot:
+                result['agent_seconds'] = sum(row['agent_seconds'] for row in finished)
+                result['trajectories'] = sum(len(row['arms']) for row in finished)
+                result['verify_only_admitted'] = sum(row['pilot_comparison']['verify_only_admitted'] for row in finished)
+                result['extra_teacher_admissions'] = [row['instance_id'] for row in finished
+                    if tuple(row['arms']) == PILOT_QUARTET and row['pilot_comparison']['declared_arms_admitted']
+                    and not row['pilot_comparison']['verify_only_admitted']]
             if args.stop_server_pid:
                 result['server_stop'] = stop_owned_server(args.stop_server_pid, args.server_identity)
             write_json(args.root/'progress.json', result); print(json.dumps(result), flush=True)
