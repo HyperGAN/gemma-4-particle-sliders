@@ -1,7 +1,7 @@
 """Run a bounded chunk of the shared PG0.10 conditional game; exact resume."""
 import argparse
-import hashlib
 import json
+import math
 from pathlib import Path
 import time
 
@@ -20,10 +20,13 @@ p.add_argument('--device', required=True)
 p.add_argument('--memory-fraction', type=float, default=.25)
 p.add_argument('--chunk-updates', type=int, default=64)
 p.add_argument('--resume', type=Path)
+p.add_argument('--lr', type=float, help='EMPF base rate; preserve the preset critic and bank multipliers')
 p.add_argument('--gpu-native-polar', action='store_true', help='explicit RHBI CUDA execution derivative; recorded in signature')
 args = p.parse_args()
 if not 1 <= args.chunk_updates <= 1024:
     raise ValueError('bounded positive chunk size required')
+if args.lr is not None and (args.preset != 'empf' or not math.isfinite(args.lr) or args.lr <= 0):
+    raise ValueError('a finite positive base-rate override is supported for EMPF only')
 config = json.loads(args.config.read_text())
 tasks = read_jsonl(args.train_tasks)
 if any(r['split'] != 'train' for r in tasks):
@@ -35,7 +38,8 @@ native = load_native(config, device=args.device, memory_fraction=args.memory_fra
 try:
     rows = [Prepared(row.row, row.target.to(native.particles.device), row.neutral.to(native.particles.device)) for row in rows]
     game = make_game(native, rows, preset=args.preset, steps=config['updates'], batch=config['batch_size'],
-                     optimizer_dense_profile='gpu_native_polar' if args.gpu_native_polar else 'recipe')
+                     optimizer_dense_profile='gpu_native_polar' if args.gpu_native_polar else 'recipe',
+                     recipe_overrides={'lr': args.lr} if args.lr is not None else None)
     args.out.mkdir(parents=True, exist_ok=True)
     if args.resume:
         pin = json.loads(args.resume.with_suffix('.json').read_text())
