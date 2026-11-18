@@ -110,8 +110,8 @@ def continue_screen_winner(args):
         matches = [digest for path, digest in screen_plan['pins'].items() if path.endswith('/' + name)]
         if matches != [sha256_file(executor / name)]:
             raise ValueError('production executor changes screened training math: ' + name)
-    if not args.plan_only and not args.screen_pid:
-        raise ValueError('exact owned screen supervisor PID required')
+    if not args.plan_only and not args.screen_pid and not screen_result_path.is_file():
+        raise ValueError('exact owned screen supervisor PID or a complete screen result is required')
     binding = None
     if args.screen_pid:
         proc = Path('/proc') / str(args.screen_pid)

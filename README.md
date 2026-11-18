@@ -4,6 +4,8 @@ An application of [paired-context behavior learning](https://huggingface.co/blog
 
 **Work in progress.** Native 31B EMPF training is underway on two distinct TRAIN questions admitted from Verify trajectories. The [first official OFF control](docs/official-submission.md), submission **58457991**, was pending on November 18, 2026. A learned Kaggle score remains outstanding.
 
+The [eight-update EMPF learning-rate screen](docs/empf-learning-rate.md) compares three base rates on disjoint TRAIN prompts. The full EMPF run starts from the winning trial's checkpoint.
+
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
 The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/jev-latest` and passes a real typed-API control with synthetic repair traces. It is available for behavior analysis; fresh repository tests still determine task success.
