@@ -91,7 +91,7 @@ def compare_official_record(binding, submission, current, public_submissions):
         'score_above_observed_public_values': False, 'verified_private_record': False,
         'scope': 'identified public leaderboard record only;private final standing and full goal completion remain unproven'}
     if submission['status'] != 'COMPLETE':
-        result['state'] = 'official_error' if submission['status'] == 'ERROR' else 'waiting_official_evaluation'
+        result['state'] = 'official_error' if submission['status'] in {'ERROR', 'CANCELLED', 'CANCELED'} else 'waiting_official_evaluation'
         return result
     if submission['error_present']:
         result['state'] = 'official_error'; return result
@@ -116,8 +116,10 @@ def compare_official_record(binding, submission, current, public_submissions):
     # other-team threshold; a real preceding reference must still be exceeded.
     above_values = score > before and score > best
     strict = score > before and own_entry is not None and bool(other_values) and score > current_threshold
+    awaiting_identity = score > before and (
+        score > best or score == best and len(contenders) == 1 and own_entry is None)
     state = ('verified_learned_public_record' if strict else 'waiting_public_leaderboard_identity'
-        if above_values else 'complete_without_verified_strict_record')
+        if awaiting_identity else 'complete_without_verified_strict_record')
     result.update(state=state,
         public_score=submission['public_score'], current_best_score=current['best_score'],
         public_leaderboard=current, public_team_submissions=public_submissions,

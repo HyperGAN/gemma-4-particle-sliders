@@ -58,6 +58,8 @@ def test_strict_official_record_cannot_be_a_tie_control_pending_or_wrong_submiss
         if mode == 'unlisted':
             assert result['state'] == 'waiting_public_leaderboard_identity'
             assert result['score_above_observed_public_values'] is True
+        if mode == 'wrong_member':
+            assert result['state'] == 'waiting_public_leaderboard_identity'
         if mode in ['pending', 'unknown']: assert result['state'] == 'waiting_official_evaluation'
 
 
