@@ -6,10 +6,23 @@ Train the native EMPF slider first. `FULL-*.pt` saves the optimizer and sampler 
 
 Once the learned export is available, put its `adapter_config.json` and `adapter_model.safetensors` together in an `empf-peft/` directory. The PEFT files are enough to serve the adapter with vLLM. The conversion receipt records how they were produced. Training checkpoints and Kaggle task files are only needed to reproduce the experiment.
 
-The local reference setup uses one 48 GiB NVIDIA RTX A6000, vLLM 0.19.1, compressed-tensors 0.15.0.1, and Transformers 5.13.1. With that software installed, start the server from the directory containing `empf-peft/`. vLLM downloads the pinned [Gemma 4 31B base](https://huggingface.co/google/gemma-4-31B-it-qat-w4a16-ct) if it is missing from the Hugging Face cache.
+The local reference setup uses Linux x86-64, Python 3.12 and one 48 GiB NVIDIA RTX A6000. Install the competition build of vLLM 0.19.1, which adds Gemma 4 LoRA support and fixes duplicate adapter module registration. The same version on PyPI has different model code. The competition wheel is available without a Kaggle login. [Kaggle wheelhouse](https://www.kaggle.com/datasets/metric/gemma-4-developer-agent-wheelhouse)
 
 ```bash
-vllm serve google/gemma-4-31B-it-qat-w4a16-ct \
+wheelhouse=https://www.kaggle.com/api/v1/datasets/download/metric/gemma-4-developer-agent-wheelhouse
+wheel=vllm-0.19.1-cp38-abi3-manylinux_2_31_x86_64.whl
+curl -fL "$wheelhouse/$wheel" -o "$wheel" &&
+  printf '%s  %s\n' 73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310 "$wheel" |
+  sha256sum -c - &&
+  uv venv --python 3.12 .vllm-venv &&
+  uv pip install --python .vllm-venv/bin/python "./$wheel" \
+    'compressed-tensors==0.15.0.1' 'transformers==5.13.1'
+```
+
+Start the server from the directory containing `empf-peft/`. vLLM downloads the pinned base if it is missing from the Hugging Face cache. [Gemma 4 31B base](https://huggingface.co/google/gemma-4-31B-it-qat-w4a16-ct)
+
+```bash
+.vllm-venv/bin/vllm serve google/gemma-4-31B-it-qat-w4a16-ct \
   --revision 52f3f65bc7a02d555763bc923bd1d9094898219d \
   --tokenizer-revision 52f3f65bc7a02d555763bc923bd1d9094898219d \
   --host 127.0.0.1 --port 8027 --dtype bfloat16 \
