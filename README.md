@@ -2,9 +2,9 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
 
-**Work in progress.** Native 31B EMPF training is underway on two distinct TRAIN questions admitted from Verify trajectories. The [first official OFF control](docs/official-submission.md), submission **58457991**, was pending on November 18, 2026. A learned Kaggle score remains outstanding.
+**Work in progress.** Native 31B EMPF training uses two distinct TRAIN questions admitted from Verify trajectories. The [first official OFF control](docs/official-submission.md) reached a Kaggle runtime error. The matched OFF control was pending as of November 18, 2026. The experiment has yet to produce a learned Kaggle score.
 
-The [eight-update EMPF learning-rate screen](docs/empf-learning-rate.md) compares three base rates on disjoint TRAIN prompts. The full EMPF run starts from the winning trial's checkpoint.
+The [eight-update EMPF learning-rate screen](docs/empf-learning-rate.md) selected `0.024` among three base rates. The full EMPF run resumes that trial's checkpoint. The untrained reference scored better on the distribution metric than every eight-update checkpoint.
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
