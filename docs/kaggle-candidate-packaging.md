@@ -15,11 +15,11 @@ CUDA_VISIBLE_DEVICES='' PYTHONPATH="$PWD/src" .harness-venv/bin/python \
   --access /path/to/released/access.json \
   --environments /path/to/qualification.json --pair /path/to/pair-claim.json \
   --comparison /path/to/pair/comparison.json \
-  --owner mikkel255 --notebook-slug gemma4-particle-selected \
+  --owner "$KAGGLE_OWNER" --notebook-slug gemma4-particle-selected \
   --out runs/selected/kaggle-prepared
 ```
 
-`--plan-only` prepares a declaration without opening access, calibration, confirmation or effect records and without account requests. Actual mode requires released access before reading protected results, reconstructs the complete pair and selected effect observations, and preserves an immutable readiness receipt. It performs no model inference, upload or submission.
+`--plan-only` prepares a declaration without opening access, calibration, confirmation or effect records and without account requests. Actual mode requires released access before reading protected results, reconstructs the complete pair and selected effect observations, and writes `submission.zip` and its immutable readiness receipt. The account owner can use the [read-only submission observer](official-result-verification.md) to verify the exact archive after submitting it.
 
 After actual preparation, publish `payload/dataset` privately with the authenticated Kaggle API, push `payload/notebook`, wait for that exact notebook version to complete, and download its output. Verify the downloaded ZIP against `payload/preparation.json` before submitting that notebook version through `competition_submit_code`. Preserve dataset, notebook/version and competition submission identifiers. An existing pending submission is polled by its ID rather than resubmitted.
 
