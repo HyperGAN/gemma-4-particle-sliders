@@ -2,6 +2,33 @@
 
 Train the native EMPF slider first. `FULL-*.pt` saves the optimizer and sampler state for resuming training. `RAW-*/` contains the trained slider tensors used for distillation. To produce a standard PEFT LoRA, the exporter fits each nonlinear routed bottleneck with a linear projection and measures the approximation on separate TRAIN probes. The report records the source checkpoint, response cache, sample counts and error per layer.
 
+## Run the distilled adapter
+
+Once the learned export is available, put its `adapter_config.json` and `adapter_model.safetensors` together in an `empf-peft/` directory. The PEFT files are enough to serve the adapter with vLLM. The conversion receipt records how they were produced. Training checkpoints and Kaggle task files are only needed to reproduce the experiment.
+
+The local reference setup uses one 48 GiB NVIDIA RTX A6000, vLLM 0.19.1, compressed-tensors 0.15.0.1, and Transformers 5.13.1. With that software installed, start the server from the directory containing `empf-peft/`. vLLM downloads the pinned [Gemma 4 31B base](https://huggingface.co/google/gemma-4-31B-it-qat-w4a16-ct) if it is missing from the Hugging Face cache.
+
+```bash
+vllm serve google/gemma-4-31B-it-qat-w4a16-ct \
+  --revision 52f3f65bc7a02d555763bc923bd1d9094898219d \
+  --tokenizer-revision 52f3f65bc7a02d555763bc923bd1d9094898219d \
+  --host 127.0.0.1 --port 8027 --dtype bfloat16 \
+  --gpu-memory-utilization 0.60 --max-model-len 32768 \
+  --max-num-seqs 1 --max-num-batched-tokens 2048 --enforce-eager \
+  --language-model-only --no-scheduler-reserve-full-isl \
+  --enable-auto-tool-choice --tool-call-parser gemma4 --reasoning-parser gemma4 \
+  --reasoning-config '{"reasoning_start_str":"<|channel>","reasoning_end_str":"<channel|>"}' \
+  --enable-lora --max-lora-rank 8 --lora-modules particle_lora=./empf-peft
+```
+
+Once the server is ready, request the `particle_lora` alias to activate the adapter.
+
+```bash
+curl -fsS http://127.0.0.1:8027/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"particle_lora","messages":[{"role":"user","content":"How do I reverse a Python list without modifying it?"}],"max_tokens":128}'
+```
+
 ## Distill one 31B EMPF checkpoint
 
 Use a sealed raw export, its original TRAIN response cache, and the disjoint issue-only packet from `prepare_conversion_probe.py`. The example uses update 256. Run it from the repository root with the pinned model and wheelhouse available and sufficient headroom on the chosen device.
@@ -15,7 +42,7 @@ PYTHONPATH=src HF_HUB_OFFLINE=1 .train-venv/bin/python scripts/convert_to_peft.p
   --device cuda:0 --memory-fraction .50 --out runs/empf-peft
 ```
 
-The output directory contains `adapter_config.json` and `adapter_model.safetensors`. The adjacent `runs/empf-peft-conversion.json` records the approximation. Share the two PEFT files and the receipt with anyone who wants to use this repository's vLLM launcher. They can serve the `particle_lora` alias on the pinned base directly from those files.
+The output directory contains `adapter_config.json` and `adapter_model.safetensors`. The adjacent `runs/empf-peft-conversion.json` records the approximation. The repository's evaluation launcher also checks that receipt before serving the adapter.
 
 ```bash
 PYTHONPATH=src .vllm-venv/bin/python scripts/serve_vllm_lora.py \

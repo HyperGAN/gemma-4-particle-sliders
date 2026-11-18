@@ -16,7 +16,7 @@ The [EMPF execution plan](research/dev-selection-empf-v1.json) compares four con
 
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
-Kaggle accepts PEFT LoRA adapters. After native training, this project distills the slider's routed bottlenecks into a rank-eight PEFT LoRA for the same frozen Gemma 4 31B checkpoint. The LoRA and its conversion receipt let others run the distilled model with vLLM. [Distill and serve an EMPF checkpoint](docs/learned-conversion-handoff.md)
+Kaggle accepts PEFT LoRA adapters. After native training, this project distills the slider's routed bottlenecks into a rank-eight PEFT LoRA for the same frozen Gemma 4 31B checkpoint. [Run the distilled adapter with vLLM](docs/learned-conversion-handoff.md#run-the-distilled-adapter) or [distill a native EMPF checkpoint](docs/learned-conversion-handoff.md#distill-one-31b-empf-checkpoint).
 
 [CPU dose derivation](docs/lora-strength-derivation.md) reuses each measured unit-strength conversion for .5 and 1.5, avoiding repeated GPU fitting. Nonzero CPU fixture weights match separate native exports exactly; learned 31B quality remains unmeasured.
 
