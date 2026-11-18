@@ -23,7 +23,7 @@ def instruction_set(protocol=DEFAULT_INSTRUCTION_PROTOCOL):
     return INSTRUCTION_PROTOCOLS[protocol]
 
 
-def validate_context_outcomes(tasks, outcomes):
+def validate_context_outcomes(tasks, outcomes, *, paired_verify=False):
     """Outcomes contain matched complete runs, not judge-generated target answers.
 
     A verifier receipt binds the task, patch SHA, test result, and exact
@@ -96,7 +96,10 @@ def validate_context_outcomes(tasks, outcomes):
         if len({r.get('history_profile',NO_COMPACTION) for r in arms.values()})!=1:
             raise ValueError('curation arms have unmatched history profiles')
         protocol=next(iter(protocols));instructions=instruction_set(protocol)
-        if set(arms) != {'off',*instructions}:
+        expected = {'off', 'verify'} if paired_verify else {'off', *instructions}
+        if set(arms) != expected:
+            if paired_verify:
+                raise ValueError('the declared OFF and Verify pair must finish before selection')
             raise ValueError('all four declared curation arms must finish before selection')
         baseline=arms['off']
         if any(r['evaluation_contract_sha256'] != baseline['evaluation_contract_sha256'] for r in arms.values()):

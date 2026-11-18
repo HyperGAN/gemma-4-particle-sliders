@@ -7,6 +7,7 @@ import sys
 
 import pytest
 
+from gemma_particle import behavior_curation
 from gemma_particle.behavior_curation import (eligible_arms, episode_payload, select_behavior_contexts,
     verified_grade, load_behavior_cohort, load_verified_grades)
 from gemma_particle.behavior_protocol import load_behavior_protocol
@@ -15,6 +16,7 @@ from gemma_particle.capture import CONTEXT_CAPTURE_PROTOCOL, RequestJournal
 from gemma_particle.data import digest, write_jsonl
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.history import OFFICIAL_COMPACTION, history_contract
+from gemma_particle.paired_collection import PAIR, PILOT_QUARTET
 from test_data import arms
 
 
@@ -137,7 +139,7 @@ def test_behavior_tie_break_uses_score_before_cost_and_rejects_changed_grade_bin
         select_behavior_contexts(tasks, rows, grades, protocol, 'protocol')
 
 
-def synthetic_cohort(tmp_path):
+def synthetic_cohort(tmp_path, *, pilot_arms=None):
     tasks, rows, protocol = study_rows()
     root = tmp_path/'cohort'; root.mkdir()
     protocol_path = Path(__file__).resolve().parents[1]/'research/jev-evidence-loop-v1.json'
@@ -150,6 +152,17 @@ def synthetic_cohort(tmp_path):
         source_checkout=str(executor), source_git='a'*40, execution_sources={'source.py':sha256_file(executor/'source.py')},
         budget_profile=OFFICIAL_BUDGET, budget=budget_values(OFFICIAL_BUDGET),
         server_identity=server, history=history_contract(OFFICIAL_COMPACTION))
+    if pilot_arms:
+        plan.update(arms=list(pilot_arms), teacher_policy='paired-verify' if pilot_arms == PAIR else 'all-four',
+            collection_pilot={'path': str(tmp_path/'pilot.json'), 'sha256': 'synthetic declaration'})
+        rows = sorted((row for row in rows if row['arm'] in pilot_arms),
+            key=lambda row: pilot_arms.index(row['arm']))
+        if pilot_arms == PILOT_QUARTET:
+            for row in rows:
+                if row['arm'] in ('reproduce', 'verify'):
+                    success = row['arm'] == 'reproduce'
+                    row['resolved'] = row['verification']['resolved'] = success
+                    row['verification']['test_exit_code'] = 0 if success else 1
     contract = dict(budget=dict(time_minutes=60, tool_calls=100, turns=500, cost_usd=None, total_tokens=None),
         harness=dict(command_timeout_seconds=300), history=history_contract(OFFICIAL_COMPACTION))
     for row in rows:
@@ -164,11 +177,55 @@ def synthetic_cohort(tmp_path):
             evaluation_contract_sha256=digest(contract), image_id='synthetic-image')
         (arm/'cohort.json').write_text(json.dumps(dict(arm=row['arm'], server_identity=server,
             contract=contract, evaluation_contract_sha256=digest(contract), image_id='synthetic-image')))
+        if pilot_arms:
+            verified = root/(row['arm']+'-verification')
+            verified.mkdir()
+            write_jsonl(verified/'outcomes.jsonl', [row])
     (root/'plan.json').write_text(json.dumps(plan))
     (root/'progress.json').write_text(json.dumps({'state':'complete'}))
     write_jsonl(root/'outcomes.jsonl', rows)
     visible = tmp_path/'visible.jsonl'; write_jsonl(visible, tasks)
     return root, visible, protocol_path
+
+
+@pytest.mark.parametrize('pilot_arms', [PAIR, PILOT_QUARTET])
+def test_paired_pilot_grading_and_offline_comparison(tmp_path, monkeypatch, pilot_arms):
+    root, visible, protocol_path = synthetic_cohort(tmp_path, pilot_arms=pilot_arms)
+    monkeypatch.setattr(behavior_curation, 'load_collection_pilot',
+        lambda *_: [{'instance_id': 'task', 'planned_arms': list(pilot_arms)}])
+    scripts = Path(__file__).resolve().parents[1]/'scripts'
+    def load(name):
+        spec = importlib.util.spec_from_file_location(name, scripts/(name+'.py'))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    grade_script = load('grade_behavior_cohort')
+    curator = load('curate_behavior_cohort')
+    calls = []
+    def synthetic_decide(request, **options):
+        calls.append(request)
+        score = 2 if len(calls) == 1 else 4
+        response = dict(model='~typesafe/jev-latest', answers={'repair_evidence':dict(type='score',
+            score=score, confidence=.8, probabilities={str(i):float(i == score) for i in range(5)})})
+        Path(options['response_path']).write_text(json.dumps(response))
+        return response
+    monkeypatch.setattr(grade_script, 'decide', synthetic_decide)
+    common = ['--cohort',str(root),'--visible-tasks',str(visible),'--protocol',str(protocol_path)]
+    grades = tmp_path/'graded'
+    monkeypatch.setattr(sys, 'argv', ['grader',*common,'--out',str(grades)])
+    grade_script.main()
+    curated = tmp_path/'curated'
+    monkeypatch.setattr(sys, 'argv', ['curator',*common,'--grades',str(grades),'--out',str(curated)])
+    curator.main()
+    assert len(calls) == 2
+    assert (curated/'jev-contexts.jsonl').read_bytes() == (grades/'jev-contexts.jsonl').read_bytes()
+    result = json.loads((curated/'result.json').read_text())
+    assert result['admitted_contexts'] == 1
+    assert result['pilot_comparison']['verify_only_admitted'] is (pilot_arms == PAIR)
+    assert result['pilot_comparison']['selected_arm'] == ('verify' if pilot_arms == PAIR else 'reproduce')
+    (root/'verify-verification/outcomes.jsonl').write_text('')
+    with pytest.raises(ValueError, match='actual fresh verifier'):
+        load_behavior_cohort(root, visible, protocol_path)
 
 
 def test_grading_script_single_pass_offline_revalidation_and_tamper_rejection(tmp_path, monkeypatch):

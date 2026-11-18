@@ -20,6 +20,7 @@ from gemma_particle.data import digest
 from gemma_particle.dev import validate_agent_tasks
 from gemma_particle.harness_identity import sha256_file, wheel_identity
 from gemma_particle.history import OFFICIAL_COMPACTION, history_contract
+from gemma_particle.paired_collection import PAIR, QUARTET, load_collection_pilot
 from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES,prompt_identity
 
 
@@ -35,6 +36,8 @@ def main():
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
+    p.add_argument('--collection-pilot', type=Path)
+    p.add_argument('--collection-pilot-sha256')
     p.add_argument('--image', default='gemma-particle-sandbox:fastapi-deps-v2')
     args = p.parse_args()
     protocol = load_behavior_protocol(args.protocol)
@@ -51,6 +54,16 @@ def main():
         raise ValueError('sanitized TRAIN task required')
     if args.task_id in protocol['cohort_policy']['excluded_fit_tasks']:
         raise ValueError('reserved conversion task cannot supply fitting data')
+    arms = QUARTET
+    if bool(args.collection_pilot) != bool(args.collection_pilot_sha256):
+        raise ValueError('collection pilot requires its path and pinned hash')
+    if args.collection_pilot:
+        rows = load_collection_pilot(args.collection_pilot, args.collection_pilot_sha256,
+            args.visible_tasks, args.qualification)
+        task_arms = {r['instance_id']: tuple(r['planned_arms']) for r in rows}
+        if args.task_id not in task_arms:
+            raise ValueError('task is outside the declared TRAIN pilot')
+        arms = task_arms[args.task_id]
     qualification = json.loads(args.qualification.read_text())
     row = next(r for r in qualification['controls'] if r['instance_id'] == args.task_id)
     receipt = Path(row['receipt']).resolve()
@@ -89,13 +102,16 @@ def main():
         'scripts/verify_trajectories.py', 'src/gemma_particle/history.py', 'src/gemma_particle/adk_capture.py']
     if args.prompt_profile != DEFAULT_PROMPT_PROFILE:
         sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
+    if args.collection_pilot:
+        sources.append('src/gemma_particle/paired_collection.py')
     plan = {'schema': 'gemma4-curation-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
-        'task_ids': [args.task_id], 'arms': ['off', 'reproduce', 'localize', 'verify'],
+        'task_ids': [args.task_id], 'arms': list(arms),
         'server_identity': server, 'target_instructions': instruction_set('tools-v2'),
         'endpoint': args.endpoint.rstrip('/'),
         'source_git': commit, 'source_checkout': str(executor),
         'execution_sources': {s: sha256_file(executor / s) for s in sources},
-        'environment_control_sha256': row['receipt_sha256'], 'teacher_policy': 'all-four',
+        'environment_control_sha256': row['receipt_sha256'],
+        'teacher_policy': 'paired-verify' if arms == PAIR else 'all-four',
         'image':image, 'image_id':image_id, 'visible_tasks_sha256':sha256_file(args.visible_tasks),
         'instruction_protocol': 'tools-v2', 'capture_protocol': CONTEXT_CAPTURE_PROTOCOL,
         'history_profile': OFFICIAL_COMPACTION, 'history': history_contract(OFFICIAL_COMPACTION),
@@ -104,6 +120,8 @@ def main():
         'preparer_sha256': sha256_file(Path(__file__)),
         'legacy_contexts': 'unused auxiliary output; not admitted Jev fitting data',
         'scope': 'fresh prospective TRAIN raw collection; no grades, fitting targets or benchmark score'}
+    if args.collection_pilot:
+        plan['collection_pilot'] = {'path': str(args.collection_pilot.resolve()), 'sha256': args.collection_pilot_sha256}
     if args.prompt_profile != DEFAULT_PROMPT_PROFILE:
         plan['prompt_profile'] = args.prompt_profile
         plan['common_prompt'] = prompt_identity((executor/'submission/prompts/system.md').read_text(),args.prompt_profile)

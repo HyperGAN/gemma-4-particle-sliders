@@ -18,6 +18,7 @@ from gemma_particle.budgets import PILOT_BUDGET,budget_values
 from gemma_particle.capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
 from gemma_particle.data import read_jsonl,write_jsonl
 from gemma_particle.history import NO_COMPACTION,HISTORY_PROFILES,history_contract
+from gemma_particle.paired_collection import PAIR, PILOT_QUARTET, QUARTET, load_collection_pilot
 from gemma_particle.prompt_profiles import DEFAULT_PROMPT_PROFILE,PROMPT_PROFILES
 
 
@@ -58,6 +59,7 @@ def main():
     if capture_protocol not in (LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL):raise ValueError('unknown capture protocol')
     budget=budget_values(budget_profile)
     instructions=instruction_set(protocol)
+    pilot = plan.get('collection_pilot')
     if protocol!=DEFAULT_INSTRUCTION_PROTOCOL or budget_profile!=PILOT_BUDGET or capture_protocol!=LEGACY_CAPTURE_PROTOCOL or prompt_profile!=DEFAULT_PROMPT_PROFILE:
         if plan.get('target_instructions')!=instructions:raise ValueError('declared instruction text changed')
         sources=['src/gemma_particle/curation.py','scripts/build_submission.py','scripts/run_trajectories.py','scripts/collect_arms.py']
@@ -70,16 +72,26 @@ def main():
             sources.extend(['src/gemma_particle/history.py','src/gemma_particle/adk_capture.py'])
         if prompt_profile!=DEFAULT_PROMPT_PROFILE:
             sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
+        if pilot:
+            sources.append('src/gemma_particle/paired_collection.py')
         observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
         if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())
-    if plan['server_identity']!=identity or plan['arms']!=['off','reproduce','localize','verify']:
-        raise ValueError('declared model identity or four-arm plan changed')
+    arms = tuple(plan['arms'])
+    teacher_policy=plan.get('teacher_policy','all-four')
+    if pilot:
+        rows = load_collection_pilot(pilot['path'], pilot['sha256'], args.visible_tasks)
+        task_arms = {row['instance_id']: tuple(row['planned_arms']) for row in rows}
+        if len(plan['task_ids']) != 1 or task_arms.get(plan['task_ids'][0]) != arms:
+            raise ValueError('raw TRAIN cohort differs from the fixed collection pilot')
+    expected_arms = PAIR if teacher_policy == 'paired-verify' else PILOT_QUARTET if pilot else QUARTET
+    if (plan['server_identity']!=identity or arms != expected_arms
+            or teacher_policy == 'paired-verify' and not pilot):
+        raise ValueError('declared model identity or arm plan changed')
     visible=read_jsonl(args.visible_tasks)
     if any(r['split']!='train' for r in visible):raise ValueError('TRAIN manifest required')
     selected=plan['task_ids'];outcomes=[];summary=[]
-    teacher_policy=plan.get('teacher_policy','all-four')
-    if teacher_policy not in ('all-four','failed-off-only') or (teacher_policy!='all-four' and len(selected)!=1):
+    if teacher_policy not in ('all-four','failed-off-only','paired-verify') or (teacher_policy!='all-four' and len(selected)!=1):
         raise ValueError('conditional teacher collection requires one declared TRAIN task')
     logs=args.root/'logs';logs.mkdir(exist_ok=True)
     def execute(command,log):
@@ -125,7 +137,7 @@ def main():
                 summary.append({k:row[k] for k in ('instance_id','arm','resolved','agent_error','capture_complete','tool_calls','elapsed_seconds')})
             (args.root/'progress.json').write_text(json.dumps({'state':'collecting','finished':summary},indent=2)+'\n')
             print(json.dumps({'arm':arm,'verified':[{'task':r['instance_id'],'resolved':r['resolved']} for r in rows]}),flush=True)
-            if arm=='off' and teacher_policy!='all-four':
+            if arm=='off' and teacher_policy=='failed-off-only':
                 reason=teacher_skip_reason(teacher_policy,rows[0])
                 if reason:
                     write_jsonl(args.root/'outcomes.jsonl',outcomes);write_jsonl(args.root/'contexts.jsonl',[])
@@ -135,8 +147,9 @@ def main():
                     (args.root/'progress.json').write_text(json.dumps(status,indent=2)+'\n')
                     print(json.dumps(status),flush=True);return
         write_jsonl(args.root/'outcomes.jsonl',outcomes)
-        pairs=select_contexts(visible,outcomes)
-        if teacher_policy!='all-four':
+        # Jev curation independently verifies and selects from the two-arm pilot.
+        pairs=[] if teacher_policy=='paired-verify' else select_contexts(visible,outcomes)
+        if teacher_policy=='failed-off-only':
             for pair in pairs:
                 pair.update(teacher_policy=teacher_policy,collection_plan_sha256=hashlib.sha256((args.root/'plan.json').read_bytes()).hexdigest())
         write_jsonl(args.root/'contexts.jsonl',pairs)
