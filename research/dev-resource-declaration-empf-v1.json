@@ -117,10 +117,9 @@
   "cpu_threads_per_slot": 4,
   "inherited_nice": 10,
   "normalization": "only canonical model_identity.device:assigned qualified cuda:1 maps to cuda:0;raw physical fingerprints retained",
-  "unchanged": "all22 conditions;full42+13 panels;original rank/secondary floor;all recipes/checkpoints/strengths/cache/seed/raw weights;locked49 confirmation",
+  "comparison_scope": "Thirteen conditions on the original 42-task and 13-task DEV panels, with nine EMPF checkpoint and strength combinations and four controls. The selected EMPF condition advances to the locked 49-task comparison.",
   "confirmation_device_policy": "strict original GPU0 serving contract",
   "failure_policy": "preserve actual observations and attempts;no automatic rerolls,threshold changes,condition reassignment or inferred task scores",
   "activation": "requires actual predeclared same-adapter hardware control,offline audit,and explicit qualified-resource dispatch;no activation by this declaration",
-  "coordinator_question": "gemma4-dev-grid-resource-budget-question-v1 pending revision2;no reply claimed",
   "scope": "Prospective two-card assignment for all declared EMPF conditions, preserving the original numerical probes and GPU0 confirmation contract"
 }

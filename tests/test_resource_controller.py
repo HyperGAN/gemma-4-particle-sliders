@@ -122,8 +122,9 @@ def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypa
         observe_slot(binding, index, fact, phase, sample=lambda:
             ({index: fact}, [{'pid': binding['pid'], 'gpu_uuid': fact['uuid']}])))
     worker = tmp_path / 'serve_vllm_lora.py'
-    worker.write_text("""import json,sys,signal,time
+    worker.write_text("""import json,os,sys,signal,time
 from pathlib import Path
+os.nice(max(0, 10 - os.getpriority(os.PRIO_PROCESS, 0)))
 args=sys.argv
 def get(name):return args[args.index(name)+1]
 out=Path(get('--out'));out.mkdir()
@@ -184,6 +185,7 @@ raise SystemExit(payload['exit'])
         return '49140,49140\n'
     monkeypatch.setattr(controller.subprocess, 'check_output', checked)
     monkeypatch.setattr(controller.subprocess, 'run', lambda argv, **kw: subprocess.CompletedProcess(argv, 0))
+    monkeypatch.setattr(controller.os, 'getpriority', lambda which, who: 10)
     monkeypatch.setattr(controller.time, 'sleep', lambda interval: real_sleep(.01))
     def respond(request):
         index = ports.index(request.url.port); identity = pair[index]

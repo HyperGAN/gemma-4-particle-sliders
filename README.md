@@ -2,15 +2,15 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
 
-**Work in progress. No SOTA improvement or official Kaggle score has been measured.** The [first official OFF control](docs/official-submission.md), submission **58457991**, is pending. Current evidence includes CPU checks, the official compiler, real-task scorer controls, pretrained tool calling, and verified full-budget TRAIN fixes. [Current results](reports/leaderboard.json) retain unmeasured outcomes explicitly.
+**Work in progress.** Native 31B EMPF training is underway on two distinct TRAIN questions admitted from Verify trajectories. The [first official OFF control](docs/official-submission.md), submission **58457991**, was pending on November 18, 2026. A learned Kaggle score remains outstanding.
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
 The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/jev-latest` and passes a real typed-API control with synthetic repair traces. It is available for behavior analysis; fresh repository tests still determine task success.
 
-A [prospective initial-decision cohort](docs/jev-initial-cohort.md) freezes the article's common behavior-grade selection while requiring complete, freshly verified successful teachers. Its [first real quartet](reports/first-real-behavior-admission-v1.json) supplies one initial target: all four arms pass fresh tests, and Jev selects `verify` at .99 over OFF at .40. Independent offline curation reproduces the selection. A second distinct question is required before the first pretrained update.
+A [prospective initial-decision cohort](docs/jev-initial-cohort.md) applies the article's common behavior-grade selection to successful teacher patches verified in fresh containers. Its [first real quartet](reports/first-real-behavior-admission-v1.json) supplies an initial target from Verify, with a Jev score of .99 against OFF at .40. Subsequent TRAIN collection admitted a second distinct question from Verify before native training started.
 
-The [prospective DEV comparison](docs/dev-selection.md) fixes 22 conditions and complete 42+13-task panels before model DEV inference. All 42 supplementary environments qualify; five original Requests environments qualify and all 13 remain reported. Controls and learned candidates use matched LoRA-enabled engine settings, actual returned model aliases, and fresh patch verification. The confirmation set remains locked.
+The [EMPF execution plan](research/dev-selection-empf-v1.json) compares four controls with nine learned conditions. It tests checkpoints at 256, 512 and 1,024 updates at adapter strengths 0.5, 1 and 1.5. Each condition uses the full 42-task and 13-task panels from the [original DEV design](docs/dev-selection.md). Controls and learned candidates use matched LoRA-enabled engine settings, actual returned model aliases, and fresh patch verification. The selected condition advances to a locked 49-task comparison with OFF.
 
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
@@ -18,9 +18,9 @@ Kaggle accepts PEFT LoRA adapters. Native particle routing is nonlinear and cann
 
 [CPU dose derivation](docs/lora-strength-derivation.md) reuses each measured unit-strength conversion for .5 and 1.5, avoiding repeated GPU fitting. Nonzero CPU fixture weights match separate native exports exactly; learned 31B quality remains unmeasured.
 
-The [conversion handoff](docs/learned-conversion-handoff.md) waits for both actual full native trajectories, validates all six checkpoint receipts, and prepares the eighteen fixed learned packets with shared-resource limits. Its CPU preparation controls pass; no learned conversion has run yet.
+The [conversion handoff](docs/learned-conversion-handoff.md) validates completed native checkpoint receipts and prepares three adapter strengths per checkpoint. In the EMPF workflow, staged conversion can start as each checkpoint becomes available after baseline serving releases its GPU.
 
-The [learned DEV dispatcher](docs/learned-dev-dispatch.md) then waits for all measured packets and baseline controls, requires a repeatable actual learned-versus-base effect on the fixed disjoint TRAIN prefixes, runs the eighteen full conditions through the frozen baseline executor on GPU 0, and invokes the complete-grid offline selection. Its preparation does not establish an actual learned effect or model result.
+The [learned DEV dispatcher](docs/learned-dev-dispatch.md) waits for the measured packets and baseline controls. It checks the adapter's effect on fixed, disjoint TRAIN prefixes before it runs full DEV conditions through the frozen task executor and invokes offline selection.
 
 The [confirmation access gate](docs/confirmation-access.md) independently reaudits that immutable DEV choice and binds the selected packet before parsing the original holdout. CPU preparation passes; current incomplete DEV state keeps the holdout locked, and no confirmation has run.
 
@@ -30,13 +30,13 @@ The [confirmation asset and environment runner](docs/confirmation-environments.m
 
 The [paired confirmation driver and offline audit](docs/confirmation-pair.md) preserve all forty-nine OFF and forty-nine selected-candidate attempts, exclusive reservations and fresh-test evidence. Their CPU preparation passes; no real confirmation pair has run.
 
-The inactive [two-GPU resource proposal, numerical checker and offline reader](docs/hardware-parity.md) preserve the full study and require actual same-adapter parity before a versioned resource change. The reader reconstructs every recorded HTTP exchange and retains physical device identities. CPU preparation leaves the current GPU 0 DEV contract active.
+The [two-GPU numerical checker and offline reader](docs/hardware-parity.md) require measured same-adapter parity before DEV uses both cards. The reader reconstructs the recorded HTTP exchanges and retains the physical device identities.
 
-The [explicit resource declaration and comparison support](docs/dev-resource-supplement.md) fix prospective assignments and require raw physical fingerprints and per-condition slot evidence before qualified device normalization. The [prepared dispatcher](docs/resource-dev-dispatch.md) retains all eighteen learned conditions in nine waves, with actual parity and effect gates before model tasks. The [resource access runner](docs/resource-confirmation-access.md) independently reaudits the complete choice through a separately frozen auditor while retaining the original generation source. The resource policy remains inactive until actual qualification; no learned DEV result exists yet.
+The [EMPF resource declaration](research/dev-resource-declaration-empf-v1.json) assigns the nine learned conditions across five waves. The [resource access runner](docs/resource-confirmation-access.md) independently reaudits the complete choice through a separate frozen auditor and checks the serving evidence for each condition.
 
 The [prepared learned publication runner](docs/learned-publication.md) continues from an actually evaluated selected payload to a private dataset, an exact offline CPU notebook version and one competition request. It verifies downloaded archive bytes and actual quota, and stops after ambiguous publishing results. Preparation has made no learned account mutation or official score claim.
 
-The [prepared official-result observer](docs/official-result-verification.md) reads the exact learned submission and compares finite decimal scores against the preceding and fresh public records. A high unlisted score stays provisional; a public record requires the exact numeric submission ID in the ranked entries. It makes no submission or model request and leaves private final standings and full goal completion unproven.
+The [official-result observer](docs/official-result-verification.md) supports a local ZIP handoff followed by submission from the Kaggle account owner. It downloads the submitted archive by numeric ID and checks its SHA-256 against the evaluated ZIP before comparing public scores. A verified public record requires the exact numeric submission ID in the ranked entries.
 
 The [candidate evaluation runner](docs/candidate-routing.md) now selects the official discovered adapter alias and checks its weight/config hashes against the declared server. Its compiler/ADK routing controls pass on CPU; [actual 31B LoRA loading and effect controls](reports/vllm-lora-effect-control-v1.json) also pass with synthetic zero/nonzero adapters. Learned conversion fidelity and task performance remain unqualified.
 
@@ -44,7 +44,7 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 
 [Disjoint TRAIN issue probes](docs/conversion-probes.md) are fixed before pretrained training, and conversion samples across full histories. [Checkpoint input binding](docs/checkpoint-input-binding.md), CPU packed weights and saved-input storage now pass a full two-sequence, 28,672-token gradient probe at a 50% shared GPU cap. All 4,141 gradient tensors are connected and finite, with about 21.7 GiB peak allocation. This probe performs zero optimizer updates and supplies no targets.
 
-[Actual tiny CUDA disk-resume controls](reports/cuda-cpu-loaded-resume-qualification-v1.json) pass for both recipes after preserving serialized RNG bytes on CPU. Pretrained continuation remains gated by a second distinct admitted question and the verified first update.
+[Tiny CUDA disk-resume controls](reports/cuda-cpu-loaded-resume-qualification-v1.json) verify that both recipes can resume after preserving serialized RNG bytes on CPU. The EMPF continuation verifies the previous checkpoint and available shared memory before resuming.
 
 | Component | Current evidence |
 |---|---|
@@ -54,7 +54,7 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
 | Real-task scorer controls | [58 TRAIN environments](reports/train-environment-qualification-v2.json) plus [2 isolated JSON-dependency repairs](reports/train-json-environment-qualification-v1.json) qualify60 distinct original tasks across recorded images; all42 supplementary DEV environments pass |
-| Behavior admission | [One genuine initial TRAIN context](reports/first-real-behavior-admission-v1.json), selected by four actual Jev judgments and fresh teacher success; zero pretrained optimizer updates |
+| Behavior admission | Two distinct initial TRAIN contexts from Verify. The [first admission receipt](reports/first-real-behavior-admission-v1.json) records the actual Jev judgments and fresh test outcomes. |
 | Trajectory capture | Actual ADK requests, tool schemas, generation controls and completions journaled; a separate verifier reads reference data |
 | Native serving | Pinned E2B BF16 tool calling on shared GPU 1; SDPA keeps long-context memory within the declared cap; [serving evidence](reports/native-serving-calibration.json) |
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
@@ -103,7 +103,7 @@ The frozen pilot split is TRAIN: FastAPI (67), DEV: Requests (13), HOLDOUT: Rich
 
 [The experiment protocol](docs/protocol.md) describes the remaining work. `run_trajectories.py` runs sanitized TRAIN/DEV tasks and captures actual model requests. `verify_trajectories.py` is a separate process that alone reads reference-bearing tasks, validates matching environment identities and tests each patch in a fresh container. Curation requires all four declared arms, a failed OFF control and a complete successful instruction run from the exact pinned BF16 frozen base. Genuine OFF task timeouts retain their failure status and hash-bound initial request. It preserves observed history, tools, ADK's appended system text and captured thinking mode. Scripted CPU probes are explicitly rejected as targets.
 
-Cache/training/conversion commands require an explicit device and should only run after CPU preparation. Current 31B collection uses one shared A6000 with a .60 vLLM memory target. [Native serving instructions](docs/native-serving.md) preserve the earlier SDPA cohort and request identity checks. No learned adapter has been trained yet.
+Cache, training and conversion commands require an explicit device after CPU preparation. The 31B vLLM serving plan targets 60% GPU memory and the native EMPF training plan caps PyTorch at 50%. [Native serving instructions](docs/native-serving.md) cover the earlier SDPA cohort and request identity checks.
 
 The first four E2B TRAIN tasks completed all four arms without a verified fix and supplied zero contexts. This is a result under the project's former five-minute pilot budget. [Collection receipts](reports/e2b-native-collection-v1.json) preserve failures and timeouts. New artifacts and trajectory runs default to the documented 60-minute budget; see [operational budgets](docs/operational-budgets.md).
 
@@ -132,4 +132,4 @@ The [original blocked verifier receipt](reports/verifier-control-v1.json) remain
 
 [Context-budget controls](docs/context-budget-controls.md) describe the new prospective OFF failure proof and conditional TRAIN teacher policy. [Broader TRAIN environment qualification](docs/train-environments.md) records the fixed 67-task sweep and separate missing-dependency repairs.
 
-[Fixed-order TRAIN collection](docs/train-pool-collection.md) is now running on a second shared GPU, preserving failures and capturing exact target tokens before releasing its server. The isolated [0.10.1 source upgrade](docs/source-upgrade-0101.md) passes 57 CPU checks and exact one-update fixture comparisons for both explicit recipes. All 87 Python files in the downloaded 0.10.1 wheel match the pinned source ([source check](reports/pg0101-wheel-source-check-v1.json)). Historical 0.10.0 evidence retains its original source; no pretrained optimizer update has run.
+[Fixed-order TRAIN collection](docs/train-pool-collection.md) preserves failures and captures exact target tokens before releasing its server. The collector can also run a fixed 12-task pilot with OFF and Verify on each task and two additional teacher arms on four comparison tasks. The isolated [0.10.1 source upgrade](docs/source-upgrade-0101.md) passes 57 CPU checks and exact one-update fixture comparisons for both explicit recipes. All 87 Python files in the downloaded 0.10.1 wheel match the pinned source ([source check](reports/pg0101-wheel-source-check-v1.json)).
