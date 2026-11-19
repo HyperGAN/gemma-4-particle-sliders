@@ -1,4 +1,4 @@
-# Official OFF control
+# Official OFF controls
 
 The first official submission is a frozen 31B prompt-only OFF control. It uses the current 60-minute/100-tool/500-turn/300-second-command artifact. It contains no learned adapter and does not establish Particle Sliders quality.
 
@@ -8,6 +8,8 @@ The notebook is [Gemma 4 Particle Sliders OFF Control V1](https://www.kaggle.com
 
 Future learned submissions require measured conversion, actual LoRA transport, DEV selection and untouched holdout confirmation. An official OFF score is a control, not completion of the learned-behavior objective.
 
-A [matched finalization-v2 OFF control](../reports/official-finalizing-off-control-v2.json) uses a ZIP byte-identical to the actual DEV OFF artifact. A separate private CPU notebook completed and its downloaded output matched that ZIP. Kaggle initially rejected the competition request because the daily quota was exhausted and the first OFF control was still pending. On November 18, 2026 UTC, the first control reached a Kaggle notebook runtime error with an empty score. The deferred request created the matched control submission, which remained pending in the latest authenticated observation that day.
+The matched finalization-v2 OFF control uses a ZIP byte-identical to the actual DEV OFF artifact. A separate private CPU notebook completed and its downloaded output matched that ZIP. Kaggle initially rejected the competition request while the first control was pending and the daily quota was exhausted. The deferred request created the matched submission on November 18, 2026 UTC. [Matched archive receipt](../reports/official-finalizing-off-control-v2.json)
+
+The November 19 authenticated observation found both submissions terminal with empty scores. Kaggle reported that each submission notebook exceeded the allowed runtime. The archived terminal status receipt has SHA-256 `96fd1845927798f5c4097fa23c32e7ac76e4746ba027b4699ae74cfeacbbf6af`.
 
 `wait_and_submit_off_control.py` provides a one-shot handoff for that exact completed notebook version. It waits for the observed UTC window and pending gate, detects an existing matching submission, and preserves an intent before making one request. A failed or ambiguous request stops for reconciliation. The [CPU boundary controls](../reports/deferred-off-submit-preparation-v1.json) check these cases with a fake service; the actual plan-only check sends no submission request.

@@ -2,9 +2,9 @@
 
 An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
 
-**Work in progress.** Native 31B EMPF training uses two distinct TRAIN questions admitted from Verify trajectories. The [first official OFF control](docs/official-submission.md) reached a Kaggle runtime error. The matched OFF control was pending as of November 18, 2026. The experiment has yet to produce a learned Kaggle score.
+**Work in progress.** Native 31B EMPF training uses two distinct TRAIN questions admitted from Verify trajectories. Both Kaggle OFF controls exceeded the notebook runtime limit and ended without scores. [Official OFF controls](docs/official-submission.md)
 
-The [eight-update EMPF learning-rate screen](docs/empf-learning-rate.md) selected `0.024` among three base rates. The full EMPF run resumes that trial's checkpoint. The untrained reference scored better on the distribution metric than every eight-update checkpoint.
+The eight-update EMPF learning-rate screen selected `0.024` among three base rates, and the full EMPF run resumes that trial's checkpoint. At eight updates and unit strength, four training pairs scored better than seven at `0.024` on the same held-out hidden-state metric. The slider-off reference scored best in both comparisons. [EMPF calibration results](docs/empf-learning-rate.md)
 
 The intended behavior is systematic repository repair: reproduce a failure, locate its cause, make a focused patch, and verify it within budget. The frozen model tries several behavioral instructions on TRAIN tasks. Only complete trajectories that pass fresh-container tests and improve on the matched OFF run can supply targets. At each selected assistant decision, teacher and student receive the same question and observed history; the teacher additionally receives the successful instruction. The adapter learns the full native final hidden state through the shared paired-error adversarial game. There is no answer-token cross-entropy or output MSE in native training.
 
@@ -64,7 +64,7 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 | Quantized 31B host | [Frozen CT storage and exact input derivative](docs/frozen-ct-host.md); real 128/4096-token forward/backward checks pass; no updates or coding score from these probes |
 | Official vLLM collection | [Pinned 31B serving](docs/vllm-collection.md) passes exact multiline tool and input-format controls; first full-budget TRAIN baseline patch passes fresh tests |
 | History management | [Official compaction settings](docs/history-compaction.md) qualified through an actual ADK CPU loop; old runs retain their separate no-compaction scope |
-| Competition | [First OFF code submission](reports/official-off-baseline-submission-v1.json) created and pending on 2026-11-17; leading public score reconfirmed at 0.29; no score yet |
+| Competition | Both official OFF controls are terminal and unscored after exceeding the notebook runtime limit. [Official OFF controls](docs/official-submission.md) |
 
 [sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
 

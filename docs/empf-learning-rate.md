@@ -25,6 +25,22 @@ All three eight-update trials completed on November 18, 2026. An independent CPU
 
 `0.024` ranked first among the three learning rates and its full checkpoint was adopted for training. The untrained reference had the lowest distance overall. The local `result.json` for this run has SHA-256 `bae80c0b9cc6c26785784d0413b7293ac2583bd13204240845dca52c3dfb1948`.
 
+## Expanded training pairs
+
+The November 19 follow-up repeated the rate screen with four fitting pairs, then tested seven fitting pairs at the winning rate. Each trial ran eight EMPF updates with batch size 2 and `lazy_k=1`. Scoring used the same seven held-out TRAIN questions, 256 projection directions, unit slider strength and the four-pair RMS normalization. The neutral and teacher probe responses matched bit for bit across the four- and seven-pair runs.
+
+| Fitting pairs | Base rate | Mean sliced Wasserstein distance ↓ |
+|---:|---:|---:|
+| Slider off | | 0.631899 |
+| 4 | 0.006 | 2.872362 |
+| 4 | 0.012 | 2.583717 |
+| 4 | 0.024 | 1.513819 |
+| 7 | 0.024 | 1.819301 |
+
+`0.024` had the lowest distance of the three four-pair trials. At that rate the four-pair run scored ahead of the seven-pair run, and the slider-off reference scored ahead of both. That ordering held after omitting each probe in turn. These figures measure held-out TRAIN hidden-state distributions. The main native run continued from the original two-pair checkpoint. Task repair quality will be measured in the separate DEV evaluation.
+
+The archived four-pair and seven-pair results have SHA-256 hashes `464d5d0e7e5e4e11f71ef4e953185468efc1ee83605a3c5a6451719acc7ee317` and `058085e6a710b98774a7ce4d7b564f95af2bc9d826ec39ae9b4565fc436ee627`, respectively. An independent CPU replay recomputed all distances from the recorded probe tensors.
+
 ## Running the screen
 
 Use the completed Jev TRAIN pool's progress file, its verified native response cache and the identity JSON from a live frozen base server. Prepare before allocating the native GPU. The tokenizer requests reuse the server's local tokenization endpoint.
