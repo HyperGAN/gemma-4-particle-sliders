@@ -201,18 +201,21 @@ def main():
     signal.signal(signal.SIGTERM, stopped)
     signal.signal(signal.SIGINT, stopped)
 
-    def wait_headroom(index):
-        publish('waiting_shared_headroom', physical_index=index)
+    def wait_headroom(indices):
+        slots = ','.join(map(str, indices))
+        publish('waiting_shared_headroom', physical_indices=indices)
         while True:
             unchanged()
-            raw = subprocess.check_output(['nvidia-smi', f'--id={index}', '--query-gpu=memory.free,memory.total',
+            raw = subprocess.check_output(['nvidia-smi', f'--id={slots}', '--query-gpu=index,memory.free,memory.total',
                 '--format=csv,noheader,nounits'], text=True)
-            free, total = [int(v.strip()) * 1024**2 for v in raw.strip().split(',')]
-            if free >= total * .6 + 8 * 1024**3: return
+            samples = [tuple(map(int, line.split(','))) for line in raw.splitlines()]
+            if sorted(index for index, _, _ in samples) != sorted(indices):
+                raise ValueError('headroom sample must include every requested physical GPU once')
+            if all(free >= total * .6 + 8192 for _, free, total in samples):
+                return
             time.sleep(10)
 
-    def start_server(packet, index, name):
-        wait_headroom(index)
+    def launch_server(packet, index, name):
         with socket.socket() as check: check.bind(('127.0.0.1', ports[index]))
         serving = args.out / (name + '-server'); identity_path = serving / 'server-identity.json'
         command = [str(args.executor / '.vllm-venv/bin/python'), 'scripts/serve_vllm_lora.py',
@@ -229,8 +232,20 @@ def main():
         servers.append(owner)
         write(args.out / (name + '-owner.json'), {k: v for k, v in owner.items() if k not in ['process', 'output', 'identity_path']} |
             {'output': str(serving), 'identity_path': str(identity_path)})
+        return owner
+
+    def check_startup(owners):
+        unchanged()
+        for owner in owners:
+            code = owner['process'].poll()
+            if code is not None:
+                raise RuntimeError(f'owned server {owner["output"].name} exited {code}. See its startup log.')
+
+    def wait_ready(owner, peers):
+        process, binding = owner['process'], owner['binding']
+        identity_path, serving = owner['identity_path'], owner['output']
         while True:
-            if process.poll() is not None: raise RuntimeError(f'owned server exited {process.returncode};preserve startup')
+            check_startup(peers)
             if identity_path.exists():
                 try:
                     identity = read(identity_path)
@@ -245,8 +260,7 @@ def main():
         owner['identity'] = identity
         with httpx.Client(timeout=5, headers={'X-Gemma-Identity': digest(identity)}) as client:
             while True:
-                unchanged()
-                if process.poll() is not None: raise RuntimeError(f'owned server exited {process.returncode};preserve startup')
+                check_startup(peers)
                 try:
                     response = client.get(owner['root'] + '/health')
                     if response.status_code == 200:
@@ -255,7 +269,15 @@ def main():
                         break
                 except (httpx.ConnectError, httpx.TimeoutException): pass
                 time.sleep(5)
-        return owner
+
+    def start_servers(requests):
+        wait_headroom([index for _, index, _ in requests])
+        # Admit the entire group before any server allocates memory. Each
+        # launcher also checks its slot before loading the model.
+        owners = [launch_server(packet, index, name) for packet, index, name in requests]
+        for owner in owners:
+            wait_ready(owner, owners)
+        return owners
 
     def release_servers():
         while servers:
@@ -292,7 +314,7 @@ def main():
             'control_results': {str(path): sha256_file(path) for path in control_results}})
         probe = next(packet for packet in packets if all(packet['condition'][k] == read(args.proposal)['probe_adapter'][k]
             for k in ['preset', 'completed_steps', 'strength']))
-        left = start_server(probe, 0, 'hardware-left'); right = start_server(probe, 1, 'hardware-right')
+        left, right = start_servers([(probe, 0, 'hardware-left'), (probe, 1, 'hardware-right')])
         command = [str(args.qualifier / '.harness-venv/bin/python'), 'scripts/qualify_hardware_pair.py',
             '--dev-grid', str(args.prior_grid), '--conversion', str(args.conversion), '--controls', str(args.controls),
             '--executor', str(args.executor), '--executor-commit', args.executor_commit,
@@ -323,9 +345,11 @@ def main():
             unchanged()
             load_packets(args.conversion, selection, plan_sha, jobs, conversion_plan['probe_sha256'])
             load_resource_supplement(policy_path)
+            owners = start_servers([(by_name[name], index, name) for index, name in enumerate(names)])
             wave = []
-            for index, name in enumerate(names):
-                packet = by_name[name]; owner = start_server(packet, index, name)
+            for name, owner in zip(names, owners, strict=True):
+                packet = by_name[name]
+                index = owner['index']
                 normalized = normalize_qualified_contract(canonical_contract({'model_identity': owner['identity']}), name, policy)
                 if normalized != canonical_contract({'model_identity': baseline}):
                     raise ValueError('candidate serving contract differs from original baseline')

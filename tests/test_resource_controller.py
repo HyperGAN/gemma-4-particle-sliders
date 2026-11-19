@@ -32,7 +32,8 @@ from test_learned_effect import protocol_fixture, response
 ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.mark.parametrize('mode', ['complete', 'empf_only', 'audit_bridge', 'unqualified', 'no_effect', 'right_no_effect', 'child_failure'])
+@pytest.mark.parametrize('mode', ['complete', 'empf_only', 'audit_bridge', 'unqualified', 'no_effect', 'right_no_effect',
+                                 'startup_failure', 'child_failure'])
 def test_full_controller_cpu_lifecycle_and_failure_boundaries(tmp_path, monkeypatch, mode):
     spec = importlib.util.spec_from_file_location('cpu_resource_controller', ROOT / 'scripts/run_resource_dev_grid.py')
     controller = importlib.util.module_from_spec(spec); spec.loader.exec_module(controller)
@@ -157,6 +158,8 @@ raise SystemExit(payload['exit'])
         if role.endswith('serve_vllm_lora.py'):
             index = int(option(argv, 'device')[-1]); template = tmp_path / f'template-{index}.json'; put(template, pair[index])
             command = [sys.executable, str(worker), *argv[2:], '--CPU-template', str(template)]
+            if mode == 'startup_failure' and index == 1:
+                command = [sys.executable, '-c', 'raise SystemExit(17)']
         else:
             writes = {}; exitcode = 0; destination = Path(option(argv, 'out'))
             if role.endswith('qualify_hardware_pair.py'):
@@ -179,17 +182,30 @@ raise SystemExit(payload['exit'])
             command = [sys.executable, str(child_worker), json.dumps({'writes': writes, 'exit': exitcode})]
         child = real_popen(command, **kwargs); live_children.append(child); return child
     monkeypatch.setattr(controller.subprocess, 'Popen', spawn)
+    headroom_checks = []
+    delayed_starts = set()
+
     def checked(argv, **kwargs):
         if argv[0] == 'git': return 'scripts/run_resource_dev_grid.py\nsrc/gemma_particle/resource_dispatch.py\n'
-        assert argv[0] == 'nvidia-smi' and '--query-gpu=memory.free,memory.total' in argv
-        return '49140,49140\n'
+        assert argv[0] == 'nvidia-smi' and '--query-gpu=index,memory.free,memory.total' in argv
+        slot_arg = next(arg for arg in argv if arg.startswith('--id='))
+        slots = tuple(int(index) for index in slot_arg.split('=', 1)[1].split(','))
+        headroom_checks.append((slots, len(spawned)))
+        if mode == 'empf_only' and len(spawned) in (0, 3) and len(spawned) not in delayed_starts:
+            assert slots == (0, 1)
+            delayed_starts.add(len(spawned))
+            return '0,49140,49140\n1,22000,49140\n'
+        return ''.join(f'{index},49140,49140\n' for index in slots)
     monkeypatch.setattr(controller.subprocess, 'check_output', checked)
     monkeypatch.setattr(controller.subprocess, 'run', lambda argv, **kw: subprocess.CompletedProcess(argv, 0))
     monkeypatch.setattr(controller.os, 'getpriority', lambda which, who: 10)
     monkeypatch.setattr(controller.time, 'sleep', lambda interval: real_sleep(.01))
     def respond(request):
         index = ports.index(request.url.port); identity = pair[index]
-        if request.url.path == '/health': return httpx.Response(200, json={'identity_sha256': digest(identity)})
+        if request.url.path == '/health':
+            if mode == 'empf_only' and len(spawned) < 7:
+                assert len(spawned) in (2, 5)
+            return httpx.Response(200, json={'identity_sha256': digest(identity)})
         if request.url.path == '/v1/models': return httpx.Response(200, json={'data': [{'id': BASE_ALIAS}, {'id': 'particle_lora'}]})
         if request.url.path == '/tokenize': return httpx.Response(200, json={'tokens': [2, 3]})
         payload = json.loads(request.content); value = response(payload)
@@ -227,11 +243,19 @@ raise SystemExit(payload['exit'])
         assert len(dev_calls) == len(learned) and len(spawned) == 2 * len(learned) + 4
         if mode == 'empf_only':
             assert [len(wave) for wave in declared['learned_waves']] == [2, 2, 2, 2, 1]
+            assert headroom_checks[:4] == [((0, 1), 0), ((0, 1), 0), ((0, 1), 3), ((0, 1), 3)]
+            assert headroom_checks[-1][0] == (0,)
         assert all(call[0]==str(task_executor/'.harness-venv/bin/python') for call in dev_calls)
         assert all(len((out / (c['id'] + '-preflight-http.jsonl')).read_text().splitlines()) == 24 for c in learned)
     elif mode in ['unqualified', 'no_effect', 'right_no_effect']:
         assert status['state'] == 'error' and not status['model_dev_inference'] and not dev_calls
         assert status['finished'] == [] and not (out / 'choice').exists()
+    elif mode == 'startup_failure':
+        assert status['state'] == 'error' and not status['model_dev_inference'] and not dev_calls
+        assert len(spawned) == 2 and 'exited 17' in status['error']
+        for side in ('left', 'right'):
+            receipt = json.loads((out / f'hardware-{side}-server-release.json').read_text())
+            assert receipt['observed_exited']
     else:
         assert status['state'] == 'error' and len(dev_calls) == 2
         assert [r['condition_id'] for r in status['finished']] == [learned[1]['id']]
