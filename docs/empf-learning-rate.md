@@ -65,6 +65,23 @@ An independent CPU replay reproduced the ranking. After omitting each probe in t
 
 The scored result has SHA-256 `2e783fc6cb6e90700b8f860cb1cb2d1078c38b7215d1f8e50a2c53fde72c06a6`. The probe vector archive has SHA-256 `5110ee951a15e254d8decf7d5aff29ab3a1953b505dcd950e605340e45bc5723`.
 
+## Update-12 distillation check
+
+The seven-context `0.024` run continued to update 12. The conversion fitted rank-eight PEFT corrections for 230 projection modules on the seven fitting contexts, with 256 sampled tokens per module. On two disjoint TRAIN calibration contexts, the aggregate relative RMS error of the converted layer corrections was 9.82%.
+
+The measurements below use Gemma hidden states from actual forward passes on the same seven TRAIN scoring questions, with the frozen directions and normalization from the rate sweep. The PEFT rows apply the exported matrices as linear hooks on the text model.
+
+| State | Mean sliced Wasserstein distance ↓ |
+|---:|---:|
+| Slider off | 0.587806 |
+| Native EMPF at update 12, unit strength | 1.556428 |
+| Update-12 PEFT, unit strength | 1.493268 |
+| Update-12 PEFT, half strength | 0.931554 |
+
+The half-strength adapter had 37.6% lower distance than the unit-strength adapter. Slider off had the lowest distance on these probes. Fresh repository tests will measure repair quality in the paired DEV evaluation.
+
+The full- and half-strength forward tensor archives have SHA-256 hashes `03d35c15524a1e871a2654768815117e58cd975329d528a5d1da30fbd00db91d` and `f91a2884a21ef6953988d735f34fe08e49e8124cea944848cf8cc71f4765c2fa`. An independent CPU replay reproduced the four distances. [PEFT conversion workflow](learned-conversion-handoff.md#distill-one-31b-empf-checkpoint)
+
 ## Running the screen
 
 Use the completed Jev TRAIN pool's progress file, its verified native response cache and the identity JSON from a live frozen base server. Prepare before allocating the native GPU. The tokenizer requests reuse the server's local tokenization endpoint.
