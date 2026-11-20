@@ -83,6 +83,21 @@ The 0.15 strength was selected from linear approximations to the half- and unit-
 
 The full- and half-strength forward tensor archives have SHA-256 hashes `03d35c15524a1e871a2654768815117e58cd975329d528a5d1da30fbd00db91d` and `f91a2884a21ef6953988d735f34fe08e49e8124cea944848cf8cc71f4765c2fa`. The 0.15-strength forward tensor archive has SHA-256 hash `51d93cc5d69fc12aa8c0874df1e2e46434eb724762131d6c67f9ee4a3f44d682`. An independent CPU replay reproduced the five distances. [PEFT conversion workflow](learned-conversion-handoff.md#distill-one-31b-empf-checkpoint)
 
+## Update-32 strength check
+
+The same seven-context `0.024` run continued to update 32. Two direct native forward passes per probe measured unit and 0.15 strengths. They use the same seven held-out TRAIN questions, projection directions and normalization as the update-12 check.
+
+| State | Mean sliced Wasserstein distance ↓ |
+|---|---:|
+| Slider off | 0.587806 |
+| Update-12 PEFT, 0.15 strength | 0.427866 |
+| Native EMPF at update 32, unit strength | 2.679911 |
+| Native EMPF at update 32, 0.15 strength | 0.677768 |
+
+At 0.15 strength, the native update-32 distance was 15.3% above slider off. The increase ranged from 11.7% to 27.3% when each probe was omitted in turn. The update-12 PEFT adapter at 0.15 strength is the first candidate for a paired DEV repair test. This choice uses the hidden-state probe result, and fresh repository tests will measure repair quality.
+
+An independent CPU replay reproduced both update-32 distances from the saved forward tensors. The local comparison result has SHA-256 `36bd382305a9bd1dba7fc2ad53dc5b46f91d7c043f70508ee94f240d1978150e`.
+
 ## Running the screen
 
 Use the completed Jev TRAIN pool's progress file, its verified native response cache and the identity JSON from a live frozen base server. Prepare before allocating the native GPU. The tokenizer requests reuse the server's local tokenization endpoint.
