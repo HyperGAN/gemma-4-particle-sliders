@@ -26,7 +26,7 @@ def test_wrong_environment_fails_before_loading_pretrained_weights(monkeypatch):
 
 
 def test_changed_shared_engine_is_rejected_even_with_matching_version(monkeypatch,tmp_path):
-    from particle_sliders import pg0100
-    changed=tmp_path/'pg0100.py';changed.write_text('# changed engine\n')
-    monkeypatch.setattr(pg0100,'__file__',str(changed))
+    from gemma_particle import response_engine
+    changed=tmp_path/'response_engine.py';changed.write_text('# changed engine\n')
+    monkeypatch.setattr(response_engine,'__file__',str(changed))
     with pytest.raises(RuntimeError,match='locked bridge'):source_identity.require_core_source()

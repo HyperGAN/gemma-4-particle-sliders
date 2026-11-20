@@ -1,6 +1,6 @@
 # ParticleGAN 0.10.1 source cohort
 
-The current source lock pins ParticleGAN `53f5ff3757334f02341df66d107d27db900f4a5d` (0.10.1) and Particle Sliders `119d7e0559bacdc49847961c1b243ac08daa013c`. The previous [0.10.0 lock](../research/sources-0.10.0-af0764b1.lock.json) and bridge patch remain available for historical receipts. Existing collection processes use their frozen checkout and original environment.
+This historical qualification used a source lock that pinned ParticleGAN `53f5ff3757334f02341df66d107d27db900f4a5d` (0.10.1) and Particle Sliders `119d7e0559bacdc49847961c1b243ac08daa013c`. The previous [0.10.0 lock](../research/sources-0.10.0-af0764b1.lock.json) and bridge patch remain available for historical receipts. Existing collection processes use their frozen checkout and original environment.
 
 The upstream runtime change selects EMPF when `get_recipe()` has no name. Both task recipes already use explicit names. The task's deterministic R2 particle initializer now explicitly requests the RHBI prior holder used previously, so a default change cannot alter the task architecture. The explicit RHBI and EMPF implementations are unchanged. The latest pristine Sliders tree matches the previous tree; the new overlay changes only source/version metadata and explanatory strings in the shared conditional engine. Normalizing those strings reproduces the previous engine exactly.
 

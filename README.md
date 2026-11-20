@@ -1,6 +1,6 @@
 # Gemma 4 Particle Sliders
 
-An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using source-pinned ParticleGAN **0.10.1** and an experimental Particle Sliders core.
+An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using Particle Sliders core **0.15.1** and official ParticleGAN **0.11.0**.
 
 **Work in progress.** Both Kaggle OFF controls exceeded the notebook runtime limit and ended without scores. Learned repair quality and leaderboard performance remain unmeasured. [Official OFF controls](docs/official-submission.md)
 
@@ -54,8 +54,8 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 
 | Component | Current evidence |
 |---|---|
-| ParticleGAN | `develop` commit `53f5ff3757334f02341df66d107d27db900f4a5d`, package 0.10.1 |
-| Particle Sliders | `119d7e05…` plus the hash-pinned [0.10.1 bridge patch](patches/particle-sliders-pg0101.patch); [source qualification](docs/source-upgrade-0101.md) |
+| ParticleGAN | PyPI release 0.11.0, exact release source and wheel hashes pinned |
+| Particle Sliders | Core 0.15.1 at `c13890f8`, with a product-owned RHBI and EMPF response binding |
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
@@ -68,7 +68,10 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 | History management | [Official compaction settings](docs/history-compaction.md) qualified through an actual ADK CPU loop; old runs retain their separate no-compaction scope |
 | Competition | Both official OFF controls are terminal and unscored after exceeding the notebook runtime limit. [Official OFF controls](docs/official-submission.md) |
 
-[sources.lock.json](sources.lock.json) records source identities. The source patch reuses an existing experimental conditional engine rather than replacing its loss or optimizer formulas. It preserves the released 0.9.5 engine and adds a separate 0.10 cohort. A Gemma-specific fix avoids forwarding the BISPF/EMPF domain keyword to RHBI's intrinsically continuous penalty. Historical checkpoints are not migrated.
+[sources.lock.json](sources.lock.json) records the current source identities.
+Gemma owns its RHBI and EMPF bridge and uses ParticleGAN's official recipe factories
+and optimizer formulas. Existing checkpoints and source patches are historical.
+Use the original Git revision and environment for exact continuation of those runs.
 
 Install PyTorch appropriate to the machine first. The tested training environment uses Python 3.11, Torch 2.14.1, and Transformers 5.13.1. The competition harness requires a separate Python 3.12 environment.
 
@@ -83,7 +86,9 @@ CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q \
 
 The complete CPU suite also uses the separate `.harness-venv` and `.vllm-venv` software environments for real compiler/parser checks. A [public-source portability run](reports/public-source-cpu-portability-v1.json) passes without competition task downloads or prebuilt bundles; its two GPU checks and the downloaded-wheel byte check are explicitly skipped.
 
-The bootstrap checks exact commits and the source patch hash. Native loading also checks the installed engine and ParticleGAN source bytes before loading weights. It never downloads model weights or starts GPU work. The ordinary `pip install -e .` does not select a released ParticleGAN as a substitute for these source pins. Existing 0.10.0 collections retain their original environment and frozen checkout.
+The bootstrap installs the current dependency pins in the isolated environment.
+Native model loading verifies the installed core, release manifest and product
+bridge source before opening weights. This is a fresh source cohort.
 
 Official inputs can now be downloaded with Kaggle's CLI authentication. Use an isolated environment with `kaggle==2.2.5` and `six==1.17.0` installed; authentication remains in Kaggle's standard private location. The task file and sandbox setup match the preparation mirror. The current official `swegemma` wheel has five changed Python files despite the same package version, so source hashes are recorded and the official wheel is installed. Raw reference patches stay in ignored `data/`; agent-visible splits remove both `patch` and `test_patch`.
 
