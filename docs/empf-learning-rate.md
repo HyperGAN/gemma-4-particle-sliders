@@ -77,10 +77,11 @@ The measurements below use Gemma hidden states from actual forward passes on the
 | Native EMPF at update 12, unit strength | 1.556428 |
 | Update-12 PEFT, unit strength | 1.493268 |
 | Update-12 PEFT, half strength | 0.931554 |
+| Update-12 PEFT, 0.15 strength | 0.427866 |
 
-The half-strength adapter had 37.6% lower distance than the unit-strength adapter. Slider off had the lowest distance on these probes. Fresh repository tests will measure repair quality in the paired DEV evaluation.
+The 0.15 strength was selected from linear approximations to the half- and unit-strength responses, then measured with a separate direct forward pass. Its mean distance was 27.2% lower than slider off. The reduction ranged from 20.8% to 27.6% when each probe was omitted in turn. Fresh repository tests will measure repair quality in the paired DEV evaluation.
 
-The full- and half-strength forward tensor archives have SHA-256 hashes `03d35c15524a1e871a2654768815117e58cd975329d528a5d1da30fbd00db91d` and `f91a2884a21ef6953988d735f34fe08e49e8124cea944848cf8cc71f4765c2fa`. An independent CPU replay reproduced the four distances. [PEFT conversion workflow](learned-conversion-handoff.md#distill-one-31b-empf-checkpoint)
+The full- and half-strength forward tensor archives have SHA-256 hashes `03d35c15524a1e871a2654768815117e58cd975329d528a5d1da30fbd00db91d` and `f91a2884a21ef6953988d735f34fe08e49e8124cea944848cf8cc71f4765c2fa`. The 0.15-strength forward tensor archive has SHA-256 hash `51d93cc5d69fc12aa8c0874df1e2e46434eb724762131d6c67f9ee4a3f44d682`. An independent CPU replay reproduced the five distances. [PEFT conversion workflow](learned-conversion-handoff.md#distill-one-31b-empf-checkpoint)
 
 ## Running the screen
 
