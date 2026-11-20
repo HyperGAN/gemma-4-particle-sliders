@@ -12,8 +12,8 @@ import torch
 from torch import nn
 from particlegan import init, get_recipe
 from particle_sliders.routed_projection import TinyParticleProjection
-from particle_sliders.pg09_backends import AdapterParameters, checkpoint_with_adapter_scale
-from particle_sliders.pg0100 import ConditionalPG0100, validate_pg09_domain
+from particle_sliders.backends import AdapterParameters, checkpoint_with_adapter_scale
+from .response_engine import ConditionalResponseEngine, validate_engine_domain
 from .source_identity import require_core_source
 
 
@@ -135,7 +135,7 @@ class Native:
         self.slider = None
         _, self.trunk = text_trunk(model)
         self.width = self.trunk.config.hidden_size
-        validate_pg09_domain((1, self.width), response_domain="continuous_vector", penalty_input_domain="continuous")
+        validate_engine_domain((1, self.width), response_domain="continuous_vector", penalty_input_domain="continuous")
         model.eval().requires_grad_(False)
         try:
             self.slider = Slider(model, **slider_options)
@@ -185,7 +185,7 @@ class Native:
         return self.hidden(prepared.row.neutral_ids, strength=1)
 
     def metadata(self):
-        return {"protocol": "gemma4-matched-assistant-decision-pg0100-v1", "model_identity": self.identity,
+        return {"protocol": "gemma4-matched-assistant-decision-engine-v1", "model_identity": self.identity,
                 "source_cohort":self.source_cohort,
                 "activation_storage":self.activation_storage,
                 "response": "full native final hidden state", "adapter_names": list(self.network.names),
@@ -219,7 +219,7 @@ class Critic(nn.Module):
 
 def make_game(native, rows, *, preset="rhbi_optimized", steps=1024, batch=8, **options):
     critic = Critic(native.width).to(device=native.particles.device, dtype=torch.float32)
-    return ConditionalPG0100(native, rows, critic, particles=native.particles,
+    return ConditionalResponseEngine(native, rows, critic, particles=native.particles,
                             conditions=torch.cat([p.neutral for p in rows]), preset=preset,
                             total_steps=steps, batch_size=batch, seed=0, ema_decay=None,
                             response_domain="continuous_vector", penalty_input_domain="continuous", **options)

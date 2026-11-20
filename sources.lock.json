@@ -1,17 +1,20 @@
 {
   "particlegan": {
-    "url": "https://github.com/HyperGAN/ParticleGAN.git",
-    "commit": "53f5ff3757334f02341df66d107d27db900f4a5d",
-    "version": "0.10.1",
-    "directory": "ParticleGAN-latest"
+    "url": "https://pypi.org/project/particlegan/0.11.0/",
+    "commit": "b86f0379b4d887f4cde88d686aedc04661a2b61b",
+    "version": "0.11.0",
+    "wheel_sha256": "218ac69efd42e092367b4c7a5c4abb4685dc63a73ccc23223a8bb4dd1543e327"
   },
   "particle_sliders": {
     "url": "https://github.com/HyperGAN/particle-sliders.git",
-    "commit": "119d7e0559bacdc49847961c1b243ac08daa013c",
-    "version": "0.15.0.dev0",
-    "patch": "patches/particle-sliders-pg0101.patch",
-    "patch_sha256": "61fa9163b32ae35ee508e6590c9bcc1085ab847eb3200c5deaefc88fd9dff74b",
-    "directory": "particle-sliders-0101"
+    "commit": "c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78",
+    "version": "0.15.1",
+    "sources": {
+      "engine.py": "4ae51bf86e349728d5fed804709bcf78474615f557891d6c77017e19c4c7e806",
+      "optimizer_policy.py": "412eb6754b4c5587dac7ce58ef63b7fd1f5ffba476cb9ca860422b9cae9ba612",
+      "restoration.py": "447352d536d3da81d4035a6f5859ad7b05f0b2abbe9275c5b69faaf080cb7472",
+      "backends.py": "cd10c3a2daa3f0fcc6a6f9578dfbb0a72bdf6237905d2300595962f0751c7bbc"
+    }
   },
   "article_reference": {
     "url": "https://github.com/HyperGAN/tiny-aya-particle-sliders",
@@ -19,15 +22,9 @@
     "code_copied": false
   },
   "bridge_provenance": {
-    "source": "same shared ConditionalPG0100 engine; metadata-only 0.10.1 source cohort",
-    "previous_lock": "research/sources-0.10.0-af0764b1.lock.json",
-    "previous_lock_sha256": "4f28409a42d450186eb0cfad0155e746a1ef9d65042d9efe4e0081abf2ba004d",
-    "engine_sha256": "3ad2a98bb761144eb3d8d4784510e01861f64c4163ba60a5193585a9bb2b087a",
-    "manifest_sha256": "3bcbe4519315d48c122aa73b51e3b5b121c6f9f59edd66cb367290a1fc3a11ed",
-    "numerical_engine_delta": null,
-    "upstream_runtime_delta": "DEFAULT_RECIPE becomes empf; explicit rhbi_optimized and empf preset implementations unchanged",
-    "task_initialization": "explicit rhbi_optimized prior holder; same deterministic R2 locations as previous task architecture",
-    "checkpoint_policy": "fresh source cohort; old full checkpoints rejected rather than migrated"
+    "engine_sha256": "3b7fb15685c8a97d798d11c00a43c837af16d7e24e5ab418985c5aa571362aa4",
+    "manifest_sha256": "98b7bb0de14378c866ef14a267f43f0a6bc1726d74d3331871cd199ff06e5aa7",
+    "source": "Product-owned RHBI and EMPF bridge adapted from the reviewed 0.10.1 cohort"
   },
   "native_thinking_policy": {
     "source": "https://www.kaggle.com/datasets/metric/gemma-4-developer-agent-wheelhouse",

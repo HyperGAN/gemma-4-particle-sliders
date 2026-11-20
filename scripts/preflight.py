@@ -9,14 +9,13 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCK=json.loads((ROOT/'sources.lock.json').read_text())
 from gemma_particle.source_identity import require_core_source
 source_cohort=require_core_source()
 env = dict(os.environ, CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
 logs = ROOT/'runs/preflight'
 logs.mkdir(parents=True, exist_ok=True)
 commands = [
-    [sys.executable, '-m', 'pytest', '-q', 'tests', str(Path('.deps')/LOCK['particle_sliders'].get('directory','particle-sliders')/'packages/particle-sliders-core/tests/test_pg0100_integration.py')],
+    [sys.executable, '-m', 'pytest', '-q', 'tests'],
     [str(ROOT/'.harness-venv/bin/python'), 'scripts/validate_submission.py', 'dist/baseline-31b/agent'],
 ]
 checks = []

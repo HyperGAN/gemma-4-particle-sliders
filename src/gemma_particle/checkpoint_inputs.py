@@ -7,7 +7,7 @@ objects, notably Gemma's shared-KV UserDict, retain their identity and mutations
 """
 import inspect
 
-from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
+from particle_sliders.backends import checkpoint_with_adapter_scale
 
 
 class _PositionalCheckpoint:

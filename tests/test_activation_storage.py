@@ -114,7 +114,7 @@ def test_nested_profile_full_resume_is_rejected_by_block_profile_before_mutation
 def test_keyword_input_lifetime_is_released_by_binding_without_changing_gradient():
     from contextlib import contextmanager
     from torch import nn
-    from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
+    from particle_sliders.backends import checkpoint_with_adapter_scale
     from gemma_particle.checkpoint_inputs import checkpoint_with_positional_inputs
     class Network:
         scale=1.
