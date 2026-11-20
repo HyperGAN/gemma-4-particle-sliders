@@ -8,7 +8,7 @@ The screening budget is eight native updates per rate on the same admitted TRAIN
 | 0.012 | 0.018 | 0.030 |
 | 0.024 | 0.036 | 0.060 |
 
-The evaluation uses seven other TRAIN questions with clean OFF and Verify captures. It checks that the live tokenizer reproduces the exact two fitting pairs before it tokenizes the scoring prompts. Each scoring pair differs only in the Verify instruction. No scoring prompt enters the training cache.
+The original screen used seven other TRAIN questions with clean OFF and Verify captures. It checked that the live tokenizer reproduced the two fitting pairs before tokenizing the scoring prompts. Each scoring pair differs only in the Verify instruction. The fitting and scoring questions are disjoint.
 
 At update eight, measure the sliced Wasserstein distance between the adapted and teacher hidden-state edits from the frozen neutral baseline. Use unit slider strength, 256 frozen directions and one RMS normalization from the fitting pairs. A lower mean distance ranks higher. The result retains exact ties, all measured distances and the neutral reference. If the default rate ties for first, carry it forward. Otherwise carry forward the lowest tied rate. This metric measures hidden-state distributions on these seven prompts. Repository-test DEV and Kaggle scores answer the task-quality question separately.
 
@@ -40,6 +40,19 @@ The November 19 follow-up repeated the rate screen with four fitting pairs, then
 `0.024` had the lowest distance of the three four-pair trials. At that rate the four-pair run scored ahead of the seven-pair run, and the slider-off reference scored ahead of both. That ordering held after omitting each probe in turn. These figures measure held-out TRAIN hidden-state distributions. The main native run continued from the original two-pair checkpoint. Task repair quality will be measured in the separate DEV evaluation.
 
 The archived four-pair and seven-pair results have SHA-256 hashes `464d5d0e7e5e4e11f71ef4e953185468efc1ee83605a3c5a6451719acc7ee317` and `058085e6a710b98774a7ce4d7b564f95af2bc9d826ec39ae9b4565fc436ee627`, respectively. An independent CPU replay recomputed all distances from the recorded probe tensors.
+
+## Step-384 checkpoint and new sweep
+
+The original two-question run stopped at a sealed recovery checkpoint on November 19, 2026. An independent CPU replay reproduced the following means from its archived probe tensors, using the same seven scoring questions, 256 projection directions, fitting-set normalization and unit slider strength.
+
+| State | Mean sliced Wasserstein distance ↓ |
+|---|---:|
+| Slider off | 0.606359 |
+| Step 384 at `0.024` | 2.474720 |
+
+The probe tensor archive has SHA-256 `de3ea69c16e3e50aa67ea4e9ad9cc732b17a5c55a0f89101cc0ce7ebc0df3b5b`. These distances describe hidden-state edits on TRAIN questions. Repair quality is measured separately with fresh tests.
+
+A separate sweep started on November 20 on seven fixed, freshly verified teacher contexts from FastAPI. Two are failure-to-fix pairs. In those pairs the baseline fails and the teacher passes. The other five come from questions where the baseline passes and the teacher earns a higher behavior grade. All three rates use the same cache, seed, penalty cadence and eight-update budget. This sweep is in progress.
 
 ## Running the screen
 
