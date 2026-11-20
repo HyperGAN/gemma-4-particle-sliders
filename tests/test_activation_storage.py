@@ -65,8 +65,8 @@ def test_checkpointed_native_matches_direct_full_gradient_and_deferred_scale(sto
         assert_equal(before,wrapped.model.state_dict())
         if storage=='cpu':assert wrapped.last_activation_storage['copied_bytes']>0
     finally:direct.close();wrapped.close()
-    assert all(not getattr(layer,'_pg09_scale_checkpoint',False) for layer in wrapped.trunk.layers)
-    assert all(not getattr(m,'_pg09_scale_checkpoint',False) for layer in wrapped.trunk.layers for m in (layer.self_attn,layer.mlp))
+    assert all(not getattr(layer,'_adapter_scale_checkpoint',False) for layer in wrapped.trunk.layers)
+    assert all(not getattr(m,'_adapter_scale_checkpoint',False) for layer in wrapped.trunk.layers for m in (layer.self_attn,layer.mlp))
 
 
 @pytest.mark.parametrize('preset',['rhbi_optimized','empf'])
@@ -135,5 +135,5 @@ def test_keyword_input_lifetime_is_released_by_binding_without_changing_gradient
             assert (source() is None)==canonicalized
             gradients.append(torch.autograd.grad(result,parameter)[0])
         finally:handle.close()
-        assert block.forward==original and not getattr(block,'_pg09_scale_checkpoint',False)
+        assert block.forward==original and not getattr(block,'_adapter_scale_checkpoint',False)
     assert torch.equal(gradients[0],gradients[1])
