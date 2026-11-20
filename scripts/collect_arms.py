@@ -13,6 +13,7 @@ import signal
 import subprocess
 import sys
 
+from gemma_particle.behavior_protocol import TOOL_TRACE_PROTOCOL, TOOL_TRACE_SOURCES
 from gemma_particle.curation import select_contexts,instruction_set,DEFAULT_INSTRUCTION_PROTOCOL
 from gemma_particle.budgets import PILOT_BUDGET,budget_values
 from gemma_particle.capture import LEGACY_CAPTURE_PROTOCOL,CONTEXT_CAPTURE_PROTOCOL
@@ -74,6 +75,8 @@ def main():
             sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
         if pilot:
             sources.append('src/gemma_particle/paired_collection.py')
+        if plan.get('behavior_study') == TOOL_TRACE_PROTOCOL:
+            sources.extend(TOOL_TRACE_SOURCES)
         observed={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in sources}
         if plan.get('execution_sources')!=observed:raise ValueError('declared collection sources changed')
     identity=json.loads(args.server_identity.read_text())

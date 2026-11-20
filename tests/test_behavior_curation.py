@@ -13,6 +13,7 @@ from gemma_particle.behavior_curation import (eligible_arms, episode_payload, se
 from gemma_particle.behavior_protocol import load_behavior_protocol
 from gemma_particle.budgets import OFFICIAL_BUDGET, budget_values
 from gemma_particle.capture import CONTEXT_CAPTURE_PROTOCOL, RequestJournal
+from gemma_particle.curation import VERIFY_SUMMARY_INSTRUCTION_PROTOCOL
 from gemma_particle.data import digest, write_jsonl
 from gemma_particle.harness_identity import sha256_file
 from gemma_particle.history import OFFICIAL_COMPACTION, history_contract
@@ -20,10 +21,10 @@ from gemma_particle.paired_collection import PAIR, PILOT_QUARTET
 from test_data import arms
 
 
-def study_rows(*, passing_off=True):
+def study_rows(*, passing_off=True, instruction_protocol='tools-v2'):
     task = dict(instance_id='task', repo='fastapi/fastapi', base_commit='a'*40,
         problem_statement='Return zero for an empty list.', hints_text='', created_at='2026-01-01', split='train')
-    rows = arms(off=passing_off, protocol='tools-v2')
+    rows = arms(off=passing_off, protocol=instruction_protocol)
     for row in rows:
         row.update(schema='gemma4-verified-trajectory-v4', agent_error=None, capture_error=None,
             capture_protocol=CONTEXT_CAPTURE_PROTOCOL, context_budget_proof=None,
@@ -261,3 +262,50 @@ def test_grading_script_single_pass_offline_revalidation_and_tamper_rejection(tm
     response_path.write_text(response_path.read_text()+'\n')
     with pytest.raises(ValueError, match='raw decision response bytes'):
         load_verified_grades(root, out, tasks, outcomes, protocol, protocol_sha)
+
+
+def test_verify_summary_requires_prospective_protocol_and_preserves_off():
+    tasks, original, protocol = study_rows(passing_off=False)
+    _, variant, _ = study_rows(passing_off=False, instruction_protocol=VERIFY_SUMMARY_INSTRUCTION_PROTOCOL)
+    assert original[0]['first_request'] == variant[0]['first_request']
+    assert original[2]['first_request'] == variant[2]['first_request']
+    assert original[3]['first_request'] == variant[3]['first_request']
+    assert 'record the exact commands' in variant[1]['first_request']['messages'][0]['content']
+    with pytest.raises(ValueError, match='declared collection profiles'):
+        eligible_arms(tasks, variant, protocol)
+    protocol['instruction_protocol'] = VERIFY_SUMMARY_INSTRUCTION_PROTOCOL
+    assert [row['arm'] for row in eligible_arms(tasks, variant, protocol)[1]] == ['off', 'verify']
+    with pytest.raises(ValueError, match='unmatched instruction protocols'):
+        eligible_arms(tasks, [original[0], *variant[1:]], protocol)
+
+
+def test_full_tool_trace_recovers_observed_results_outside_terminal_history(tmp_path):
+    tasks, rows, terminal = study_rows(passing_off=False)
+    row = rows[1]
+    journal = RequestJournal(tmp_path / 'requests', instance_id='task', arm='verify')
+    initial = row['first_request']
+    start = journal.begin(model=initial['model'], messages=initial['messages'], tools=None, options=initial['generation'])
+    call = {'id': 'check', 'function': {'name': 'run_command', 'arguments': '{"command":"pytest -q"}'}}
+    journal.complete(start, {'choices': [{'message': {'role': 'assistant', 'tool_calls': [call]}}]})
+    reply = {'role': 'tool', 'tool_call_id': 'check', 'content': 'Observed failing regression'}
+    midway = journal.begin(model=initial['model'], messages=[*initial['messages'], reply], tools=None,
+                           options=initial['generation'])
+    missing = {'id': 'not-observed', 'function': {'name': 'get_status', 'arguments': '{'}}
+    journal.complete(midway, {'choices': [{'message': {'role': 'assistant', 'tool_calls': [missing]}}]})
+    latter = journal.begin(model=initial['model'], messages=initial['messages'], tools=None, options=initial['generation'])
+    journal.complete(latter, {'choices': [{'message': {'role': 'assistant', 'content': 'Final reply'}}]})
+    row['requests'] = [start, midway, latter]
+
+    protocol = load_behavior_protocol(Path(__file__).resolve().parents[1] / 'research/jev-full-tool-trace-v1.json')
+    request, binding = episode_payload(tasks[0], row, journal.directory, protocol)
+    episode = request['state']['episode']
+    assert episode['completed_tools'] == [{'decision': 0, 'tool': 'run_command',
+        'arguments': {'command': 'pytest -q'}, 'observed_result': reply['content']}]
+    assert episode['tool_proposals_without_confirmed_result'] == [
+        {'decision': 1, 'tool': 'get_status', 'arguments': '{'}]
+    assert episode['final_reply'] == 'Final reply' and 'trace_responses_sha256' in binding
+    assert request['questions']['repair_evidence'] == terminal['question']
+    assert protocol['admission'] == terminal['admission']
+    ordinary_request, ordinary_binding = episode_payload(tasks[0], row, journal.directory, terminal)
+    assert not any(message['role'] == 'tool' for message in ordinary_request['state']['episode'])
+    assert 'trace_responses_sha256' not in ordinary_binding

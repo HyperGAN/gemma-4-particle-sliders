@@ -11,11 +11,22 @@ TARGET_INSTRUCTIONS = {
     "verify": "Use an iterative repair loop: inspect the issue and repository, form one falsifiable hypothesis, test it with a short command, edit the relevant code, and check both the original failure and adjacent behavior. Preserve time to submit a patch.",
 }
 DEFAULT_INSTRUCTION_PROTOCOL = 'behavior-v1'
+TOOLS_INSTRUCTION_PROTOCOL = 'tools-v2'
+VERIFY_SUMMARY_INSTRUCTION_PROTOCOL = 'tools-v2-verify-summary'
 TOOL_PRECISION = ("Use each tool's declared schema literally. Keep filepath a plain path and pass line ranges as separate integer fields. "
     "If a range read fails or repeats the file header, use run_command with sed to read the exact range. "
     "Avoid repeating unchanged calls. Batch narrow searches when useful and preserve time for a code edit, a focused check, and submit_patch.")
-INSTRUCTION_PROTOCOLS = {DEFAULT_INSTRUCTION_PROTOCOL:TARGET_INSTRUCTIONS,
-    'tools-v2':{key:value+'\n\n'+TOOL_PRECISION for key,value in TARGET_INSTRUCTIONS.items()}}
+VERIFY_SUMMARY = ("Before editing, run a focused check that reproduces the issue. After editing, rerun the same check "
+    "and the relevant regression tests. In your final reply after submitting, record the exact commands and "
+    "the results you actually observed.")
+TOOL_INSTRUCTIONS = {arm: text+'\n\n'+TOOL_PRECISION for arm, text in TARGET_INSTRUCTIONS.items()}
+INSTRUCTION_PROTOCOLS = {
+    DEFAULT_INSTRUCTION_PROTOCOL: TARGET_INSTRUCTIONS,
+    TOOLS_INSTRUCTION_PROTOCOL: TOOL_INSTRUCTIONS,
+    VERIFY_SUMMARY_INSTRUCTION_PROTOCOL: {
+        **TOOL_INSTRUCTIONS, 'verify': TOOL_INSTRUCTIONS['verify']+'\n\n'+VERIFY_SUMMARY,
+    },
+}
 
 
 def instruction_set(protocol=DEFAULT_INSTRUCTION_PROTOCOL):

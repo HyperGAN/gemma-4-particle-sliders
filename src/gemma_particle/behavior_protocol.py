@@ -6,10 +6,15 @@ from .budgets import OFFICIAL_BUDGET,budget_values
 from .decisions import ENDPOINT
 
 
+TERMINAL_PROTOCOL = 'jev-evidence-loop-v1'
+TOOL_TRACE_PROTOCOL = 'jev-full-tool-trace-v1'
+TOOL_TRACE_SOURCES = ('src/gemma_particle/behavior_protocol.py', 'src/gemma_particle/behavior_curation.py')
+
+
 def load_behavior_protocol(path):
     protocol=json.loads(Path(path).read_text())
     if (protocol.get('schema')!='gemma4-behavior-admission-protocol-v1'
-            or protocol.get('name')!='jev-evidence-loop-v1' or 'collection' in protocol):
+            or protocol.get('name') not in (TERMINAL_PROTOCOL, TOOL_TRACE_PROTOCOL) or 'collection' in protocol):
         raise ValueError('explicit evidence-loop study identity required')
     cohort=protocol['cohort_policy'];target=protocol['target_selection'];admission=protocol['admission']
     if cohort.get('budget_profile')!=OFFICIAL_BUDGET or cohort.get('operational_budget')!=budget_values(OFFICIAL_BUDGET):

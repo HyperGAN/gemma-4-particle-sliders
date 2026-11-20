@@ -1,13 +1,15 @@
 """Prospective Jev admission, separate from the original binary selection rule."""
+from collections import Counter
 from copy import deepcopy
 import json
 import math
 from pathlib import Path
 
-from .behavior_protocol import load_behavior_protocol
+from .behavior_protocol import TOOL_TRACE_PROTOCOL, TOOL_TRACE_SOURCES, load_behavior_protocol
 from .budgets import OFFICIAL_BUDGET, budget_values
 from .capture import CONTEXT_CAPTURE_PROTOCOL, load_requests
-from .curation import pair_contexts, validate_context_outcomes
+from .curation import (TOOLS_INSTRUCTION_PROTOCOL, VERIFY_SUMMARY_INSTRUCTION_PROTOCOL, instruction_set,
+                       pair_contexts, validate_context_outcomes)
 from .data import digest, read_jsonl
 from .decisions import validate_response
 from .dev import validate_agent_tasks
@@ -24,6 +26,13 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
     protocol_sha = sha256_file(protocol_path)
     plan_path = root / 'plan.json'
     plan = json.loads(plan_path.read_text())
+    instruction_protocol = plan.get('instruction_protocol', TOOLS_INSTRUCTION_PROTOCOL)
+    if instruction_protocol == VERIFY_SUMMARY_INSTRUCTION_PROTOCOL:
+        if plan.get('target_instructions') != instruction_set(instruction_protocol):
+            raise ValueError('Verify summary instructions differ from the prospective plan')
+        protocol['instruction_protocol'] = instruction_protocol
+    elif instruction_protocol != TOOLS_INSTRUCTION_PROTOCOL:
+        raise ValueError('unknown behavior collection instruction protocol')
     arms = tuple(plan.get('arms', []))
     pilot = plan.get('collection_pilot')
     if pilot:
@@ -67,6 +76,8 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
     if (len(plan['source_git']) != 40 or not plan['execution_sources']
             or any(sha256_file(executor / name) != sha for name, sha in plan['execution_sources'].items())):
         raise ValueError('frozen raw collection sources changed')
+    if protocol['name'] == TOOL_TRACE_PROTOCOL and not set(TOOL_TRACE_SOURCES) <= plan['execution_sources'].keys():
+        raise ValueError('complete tool-trace grading sources must be pinned before collection')
     server = plan['server_identity']
     if (server.get('kind') != 'gemma4' or server.get('pretrained_inference') is not True
             or server.get('strength') != 0 or server.get('native_checkpoint') is not None):
@@ -76,6 +87,11 @@ def load_behavior_cohort(root, visible_tasks, protocol_path):
         manifest = json.loads((root / arm / 'cohort.json').read_text())
         contract = manifest['contract']
         budget, harness = contract['budget'], contract['harness']
+        if instruction_protocol == VERIFY_SUMMARY_INSTRUCTION_PROTOCOL and (
+                manifest.get('instruction_protocol') != instruction_protocol
+                or contract.get('instruction_protocol') != instruction_protocol
+                or contract.get('instruction_set_sha256') != digest(instruction_set(instruction_protocol))):
+            raise ValueError('actual collector instruction protocol differs from the Verify summary plan')
         if (manifest['arm'] != arm or manifest['server_identity'] != server
                 or manifest.get('prompt_profile',DEFAULT_PROMPT_PROFILE) != profile
                 or contract.get('common_prompt') != common_prompt
@@ -107,6 +123,7 @@ def clean_capture(row):
 
 def eligible_arms(tasks, outcomes, protocol):
     validate_agent_tasks(tasks)
+    instruction_protocol = protocol.get('instruction_protocol', TOOLS_INSTRUCTION_PROTOCOL)
     collection = protocol.get('collection')
     grouped = validate_context_outcomes(tasks, outcomes,
         paired_verify=bool(collection and tuple(collection['arms']) == PAIR))
@@ -115,7 +132,7 @@ def eligible_arms(tasks, outcomes, protocol):
         if task_id in protocol['cohort_policy']['excluded_fit_tasks']:
             raise ValueError('reserved conversion task cannot enter fitting')
         for row in arms.values():
-            if (row.get('instruction_protocol') != 'tools-v2'
+            if (row.get('instruction_protocol') != instruction_protocol
                     or row.get('budget_profile') != OFFICIAL_BUDGET
                     or row.get('capture_protocol') != CONTEXT_CAPTURE_PROTOCOL
                     or row.get('history_profile') != OFFICIAL_COMPACTION):
@@ -143,8 +160,49 @@ def eligible_arms(tasks, outcomes, protocol):
     return grouped, eligible
 
 
+def full_tool_trace(packets, ordinary, journal):
+    replies, ambiguous = {}, set()
+    for packet in packets:
+        for message in packet['request']['messages']:
+            if message['role'] == 'tool' and 'tool_call_id' in message:
+                key, value = message['tool_call_id'], message['content']
+                if isinstance(key, str) and key and replies.setdefault(key, (packet['decision'], value))[1] != value:
+                    ambiguous.add(key)
+
+    calls, response_hashes = [], {}
+    for packet in ordinary:
+        decision = packet['decision']
+        response = json.loads((journal / f'{decision:04d}-response.json').read_text())
+        response_hashes[str(decision)] = response['response_sha256']
+        choices = response['response']['choices']
+        if len(choices) != 1 or choices[0]['message'].get('role') != 'assistant':
+            raise ValueError('one actual captured assistant response per decision required')
+        message = choices[0]['message']
+        calls.extend((decision, call) for call in message.get('tool_calls') or [])
+
+    repeated = Counter(call.get('id') for _, call in calls)
+    completed, unobserved = [], []
+    for decision, call in calls:
+        key, function = call.get('id'), call.get('function', {})
+        args = function.get('arguments')
+        try:
+            args = json.loads(args)
+        except (TypeError, json.JSONDecodeError):
+            pass  # Preserve malformed proposals exactly as recorded.
+        event = {'decision': decision, 'tool': function.get('name'), 'arguments': args}
+        if key in replies and key not in ambiguous and repeated[key] == 1 and replies[key][0] > decision:
+            completed.append({**event, 'observed_result': replies[key][1]})
+        else:
+            unobserved.append(event)
+    episode = {'completed_tools': completed, 'final_reply': message.get('content')}
+    if unobserved:
+        episode['tool_proposals_without_confirmed_result'] = unobserved
+    return episode, digest(response_hashes)
+
+
+
 def episode_payload(task, row, journal_directory, protocol):
-    """Bind the terminal ordinary decision plus completion; omit judge labels."""
+    """Bind the prospective evidence view to actual captured, verified TRAIN runs."""
     validate_agent_tasks([task])
     if task['split'] != 'train' or task['instance_id'] != row['instance_id'] or not clean_capture(row):
         raise ValueError('a clean complete matching TRAIN episode is required')
@@ -162,18 +220,24 @@ def episode_payload(task, row, journal_directory, protocol):
     choices = completed['response']['choices']
     if len(choices) != 1 or choices[0]['message'].get('role') != 'assistant':
         raise ValueError('one actual terminal assistant completion required')
-    messages = deepcopy([m for m in packet['request']['messages'] if m['role'] not in ('system', 'developer')])
-    if any(m['role'] not in ('user', 'assistant', 'tool', 'function') for m in messages):
-        raise ValueError('unknown episode message role')
-    messages.append(deepcopy(choices[0]['message']))
+    trace_hash = None
+    if protocol.get('name') == TOOL_TRACE_PROTOCOL:
+        episode, trace_hash = full_tool_trace(packets, ordinary, journal_directory)
+    else:
+        episode = deepcopy([m for m in packet['request']['messages'] if m['role'] not in ('system', 'developer')])
+        if any(m['role'] not in ('user', 'assistant', 'tool', 'function') for m in episode):
+            raise ValueError('unknown episode message role')
+        episode.append(deepcopy(choices[0]['message']))
     state = {'issue': {k: task[k] for k in ('problem_statement', 'hints_text')},
-        'episode': messages, 'visibility': protocol['judge_input']['disclosure']}
+        'episode': episode, 'visibility': protocol['judge_input']['disclosure']}
     request = {'model': protocol['judge']['model'], 'state': state,
         'questions': {'repair_evidence': deepcopy(protocol['question'])}}
     binding = {'instance_id': task['instance_id'], 'arm': row['arm'], 'outcome_sha256': digest(row),
         'terminal_request_sha256': packet['request_sha256'],
         'terminal_response_sha256': completed['response_sha256'],
         'episode_sha256': digest(state), 'api_request_sha256': digest(request)}
+    if trace_hash is not None:
+        binding['trace_responses_sha256'] = trace_hash
     return request, binding
 
 

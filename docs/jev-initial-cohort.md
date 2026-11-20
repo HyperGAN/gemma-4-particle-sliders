@@ -29,3 +29,11 @@ The [first completed real quartet](../reports/first-real-behavior-admission-v1.j
 Offline curation and a separate audit reproduce the same context bytes with zero additional API calls. Both neutral and positive inputs begin with only system/user messages; the complete initial OFF question, tools and generation settings match. The original binary auxiliary output still has zero contexts because OFF passes. The pool has moved to `fastapi_11355`; two distinct qualified questions are required before caching full native states and the first unchanged public-recipe update. No pretrained optimizer update or learned DEV/official score exists yet.
 
 The first admitted pair also has [exact server-bound prompt transport](../reports/first-admitted-prompt-transport-v1.json): 2,904 neutral and 3,026 positive tokens, with complete initial inputs and token hashes preserved. Tokenization performs no model forward. The full native hidden targets are computed separately once the two-question cache gate is met.
+
+## Full captured tool trace
+
+For a fresh cohort, pass `--protocol research/jev-full-tool-trace-v1.json` to `prepare_behavior_collection.py`. Pass the resulting cohort's `behavior-protocol.json` to both `grade_behavior_cohort.py` and `curate_behavior_cohort.py`. This protocol grades tool proposals with their captured results in chronological order. It includes results observed before context compaction, plus the terminal reply. Proposals without an unambiguous result are recorded separately. The rubric, 0.75 minimum, matched OFF comparison and fresh-test requirements are the same as in the original study.
+
+To vary the Verify cue, pass `--instruction-protocol tools-v2-verify-summary` when preparing the cohort. It asks Verify to record the actual commands and results of the before-and-after check in its terminal reply. OFF, Reproduce and Localize retain the same prompt bytes as in `tools-v2`.
+
+An archival JSON Schema check supplied the full tool trace for an OFF run that failed fresh tests and a Reproduce run that passed. The full-trace Jev scores were 0.8025 for OFF and 0.965 for Reproduce. The original terminal-context grades remain part of the earlier study. The full-trace protocol above is declared before collecting new cases.

@@ -11,10 +11,10 @@ import subprocess
 import urllib.request
 from urllib.parse import urlsplit
 
-from gemma_particle.behavior_protocol import load_behavior_protocol
+from gemma_particle.behavior_protocol import TOOL_TRACE_PROTOCOL, TOOL_TRACE_SOURCES, load_behavior_protocol
 from gemma_particle.budgets import OFFICIAL_BUDGET, budget_values
 from gemma_particle.capture import CONTEXT_CAPTURE_PROTOCOL
-from gemma_particle.curation import instruction_set
+from gemma_particle.curation import TOOLS_INSTRUCTION_PROTOCOL, VERIFY_SUMMARY_INSTRUCTION_PROTOCOL, instruction_set
 from gemma_particle.data import read_jsonl
 from gemma_particle.data import digest
 from gemma_particle.dev import validate_agent_tasks
@@ -33,6 +33,8 @@ def main():
     p.add_argument('--endpoint', required=True)
     p.add_argument('--task-id', required=True)
     p.add_argument('--prompt-profile', choices=PROMPT_PROFILES, default=DEFAULT_PROMPT_PROFILE)
+    p.add_argument('--instruction-protocol', choices=(TOOLS_INSTRUCTION_PROTOCOL, VERIFY_SUMMARY_INSTRUCTION_PROTOCOL),
+                   default=TOOLS_INSTRUCTION_PROTOCOL)
     p.add_argument('--protocol', type=Path, default=Path('research/jev-evidence-loop-v1.json'))
     p.add_argument('--qualification', type=Path, default=Path('reports/train-environment-qualification-v2.json'))
     p.add_argument('--visible-tasks', type=Path, default=Path('data/splits-v1/train.jsonl'))
@@ -46,7 +48,7 @@ def main():
     if commit != args.executor_commit:
         raise ValueError('frozen executor commit differs')
     subprocess.run(['git', 'diff', '--quiet', 'HEAD'], cwd=executor, check=True)
-    if sha256_file(executor / 'research/jev-evidence-loop-v1.json') != sha256_file(args.protocol):
+    if sha256_file(executor / 'research' / (protocol['name'] + '.json')) != sha256_file(args.protocol):
         raise ValueError('prospective protocol differs from frozen executor')
     tasks = read_jsonl(args.visible_tasks)
     validate_agent_tasks(tasks)
@@ -104,16 +106,18 @@ def main():
         sources.extend(['src/gemma_particle/prompt_profiles.py','submission/prompts/system.md'])
     if args.collection_pilot:
         sources.append('src/gemma_particle/paired_collection.py')
+    if protocol['name'] == TOOL_TRACE_PROTOCOL:
+        sources.extend(TOOL_TRACE_SOURCES)
     plan = {'schema': 'gemma4-curation-plan-v1', 'created_at': datetime.now(timezone.utc).isoformat(),
         'task_ids': [args.task_id], 'arms': list(arms),
-        'server_identity': server, 'target_instructions': instruction_set('tools-v2'),
+        'server_identity': server, 'target_instructions': instruction_set(args.instruction_protocol),
         'endpoint': args.endpoint.rstrip('/'),
         'source_git': commit, 'source_checkout': str(executor),
         'execution_sources': {s: sha256_file(executor / s) for s in sources},
         'environment_control_sha256': row['receipt_sha256'],
         'teacher_policy': 'paired-verify' if arms == PAIR else 'all-four',
         'image':image, 'image_id':image_id, 'visible_tasks_sha256':sha256_file(args.visible_tasks),
-        'instruction_protocol': 'tools-v2', 'capture_protocol': CONTEXT_CAPTURE_PROTOCOL,
+        'instruction_protocol': args.instruction_protocol, 'capture_protocol': CONTEXT_CAPTURE_PROTOCOL,
         'history_profile': OFFICIAL_COMPACTION, 'history': history_contract(OFFICIAL_COMPACTION),
         'budget_profile': OFFICIAL_BUDGET, 'budget': budget_values(OFFICIAL_BUDGET),
         'behavior_study': protocol['name'], 'behavior_protocol_sha256': sha256_file(args.protocol),
