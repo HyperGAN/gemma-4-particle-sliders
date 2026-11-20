@@ -52,7 +52,18 @@ The original two-question run stopped at a sealed recovery checkpoint on Novembe
 
 The probe tensor archive has SHA-256 `de3ea69c16e3e50aa67ea4e9ad9cc732b17a5c55a0f89101cc0ce7ebc0df3b5b`. These distances describe hidden-state edits on TRAIN questions. Repair quality is measured separately with fresh tests.
 
-A separate sweep started on November 20 on seven fixed, freshly verified teacher contexts from FastAPI. Two are failure-to-fix pairs. In those pairs the baseline fails and the teacher passes. The other five come from questions where the baseline passes and the teacher earns a higher behavior grade. All three rates use the same cache, seed, penalty cadence and eight-update budget. This sweep is in progress.
+The November 20 sweep completed all three rates on seven fixed, freshly verified teacher contexts from FastAPI. Two are failure-to-fix pairs. In those pairs the baseline fails and the teacher passes. The other five come from questions where the baseline passes and the teacher earns a higher behavior grade. All three trials used batch size 2, `lazy_k=1`, identical sampled rows and eight EMPF updates. Scoring used seven disjoint TRAIN questions, unit slider strength, 256 fixed directions and the RMS normalization from the seven fitting pairs.
+
+| State | Mean sliced Wasserstein distance ↓ |
+|---|---:|
+| Slider off | 0.587806 |
+| `0.006` at update 8 | 2.993953 |
+| `0.012` at update 8 | 3.396773 |
+| `0.024` at update 8 | 2.108837 |
+
+An independent CPU replay reproduced the ranking. After omitting each probe in turn, `0.024` remained the best trained rate and the slider-off reference had the lowest distance. The exact `0.024` optimizer checkpoint was adopted for the update-64 continuation. Fresh repository tests will measure repair quality after distillation.
+
+The scored result has SHA-256 `2e783fc6cb6e90700b8f860cb1cb2d1078c38b7215d1f8e50a2c53fde72c06a6`. The probe vector archive has SHA-256 `5110ee951a15e254d8decf7d5aff29ab3a1953b505dcd950e605340e45bc5723`.
 
 ## Running the screen
 
