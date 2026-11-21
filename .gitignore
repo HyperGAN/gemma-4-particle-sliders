@@ -13,3 +13,7 @@ __pycache__/
 .pytest_cache/
 *.pyc
 research/article.txt
+
+# Materialized immutable selection evidence.
+/research/dev-selection-v1.json
+/research/dev-selection-empf-v1.json
