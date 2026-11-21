@@ -194,13 +194,12 @@ def verified_trial(root, config, rate):
     return receipt
 
 
-def wait_headroom():
-    qualification = read(REPO / 'reports/long-history-gradient-qualification-v1.json')
+def wait_headroom(qualification):
     while not shared_headroom(DEVICE, qualification):
         time.sleep(15)
 
 
-def score(root, plan, config):
+def score(root, plan, config, qualification):
     probes = [ContextRow(tuple(p['neutral_ids']), tuple(p['positive_ids']), p['instance_id'], p['decision'])
               for p in plan['probes']]
     fit, _ = load_cache(plan['cache'], identity=plan['model_identity'], train_ids=set(plan['fit_task_ids']))
@@ -210,7 +209,7 @@ def score(root, plan, config):
     scale = fit_edits.square().mean().sqrt().reshape(1)
     if not torch.isfinite(scale).all() or not (scale > 0).all():
         raise ValueError('training teacher edit must have finite positive RMS')
-    wait_headroom()
+    wait_headroom(qualification)
     native = load_native(config, device=DEVICE, memory_fraction=MEMORY_FRACTION, checkpointing=False)
     try:
         with torch.inference_mode():
@@ -244,6 +243,12 @@ def run(args):
     root = args.root.resolve()
     plan = load_plan(root)
     config = read(plan['config'])
+    qualification = read(args.resource_qualification)
+    if (qualification.get('status') != 'passed'
+            or qualification.get('memory_fraction') != MEMORY_FRACTION
+            or type(qualification.get('peak_host_rss_bytes')) is not int
+            or qualification['peak_host_rss_bytes'] <= 0):
+        raise ValueError('a passing resource qualification at this memory fraction is required')
     if (root / 'result.json').exists():
         raise FileExistsError('completed screen is immutable')
     receipts = []
@@ -251,7 +256,7 @@ def run(args):
         directory = trial_dir(root, rate)
         if not directory.exists():
             write(root / 'progress.json', {'state': 'waiting_for_shared_headroom', 'next_rate': rate})
-            wait_headroom()
+            wait_headroom(qualification)
             load_plan(root)
             write(root / 'progress.json', {'state': 'training', 'rate': rate, 'completed_trials': receipts})
             cmd = [sys.executable, str(REPO / 'scripts/train.py'), '--config', plan['config'],
@@ -262,7 +267,7 @@ def run(args):
                 subprocess.run(cmd, cwd=REPO, check=True, stdout=log, stderr=subprocess.STDOUT)
         receipts.append({'rate': rate, **verified_trial(root, config, rate)})
     write(root / 'progress.json', {'state': 'scoring', 'completed_trials': receipts})
-    result = {**score(root, plan, config), 'trials': receipts, 'plan_sha256': file_hash(root / 'plan.json')}
+    result = {**score(root, plan, config, qualification), 'trials': receipts, 'plan_sha256': file_hash(root / 'plan.json')}
     write(root / 'result.json', result)
     write(root / 'progress.json', {'state': 'complete', 'best_rates': result['best_rates']})
     print(json.dumps(result), flush=True)
@@ -278,12 +283,15 @@ def main():
     parser.add_argument('--train-tasks', type=Path)
     parser.add_argument('--endpoint')
     parser.add_argument('--server-identity', type=Path)
+    parser.add_argument('--resource-qualification', type=Path)
     args = parser.parse_args()
     if args.mode == 'prepare':
         if not all((args.archive, args.cache, args.train_tasks, args.endpoint, args.server_identity)):
             parser.error('prepare requires --archive, --cache, --train-tasks, --endpoint, and --server-identity')
         prepare(args)
     else:
+        if args.resource_qualification is None:
+            parser.error('run requires --resource-qualification')
         run(args)
 
 

@@ -298,7 +298,7 @@ class ConditionalResponseEngine:
             raise ValueError('conditions tensor or lazy provider.conditions(indices) is required')
         self.response_domain, self.response_scale = response_domain, float(response_scale)
         self.batch_size, self.sigma = batch_size, float(sigma)
-        # Preserve the authoritative ParticleGAN 0.11.0 research recipe's declared precision.
+        # Preserve the authoritative research recipe's declared precision.
         # This native host executes FP32 leaves without GANTrainer autocast; bind
         # that separately below instead of rewriting the public recipe.
         options = dict(batch_size=batch_size, total_steps=total_steps, ema_decay=0.0)
@@ -659,7 +659,7 @@ class ConditionalResponseEngine:
             restore_thermal()
 
     def _thermal_cleanup(self):
-        """Snapshot only this device's exact ParticleGAN 0.11.0 process-local channel."""
+        """Snapshot only this device's exact ParticleGAN process-local channel."""
         from particlegan.bispf import _LAST_THERMAL_SCALE
         missing = object()
         previous = _LAST_THERMAL_SCALE.get(self.device, missing)

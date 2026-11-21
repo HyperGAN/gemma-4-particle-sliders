@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Paired-context Particle Sliders for Gemma 4 software engineering agents"
 requires-python = ">=3.11"
 dependencies = ["torch>=2.6,<3", "numpy>=1.26,<3", "requests>=2.32", "safetensors>=0.7", "PyYAML>=6",
-    "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78#subdirectory=packages/particle-sliders-core",
+    "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@ec1161f5d74481be3540cb0dfa63d0e8f8b54e90#subdirectory=packages/particle-sliders-core",
 ]
 
 [project.optional-dependencies]

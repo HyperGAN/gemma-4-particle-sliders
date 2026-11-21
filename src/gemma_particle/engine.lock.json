@@ -1,24 +1,24 @@
 {
   "particlegan": {
-    "url": "https://pypi.org/project/particlegan/0.11.0/",
-    "commit": "b86f0379b4d887f4cde88d686aedc04661a2b61b",
-    "version": "0.11.0",
-    "wheel_sha256": "218ac69efd42e092367b4c7a5c4abb4685dc63a73ccc23223a8bb4dd1543e327"
+    "url": "https://pypi.org/project/particlegan/0.11.1/",
+    "commit": "d5dec2fe005305082acf382f0939a4bdb51c7131",
+    "version": "0.11.1",
+    "wheel_sha256": "ce9dd51cf2bf0067751c9e6409d05d149ce41c1df98fe3edb0412e3df430de52"
   },
   "particle_sliders": {
     "url": "https://github.com/HyperGAN/particle-sliders.git",
-    "commit": "c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78",
-    "version": "0.15.1",
+    "commit": "ec1161f5d74481be3540cb0dfa63d0e8f8b54e90",
+    "version": "0.15.2",
     "sources": {
-      "engine.py": "4ae51bf86e349728d5fed804709bcf78474615f557891d6c77017e19c4c7e806",
+      "engine.py": "319653b84699d53a07af7cfff795b2887ba38029dd914aaf905a0ee094a594df",
       "optimizer_policy.py": "412eb6754b4c5587dac7ce58ef63b7fd1f5ffba476cb9ca860422b9cae9ba612",
       "restoration.py": "447352d536d3da81d4035a6f5859ad7b05f0b2abbe9275c5b69faaf080cb7472",
-      "backends.py": "cd10c3a2daa3f0fcc6a6f9578dfbb0a72bdf6237905d2300595962f0751c7bbc"
+      "backends.py": "383ff6ea3d8ceedbda1c3ff881a41a14c9f5c023188f684d2016206e13ef7256"
     }
   },
   "bridge_provenance": {
-    "engine_sha256": "3b7fb15685c8a97d798d11c00a43c837af16d7e24e5ab418985c5aa571362aa4",
-    "manifest_sha256": "98b7bb0de14378c866ef14a267f43f0a6bc1726d74d3331871cd199ff06e5aa7",
-    "source": "Product-owned RHBI and EMPF bridge adapted from the reviewed 0.10.1 cohort"
+    "engine_sha256": "2d8a87c1d3e67b06ddd09d06f41bba5ec6f3e39be3b8e974dbdbc62d57ac5b27",
+    "manifest_sha256": "9d83626b4486c83956e780f5ba6ce84ba5b10b096689a178a243bea27d645560",
+    "source": "Product-owned RHBI and EMPF bridge adapted from the reviewed historical cohort"
   }
 }

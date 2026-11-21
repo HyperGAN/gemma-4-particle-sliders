@@ -1,4 +1,4 @@
-"""Run a bounded chunk of the shared PG0.10 conditional game; exact resume."""
+"""Run a bounded chunk of the source-locked conditional response game; exact resume."""
 import argparse
 import json
 import math
