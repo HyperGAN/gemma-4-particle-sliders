@@ -1,6 +1,18 @@
 # Prospective DEV selection
 
-The [selection plan](../research/dev-selection-v1.json) is fixed before model DEV inference. It declares 22 conditions: true unadapted OFF, three behavioral prompt controls, and 18 learned candidates from two recipes, steps 256/512/1024, and strengths .5/1/1.5. Step 1 qualifies engineering only. Learned conditions share one exact admitted TRAIN cache, seed 0, raw weights, batch 2, and the unchanged 1024-step recipe horizon.
+The two frozen selection plans live in the immutable source archive. Restore
+their original paths before running the DEV, resource or confirmation commands.
+
+```sh
+python -m gemma_particle.archive_evidence --root .
+```
+
+The command verifies each file against its recorded SHA-256 before writing it
+and rejects an existing file with different bytes. It reads local Git history
+first and can fetch the pinned GitHub commit from a source distribution or a
+wheel. For an offline copy, pass `--archive-dir /path/to/original/checkout --offline`.
+
+The [selection plan](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/f97a3e9a0711a8b81f87e396a88ff125090f0c26/research/dev-selection-v1.json) is fixed before model DEV inference. It declares 22 conditions: true unadapted OFF, three behavioral prompt controls, and 18 learned candidates from two recipes, steps 256/512/1024, and strengths .5/1/1.5. Step 1 qualifies engineering only. Learned conditions share one exact admitted TRAIN cache, seed 0, raw weights, batch 2, and the unchanged 1024-step recipe horizon.
 
 Every condition reports all 42 supplementary DEV tasks and all 13 original Requests DEV tasks. All 42 supplementary environments pass negative/reference controls. Five original environments qualify; eight reference failures remain in the denominator and are annotated by the [environment receipt](../reports/original-dev-environment-qualification-v1.json). Immutable Docker image IDs prevent a moved tag from changing the comparison. The five original calibrated tasks provide a non-regression floor.
 

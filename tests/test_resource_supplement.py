@@ -15,6 +15,8 @@ from gemma_particle.resource_supplement import (validate_resource_declaration, p
 from test_conversion_handoff import put
 from test_hardware_evidence import hardware_fixture
 
+pytestmark = pytest.mark.usefixtures("archived_evidence")
+
 ROOT = Path(__file__).resolve().parents[1]
 
 

@@ -29,6 +29,8 @@ from test_conversion_handoff import put
 from test_hardware_parity import servers
 from test_learned_effect import protocol_fixture, response
 
+pytestmark = pytest.mark.usefixtures("archived_evidence")
+
 ROOT = Path(__file__).resolve().parents[1]
 
 

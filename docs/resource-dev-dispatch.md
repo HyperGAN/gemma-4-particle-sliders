@@ -1,6 +1,8 @@
 # Run the full DEV grid with qualified physical slots
 
-The [active EMPF selection plan](../research/dev-selection-empf-v1.json) uses nine learned conditions and four controls. Pass it as `--selection-plan` with the matching [EMPF resource declaration](../research/dev-resource-declaration-empf-v1.json) as `--declaration`. The original task runner still uses the [original DEV plan](../research/dev-selection-v1.json) for the fixed task panels and matching settings.
+Restore the [frozen selection inputs](dev-selection.md) before preparing a new dispatch.
+
+The [active EMPF selection plan](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/f97a3e9a0711a8b81f87e396a88ff125090f0c26/research/dev-selection-empf-v1.json) uses nine learned conditions and four controls. Pass it as `--selection-plan` with the matching [EMPF resource declaration](../research/dev-resource-declaration-empf-v1.json) as `--declaration`. The original task runner still uses the [original DEV plan](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/f97a3e9a0711a8b81f87e396a88ff125090f0c26/research/dev-selection-v1.json) for the fixed task panels and matching settings.
 
 `scripts/run_resource_dev_grid.py` is a separate controller for the original eighteen learned conditions. It preserves the original twenty-two-condition comparison, complete forty-two plus thirteen task panels, recipes, checkpoint order, strengths, seed, raw weights, selection law and secondary floor. The four controls remain on their original GPU 0 server. The learned conditions follow the nine paired waves in the [prospective resource declaration](../research/dev-resource-declaration-v1.json). Confirmation retains its original GPU 0 contract.
 

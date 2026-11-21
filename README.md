@@ -14,7 +14,7 @@ The optional [NanoGPT decision client](docs/decision-model.md) uses `typesafe/je
 
 A [prospective initial-decision cohort](docs/jev-initial-cohort.md) applies the article's common behavior-grade selection to successful teacher patches verified in fresh containers. Its [first real quartet](reports/first-real-behavior-admission-v1.json) supplies an initial target from Verify, with a Jev score of .99 against OFF at .40. Subsequent TRAIN collection admitted a second distinct question from Verify before native training started.
 
-The [full EMPF execution plan](research/dev-selection-empf-v1.json) compares four controls with nine learned conditions. It tests checkpoints at 256, 512 and 1,024 updates at adapter strengths 0.5, 1 and 1.5. Each condition uses the full 42-task and 13-task panels from the [original DEV design](docs/dev-selection.md). Controls and learned candidates use matched LoRA-enabled engine settings, actual returned model aliases, and fresh patch verification. The selected condition advances to a locked 49-task comparison with OFF.
+The [full EMPF execution plan](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/f97a3e9a0711a8b81f87e396a88ff125090f0c26/research/dev-selection-empf-v1.json) compares four controls with nine learned conditions. It tests checkpoints at 256, 512 and 1,024 updates at adapter strengths 0.5, 1 and 1.5. Each condition uses the full 42-task and 13-task panels from the [original DEV design](docs/dev-selection.md). Controls and learned candidates use matched LoRA-enabled engine settings, actual returned model aliases, and fresh patch verification. The selected condition advances to a locked 49-task comparison with OFF.
 
 An explicit [common finalization profile](docs/submission-finalization.md) addresses observed repeated successful `submit_patch` calls. Its four-case synthetic control supports a prospective task test, and its 104-check CPU qualification passes. The original prompt and ZIP bytes remain reproducible.
 
@@ -83,6 +83,8 @@ python3.11 -m venv --system-site-packages .train-venv
 CUDA_VISIBLE_DEVICES='' .train-venv/bin/python -m pytest -q \
   tests/test_gemma_binding.py tests/test_runtime.py tests/test_export.py
 ```
+
+The [frozen DEV inputs](docs/dev-selection.md) are restored separately when using the DEV or confirmation workflows.
 
 The complete CPU suite also uses the separate `.harness-venv` and `.vllm-venv` software environments for real compiler/parser checks. A [public-source portability run](reports/public-source-cpu-portability-v1.json) passes without competition task downloads or prebuilt bundles; its two GPU checks and the downloaded-wheel byte check are explicitly skipped.
 

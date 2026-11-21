@@ -10,6 +10,8 @@ from gemma_particle.harness_identity import sha256_file
 from gemma_particle.dev_selection import (empf_only_selection,load_selection_plan,summarize_verified_panel,
     paired_comparison,choose_learned_candidate,wilson_interval,EMPTY_PATCH_SHA256)
 
+pytestmark = pytest.mark.usefixtures("archived_evidence")
+
 
 def fixture_row(task,resolved,*,tools=5,error=None):
     request={'model':'openai/fixture','messages':[{'role':'user','content':'CPU fixture'}],

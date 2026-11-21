@@ -71,7 +71,7 @@ Run `scripts/prepare_learned_sweep.py` with `--selection-plan research/dev-selec
 
 ## Original two-preset grid
 
-`scripts/prepare_learned_sweep.py` waits for the actual full native training producer before preparing the eighteen learned conditions in the frozen [DEV plan](../research/dev-selection-v1.json). It does not run DEV tasks, open the holdout, select a winner, or submit to Kaggle.
+`scripts/prepare_learned_sweep.py` waits for the actual full native training producer before preparing the eighteen learned conditions in the frozen [DEV plan](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/f97a3e9a0711a8b81f87e396a88ff125090f0c26/research/dev-selection-v1.json). It does not run DEV tasks, open the holdout, select a winner, or submit to Kaggle.
 
 Before loading a model, it requires the completed original one-update pilot, both completed 1,024-update trajectories, six checkpoint receipts, and one exact admitted TRAIN response cache. It checks checkpoint and raw tensor hashes, contiguous finite metrics, the exact journal prefix saved for each checkpoint, native objective/source signatures, and all 230 attention projection hosts. The qualified issue-only conversion probes must remain disjoint from the fitting tasks. These local consistency checks cannot authenticate fabricated receipts.
 
