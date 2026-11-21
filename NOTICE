@@ -1,5 +1,5 @@
 The experimental Particle Sliders source patch derives from HyperGAN/particle-sliders
-and a local experimental PG0.10 integration of that MIT-licensed project. Its
+and the archived experimental bridge of that MIT-licensed project. Its
 copyright and license are retained in the patched dependency. ParticleGAN is
 MIT-licensed. No Tiny Aya-derived model weights, hidden states, training examples,
 or source files are included here. The linked article supplies the method idea.

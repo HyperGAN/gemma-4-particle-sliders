@@ -1,6 +1,6 @@
 # Gemma 4 Particle Sliders
 
-An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using Particle Sliders core **0.15.1** and official ParticleGAN **0.11.0**.
+An application of [paired-context behavior learning](https://huggingface.co/blog/ntc-ai/particle-sliders-learn-the-behavior-keep-the-quest) to the [Gemma 4 Developer Agent competition](https://www.kaggle.com/competitions/gemma-4-developer-agent), using Particle Sliders core **0.15.2** and official ParticleGAN **0.11.1**.
 
 **Work in progress.** Both Kaggle OFF controls exceeded the notebook runtime limit and ended without scores. Learned repair quality and leaderboard performance remain unmeasured. [Official OFF controls](docs/official-submission.md)
 
@@ -54,8 +54,8 @@ The [dataset-backed candidate notebook](docs/kaggle-candidate-packaging.md) pres
 
 | Component | Current evidence |
 |---|---|
-| ParticleGAN | PyPI release 0.11.0, exact release source and wheel hashes pinned |
-| Particle Sliders | Core 0.15.1 at `c13890f8`, with a product-owned RHBI and EMPF response binding |
+| ParticleGAN | PyPI release 0.11.1, exact release source and wheel hashes pinned |
+| Particle Sliders | Core 0.15.2 at `ec1161f5`, with a product-owned RHBI and EMPF response binding |
 | Gemma binding | Actual small random Gemma 4 architecture on CPU; updates, frozen base, exact OFF and resume checked |
 | PEFT conversion | Approximation metrics and loading through the real PEFT loader checked on the CPU fixture |
 | Submission | Prompt baseline compiled by official `adk-submission==0.2.13`; no inference during this check |
@@ -145,4 +145,4 @@ The [original blocked verifier receipt](reports/verifier-control-v1.json) remain
 
 [Context-budget controls](docs/context-budget-controls.md) describe the new prospective OFF failure proof and conditional TRAIN teacher policy. [Broader TRAIN environment qualification](docs/train-environments.md) records the fixed 67-task sweep and separate missing-dependency repairs.
 
-[Fixed-order TRAIN collection](docs/train-pool-collection.md) preserves failures and captures exact target tokens before releasing its server. The collector can also run a fixed 12-task pilot with OFF and Verify on each task and two additional teacher arms on four comparison tasks. The isolated [0.10.1 source upgrade](docs/source-upgrade-0101.md) passes 57 CPU checks and exact one-update fixture comparisons for both explicit recipes. All 87 Python files in the downloaded 0.10.1 wheel match the pinned source ([source check](reports/pg0101-wheel-source-check-v1.json)).
+[Fixed-order TRAIN collection](docs/train-pool-collection.md) preserves failures and captures exact target tokens before releasing its server. The collector can also run a fixed 12-task pilot with OFF and Verify on each task and two additional teacher arms on four comparison tasks. The [historical source audit](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/ba5f4cef32a5de1dcba35f09cdf5ecf12a5a6cf1/docs/source-upgrade-0101.md) records 57 CPU checks, exact one-update comparisons for both explicit recipes, and complete wheel-source verification.

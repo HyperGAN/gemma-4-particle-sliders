@@ -112,6 +112,7 @@ CUDA_VISIBLE_DEVICES='' PYTHONPATH=src .train-venv/bin/python scripts/screen_emp
   --server-identity runs/base-server/server-identity.json
 
 PYTHONPATH=src HF_HUB_OFFLINE=1 .train-venv/bin/python scripts/screen_empf_lr.py run \
+  --resource-qualification /path/to/passing-resource-qualification.json \
   --root runs/empf-lr-screen
 ```
 

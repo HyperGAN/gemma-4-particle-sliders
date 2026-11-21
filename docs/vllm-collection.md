@@ -1,6 +1,6 @@
 # Official vLLM collection
 
-The 31B cohort uses the authenticated competition wheelhouse's vLLM 0.19.1, compressed-tensors 0.15.0.1 and Transformers 5.13.1 wheels. It runs in a separate Python 3.12 environment with Torch 2.10.0+cu128. Training retains its own Torch environment. [The environment receipt](../reports/vllm-environment-v1.json) records installed versions; server startup verifies every installed Python source against those three official wheels.
+The 31B cohort uses the authenticated competition wheelhouse's vLLM 0.19.1, compressed-tensors 0.15.0.1 and Transformers 5.13.1 wheels. It runs in a separate Python 3.12 environment with Torch 2.10.0+cu128. Training retains its own Torch environment. [The environment receipt](https://github.com/HyperGAN/gemma-4-particle-sliders/blob/ba5f4cef32a5de1dcba35f09cdf5ecf12a5a6cf1/reports/vllm-environment-v1.json) records installed versions; server startup verifies every installed Python source against those three official wheels.
 
 ```bash
 uv venv --python 3.12 .vllm-venv

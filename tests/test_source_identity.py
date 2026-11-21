@@ -9,7 +9,7 @@ from test_gemma_binding import tiny_model
 def test_wrong_environment_fails_before_freezing_or_wrapping_the_model(monkeypatch):
     model=tiny_model();flags=[p.requires_grad for p in model.parameters()]
     forwards=[layer.self_attn.q_proj.forward for layer in model.model.layers]
-    monkeypatch.setattr(source_identity,'version',lambda name:'0.10.0')
+    monkeypatch.setattr(source_identity,'version',lambda name:'0.11.0')
     with pytest.raises(RuntimeError,match='environment does not match'):
         Native(model,identity={'fixture':'wrong-source'})
     assert [p.requires_grad for p in model.parameters()]==flags
@@ -20,7 +20,7 @@ def test_wrong_environment_fails_before_loading_pretrained_weights(monkeypatch):
     from transformers import AutoModelForImageTextToText
     def forbidden(*args,**kwargs):raise AssertionError('pretrained load reached before source admission')
     monkeypatch.setattr(AutoModelForImageTextToText,'from_pretrained',forbidden)
-    monkeypatch.setattr(source_identity,'version',lambda name:'0.10.0')
+    monkeypatch.setattr(source_identity,'version',lambda name:'0.11.0')
     with pytest.raises(RuntimeError,match='environment does not match'):
         load_native({},device='cuda:1')
 
