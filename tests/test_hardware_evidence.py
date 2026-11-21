@@ -13,8 +13,6 @@ from gemma_particle.harness_identity import sha256_file
 from test_conversion_handoff import put
 from test_hardware_parity import probes, servers, response
 
-pytestmark = pytest.mark.usefixtures("archived_evidence")
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

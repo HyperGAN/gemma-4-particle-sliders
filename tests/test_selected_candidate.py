@@ -19,8 +19,6 @@ from test_conversion_handoff import put
 from test_kaggle_candidate import fixture, module
 from test_learned_effect import protocol_fixture, response
 
-pytestmark = pytest.mark.usefixtures("archived_evidence")
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

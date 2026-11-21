@@ -12,7 +12,7 @@ def cpu_threads():
     torch.set_num_threads(before)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def archived_evidence():
     from gemma_particle.archive_evidence import ARCHIVED_FILES, restore_file
 

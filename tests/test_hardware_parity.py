@@ -15,8 +15,6 @@ from gemma_particle.hardware_parity import (prepare_probes, qualify_server_contr
 from gemma_particle.harness_identity import sha256_file
 from test_dev_evidence import contract
 
-pytestmark = pytest.mark.usefixtures("archived_evidence")
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
